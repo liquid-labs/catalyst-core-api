@@ -1,6 +1,7 @@
 CREATE TABLE `persons` (
   `id` int(10),
   `name` varchar(255) NOT NULL,
+-- see ../docs/Relational-Schemas.md#reformatting-data-via-a-trigger
   `phone` varchar(12) NOT NULL,
   `email` varchar(255),
   `phone_backup` varchar(12),
