@@ -5,9 +5,8 @@ CREATE TABLE `persons` (
   `phone` varchar(12) NOT NULL,
   `email` varchar(255),
   `phone_backup` varchar(12),
-  `active` tinyint(1) DEFAULT 1,
   CONSTRAINT `persons_key` PRIMARY KEY ( `id` ),
-  CONSTRAINT `persons_ref_entities` FOREIGN KEY ( `id` ) REFERENCES `entities` ( `id` )
+  CONSTRAINT `persons_ref_users` FOREIGN KEY ( `id` ) REFERENCES `users` ( `id` )
 );
 DELIMITER //
 CREATE TRIGGER `persons_phone_format`
