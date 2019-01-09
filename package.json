@@ -1,0 +1,22 @@
+{
+  "name": "@liquid-labs/catalyst-core-api",
+  "version": "0.0.1",
+  "description": "Core backend Catalyst components.",
+  "directories": {
+    "doc": "docs"
+  },
+  "files": ["src/", "data"],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Liquid-Labs/catalyst-core-api.git"
+  },
+  "author": "Zane Rockenbaugh <zane@liquid-labs.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Liquid-Labs/catalyst-core-api/issues"
+  },
+  "homepage": "https://github.com/Liquid-Labs/catalyst-core-api#readme"
+}
