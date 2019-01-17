@@ -25,6 +25,19 @@ isRunning() {
   fi
 }
 
+startProxy() {
+  # We were using the following to capture the pid, but see note on 'isRunning'
+  # bash -c "cd '${BASE_DIR}'; ( npx --no-install cloud_sql_proxy -instances='${CAT_SCRIPT_CORE_API_CLOUDSQL_CONNECTION_NAME}'=tcp:3306 -credential_file='${CAT_SCRIPT_CORE_API_CLOUDSQL_CREDS}' & echo \$! >&3 ) 3> '${PID_FILE}' 2> '${SERV_LOG}' &"
+  # Annoyingly, cloud_sql_proxy (at time of note) emits all logs to stderr.
+  bash -c "cd '${BASE_DIR}'; npx --no-install cloud_sql_proxy -instances='${CAT_SCRIPT_CORE_API_CLOUDSQL_CONNECTION_NAME}'=tcp:3306 -credential_file='${CAT_SCRIPT_CORE_API_CLOUDSQL_CREDS}' 2> '${SERV_LOG}' &"
+}
+
+stopProxy() {
+  # See note in 'start'
+  # kill $(cat "${PID_FILE}") && rm "${PID_FILE}"
+  kill $(ps aux | grep cloud_sql_proxy | grep -v grep | awk '{print $2}')
+}
+
 case "$ACTION" in
   name)
     echo "cloud-sql-proxy";;
@@ -36,24 +49,21 @@ case "$ACTION" in
     fi;;
   start)
     if ! isRunning; then
-      # We were using the following to capture the pid, but see note on 'isRunning'
-      # bash -c "cd '${BASE_DIR}'; ( npx --no-install cloud_sql_proxy -instances='${CAT_SCRIPT_CORE_API_CLOUDSQL_CONNECTION_NAME}'=tcp:3306 -credential_file='${CAT_SCRIPT_CORE_API_CLOUDSQL_CREDS}' & echo \$! >&3 ) 3> '${PID_FILE}' 2> '${SERV_LOG}' &"
-      # Annoyingly, cloud_sql_proxy (at time of note) emits all logs to stderr.
-      bash -c "cd '${BASE_DIR}'; npx --no-install cloud_sql_proxy -instances='${CAT_SCRIPT_CORE_API_CLOUDSQL_CONNECTION_NAME}'=tcp:3306 -credential_file='${CAT_SCRIPT_CORE_API_CLOUDSQL_CREDS}' 2> '${SERV_LOG}' &"
+      startProxy
     else
       echo "${PROCESS_NAME} appears to already be running." >&2
     fi;;
   stop)
     if isRunning; then
-      # See note in 'start'
-      # kill $(cat "${PID_FILE}") && rm "${PID_FILE}"
-      kill $(ps aux | grep cloud_sql_proxy | grep -v grep | awk '{print $2}')
+      stopProxy
     else
       # TODO: use echoerr
       echo "${PROCESS_NAME} does not appear to be running." >&2
     fi;;
   restart)
-    echo "TODO";;
+    stopProxy
+    sleep 1
+    startProxy;;
   *)
     # TODO: library-ize and use 'echoerrandexit'
     echo "Unknown action '${ACTION}'." >&2
