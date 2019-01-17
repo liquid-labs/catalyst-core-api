@@ -24,6 +24,8 @@ ACTION="${1-}"
 case "$ACTION" in
   name)
     echo "cloud-sql-service";;
+  myorder)
+    echo 0;;
   status)
     if isRunning; then
       echo "${green}running${reset}"

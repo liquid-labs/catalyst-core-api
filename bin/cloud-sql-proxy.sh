@@ -41,6 +41,8 @@ stopProxy() {
 case "$ACTION" in
   name)
     echo "cloud-sql-proxy";;
+    myorder)
+      echo 1;;
   status)
     if isRunning; then
       echo "${green}running${reset}"

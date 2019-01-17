@@ -49,6 +49,8 @@
         "cloud-sql-service.sh"
       ],
       "params-req": [
+        "CAT_SCRIPT_CORE_API_GCP_PROJECT_ID",
+        "CAT_SCRIPT_CORE_API_CLOUDSQL_INSTANCE_NAME",
         "CAT_SCRIPT_CORE_API_CLOUDSQL_CONNECTION_NAME",
         "CAT_SCRIPT_CORE_API_CLOUDSQL_CREDS",
         "CAT_SCRIPT_CORE_API_CLOUDSQL_DB"
