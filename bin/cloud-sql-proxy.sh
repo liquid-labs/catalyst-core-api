@@ -66,6 +66,20 @@ case "$ACTION" in
     stopProxy
     sleep 1
     startProxy;;
+  connect-check)
+    exit 0;;
+  connect)
+    if ! isRunning; then
+      # TODO: use echoerr
+      echo "${PROCESS_NAME} does not appear to be running. Try:" >&2
+      echo "catalyst runtime service start ${SERV_IFACE}" >&2
+    else
+      TZ=`date +%z`
+      TZ=`echo ${TZ: 0: 3}:${TZ: -2}`
+      # TODO: libray-ize and use 'isReceivingPipe' or even 'isInPipe' (suppress if piping in or out?)
+      test -t 0 && echo "Setting time zone: $TZ"
+      mysql -h127.0.0.1 "${CAT_SCRIPT_CORE_API_CLOUDSQL_DB}" --init-command 'SET time_zone="'$TZ'"'
+    fi;;
   *)
     # TODO: library-ize and use 'echoerrandexit'
     echo "Unknown action '${ACTION}'." >&2
