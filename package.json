@@ -29,6 +29,9 @@
     "url": "https://github.com/Liquid-Labs/catalyst-core-api/issues"
   },
   "homepage": "https://github.com/Liquid-Labs/catalyst-core-api#readme",
+  "catalyst": {
+    "version": "0.1"
+  },
   "_catServices": [
     {
       "name": "cloud-sql-remote",
