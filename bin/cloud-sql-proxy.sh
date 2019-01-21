@@ -47,7 +47,7 @@ case "$ACTION" in
     if isRunning; then
       echo "${green}running${reset}"
     else
-      echo "${yellow}not running${reset}"
+      echo "${yellow}stopped${reset}"
     fi;;
   start)
     if ! isRunning; then
