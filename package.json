@@ -1,0 +1,64 @@
+{
+  "name": "@liquid-labs/catalyst-core-api",
+  "version": "0.0.2",
+  "description": "Core backend Catalyst components.",
+  "directories": {
+    "doc": "docs"
+  },
+  "files": [
+    "src/",
+    "data/",
+    "bin/",
+    ".catalyst"
+  ],
+  "bin": {
+    "cloud-sql-proxy.sh": "./bin/cloud-sql-proxy.sh",
+    "cloud-sql-service.sh": "./bin/cloud-sql-service.sh",
+    "cloud_sql_proxy": "./bin/cloud_sql_proxy"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Liquid-Labs/catalyst-core-api.git"
+  },
+  "author": "Zane Rockenbaugh <zane@liquid-labs.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Liquid-Labs/catalyst-core-api/issues"
+  },
+  "homepage": "https://github.com/Liquid-Labs/catalyst-core-api#readme",
+  "catalyst": {
+    "version": "0.1"
+  },
+  "_catServices": [
+    {
+      "name": "cloud-sql-remote",
+      "interface-classes": [
+        "sql",
+        "sql-mysql"
+      ],
+      "platform-types": [
+        "local",
+        "gcp"
+      ],
+      "purposes": [
+        "dev",
+        "pre-production"
+      ],
+      "ctrl-scripts": [
+        "cloud-sql-proxy.sh",
+        "cloud-sql-service.sh"
+      ],
+      "params-req": [
+        "CAT_SCRIPT_CORE_API_GCP_PROJECT_ID",
+        "CAT_SCRIPT_CORE_API_CLOUDSQL_INSTANCE_NAME",
+        "CAT_SCRIPT_CORE_API_CLOUDSQL_CONNECTION_NAME",
+        "CAT_SCRIPT_CORE_API_CLOUDSQL_CREDS",
+        "CAT_SCRIPT_CORE_API_CLOUDSQL_DB"
+      ],
+      "params-opt": []
+    }
+  ]
+}
