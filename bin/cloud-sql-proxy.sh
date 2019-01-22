@@ -5,11 +5,6 @@ set -o errexit # exit on errors
 set -o nounset # exit on use of uninitialized variable
 set -o pipefail
 
-red=`tput setaf 1`
-green=`tput setaf 2`
-yellow=`tput setaf 3`
-reset=`tput sgr0`
-
 ACTION="${1-}"
 
 # 'cloud_sql_proxy' is essentially a wrapper that spawns a second process; but killing the parent does not kill the child, so we have to fallback to process grepping
@@ -45,23 +40,14 @@ case "$ACTION" in
       echo 1;;
   status)
     if isRunning; then
-      echo "${green}running${reset}"
+      echo "running"
     else
-      echo "${yellow}stopped${reset}"
+      echo "stopped"
     fi;;
   start)
-    if ! isRunning; then
-      startProxy
-    else
-      echo "${PROCESS_NAME} appears to already be running." >&2
-    fi;;
+    startProxy;;
   stop)
-    if isRunning; then
-      stopProxy
-    else
-      # TODO: use echoerr
-      echo "${PROCESS_NAME} does not appear to be running." >&2
-    fi;;
+    stopProxy;;
   restart)
     stopProxy
     sleep 1
@@ -69,17 +55,12 @@ case "$ACTION" in
   connect-check)
     exit 0;;
   connect)
-    if ! isRunning; then
-      # TODO: use echoerr
-      echo "${PROCESS_NAME} does not appear to be running. Try:" >&2
-      echo "catalyst runtime service start ${SERV_IFACE}" >&2
-    else
-      TZ=`date +%z`
-      TZ=`echo ${TZ: 0: 3}:${TZ: -2}`
-      # TODO: libray-ize and use 'isReceivingPipe' or even 'isInPipe' (suppress if piping in or out?)
-      test -t 0 && echo "Setting time zone: $TZ"
-      mysql -h127.0.0.1 "${CAT_SCRIPT_CORE_API_CLOUDSQL_DB}" --init-command 'SET time_zone="'$TZ'"'
-    fi;;
+    # To avoid double-checks, the script dose not check is-running.
+    TZ=`date +%z`
+    TZ=`echo ${TZ: 0: 3}:${TZ: -2}`
+    # TODO: libray-ize and use 'isReceivingPipe' or even 'isInPipe' (suppress if piping in or out?)
+    test -t 0 && echo "Setting time zone: $TZ"
+    mysql -h127.0.0.1 "${CAT_SCRIPT_CORE_API_CLOUDSQL_DB}" --init-command 'SET time_zone="'$TZ'"';;
   *)
     # TODO: library-ize and use 'echoerrandexit'
     echo "Unknown action '${ACTION}'." >&2
