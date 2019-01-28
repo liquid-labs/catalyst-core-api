@@ -10,7 +10,7 @@ isRunning() {
 }
 
 start() {
-  GOPATH=${CAT_SCRIPT_CORE_API_GOPATH} bash -c "cd ${CAT_SCRIPT_CORE_API_GOPATH}/src/${CAT_SCRIPT_CORE_API_REL_GOAPP_PATH}; ( dev_appserver.py --enable_watching_go_path=true app.yaml & echo \$! >&3 ) 3> '${PID_FILE}' > '${SERV_LOG}' 2> '${ERR_LOG}' &";;
+  GOPATH=${CAT_SCRIPT_CORE_API_GOPATH} bash -c "cd ${CAT_SCRIPT_CORE_API_GOPATH}/src/${CAT_SCRIPT_CORE_API_REL_GOAPP_PATH}; ( dev_appserver.py --enable_watching_go_path=true app.yaml & echo \$! >&3 ) 3> '${PID_FILE}' > '${SERV_LOG}' 2> '${SERV_ERR}' &"
 }
 
 stop() {
