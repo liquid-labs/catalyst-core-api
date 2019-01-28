@@ -59,6 +59,27 @@
         "CAT_SCRIPT_CORE_API_CLOUDSQL_DB"
       ],
       "params-opt": []
+    },
+    {
+      "name": "go-dev-server",
+      "interface-classes": [
+        "http-rest"
+      ],
+      "platform-types": [
+        "local"
+      ],
+      "purposes": [
+        "dev",
+        "test"
+      ],
+      "ctrl-scripts": [
+        "go-dev-server.sh"
+      ],
+      "params-req": [
+        "CAT_SCRIPT_CORE_API_GOPATH",
+        "CAT_SCRIPT_CORE_REL_GOAPP_PATH"
+      ],
+      "params-opt": []
     }
   ]
 }
