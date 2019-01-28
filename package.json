@@ -1,6 +1,6 @@
 {
   "name": "@liquid-labs/catalyst-core-api",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Core backend Catalyst components.",
   "directories": {
     "doc": "docs"
@@ -14,7 +14,8 @@
   "bin": {
     "cloud-sql-proxy.sh": "./bin/cloud-sql-proxy.sh",
     "cloud-sql-service.sh": "./bin/cloud-sql-service.sh",
-    "cloud_sql_proxy": "./bin/cloud_sql_proxy"
+    "cloud_sql_proxy": "./bin/cloud_sql_proxy",
+    "go-dev-server.sh": "./bin/go-dev-server.sh"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -57,6 +58,27 @@
         "CAT_SCRIPT_CORE_API_CLOUDSQL_CONNECTION_NAME",
         "CAT_SCRIPT_CORE_API_CLOUDSQL_CREDS",
         "CAT_SCRIPT_CORE_API_CLOUDSQL_DB"
+      ],
+      "params-opt": []
+    },
+    {
+      "name": "go-dev-server",
+      "interface-classes": [
+        "http-rest"
+      ],
+      "platform-types": [
+        "local"
+      ],
+      "purposes": [
+        "dev",
+        "test"
+      ],
+      "ctrl-scripts": [
+        "go-dev-server.sh"
+      ],
+      "params-req": [
+        "CAT_SCRIPT_CORE_API_GOPATH",
+        "CAT_SCRIPT_CORE_API_REL_GOAPP_PATH"
       ],
       "params-opt": []
     }
