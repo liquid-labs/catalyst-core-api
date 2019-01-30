@@ -2,7 +2,7 @@ module github.com/Liquid-Labs/catalyst-core-api
 
 require (
 	cloud.google.com/go v0.35.1 // indirect
-	github.com/Liquid-Labs/catalyst-firewrap v0.2.0
+	github.com/Liquid-Labs/catalyst-firewrap v0.3.0
 	github.com/Liquid-Labs/go-nullable-mysql v1.0.2
 	github.com/Liquid-Labs/go-rest v0.1.0
 	github.com/go-sql-driver/mysql v1.4.1

@@ -13,8 +13,8 @@ firebase.google.com/go v3.6.0+incompatible/go.mod h1:xlah6XbEyW6tbfSklcfe5FHJIwj
 git.apache.org/thrift.git v0.0.0-20180902110319-2566ecd5d999/go.mod h1:fPE2ZNJGynbRyZ4dJvy6G277gSllfV2HJqblrnkyeyg=
 git.apache.org/thrift.git v0.0.0-20181218151757-9b75e4fe745a/go.mod h1:fPE2ZNJGynbRyZ4dJvy6G277gSllfV2HJqblrnkyeyg=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
-github.com/Liquid-Labs/catalyst-firewrap v0.2.0 h1:MUIoNuekWfVW+0/hNUhz9dIno0xGIS+FV3oAv9Wmp7I=
-github.com/Liquid-Labs/catalyst-firewrap v0.2.0/go.mod h1:NtL7XatK2M5kA9xSQE54+CmNhZ6rcWPOegCVQfzwVvE=
+github.com/Liquid-Labs/catalyst-firewrap v0.3.0 h1:AUDWHR3kWaflzcyPA9X/KrfvJpPLPTpBCSXA6DbSygU=
+github.com/Liquid-Labs/catalyst-firewrap v0.3.0/go.mod h1:NtL7XatK2M5kA9xSQE54+CmNhZ6rcWPOegCVQfzwVvE=
 github.com/Liquid-Labs/go-nullable-mysql v1.0.2 h1:FbUqf0Y1ec3Kwr4NOXawYC/OtS3mUjr9g7cwRQhlVVA=
 github.com/Liquid-Labs/go-nullable-mysql v1.0.2/go.mod h1:vpdFQvKE6cAnjDL+70ZYGJqjRc5YvGZ7fe7eX8AetfA=
 github.com/Liquid-Labs/go-rest v0.1.0 h1:MlxCRp47sV9v1jwv6vFa48+S5u3zmiompU2k9djvRKY=
