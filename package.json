@@ -18,6 +18,7 @@
     "go-dev-server.sh": "./bin/go-dev-server.sh"
   },
   "scripts": {
+    "build": "cd go && go build ./...",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

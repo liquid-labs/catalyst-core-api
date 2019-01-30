@@ -10,7 +10,15 @@ isRunning() {
 }
 
 start() {
-  GOPATH=${CAT_SCRIPT_CORE_API_GOPATH} bash -c "cd ${CAT_SCRIPT_CORE_API_GOPATH}/src/${CAT_SCRIPT_CORE_API_REL_GOAPP_PATH}; ( dev_appserver.py --enable_watching_go_path=true app.yaml & echo \$! >&3 ) 3> '${PID_FILE}' > '${SERV_LOG}' 2> '${SERV_ERR}' &"
+  local PORT_OPT=''
+  local PORT_KEY="$( echo ${SERV_NAME} | tr '-' '_' | tr 'a-z' 'A-Z')_PORT"
+  echo "PORT_KEY: $PORT_KEY"
+  if [[ -n "${!PORT_KEY:-}" ]]; then
+    PORT_OPT="--port=${!PORT_KEY}"
+  fi
+
+  # Boo! dev_appserver uses stderr for logs.
+  cd ${BASE_DIR}/go && ( dev_appserver.py ${PORT_OPT} --env_var FIRBASE_DB_URL="${FIREBASE_DB_URL}" app.yaml & echo $! > "${PID_FILE}" ) > "${SERV_LOG}" 2>&1
 }
 
 stop() {
