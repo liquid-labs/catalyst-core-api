@@ -5,7 +5,7 @@ set -o errexit # exit on errors
 set -o nounset # exit on use of uninitialized variable
 set -o pipefail
 
-ACTION="${1-}"
+ACTION="${1-}"; shift || true
 
 # 'cloud_sql_proxy' is essentially a wrapper that spawns a second process; but killing the parent does not kill the child, so we have to fallback to process grepping
 isRunning() {
@@ -61,6 +61,32 @@ case "$ACTION" in
     # TODO: libray-ize and use 'isReceivingPipe' or even 'isInPipe' (suppress if piping in or out?)
     test -t 0 && echo "Setting time zone: $TZ"
     mysql -h127.0.0.1 "${CAT_SCRIPT_CORE_API_CLOUDSQL_DB}" --init-command 'SET time_zone="'$TZ'"';;
+  param-default)
+    ENV_PURPOSE="${1:-}"
+    shift || (echo "Missing 'environment purpose' for 'param-default'." >&2; exit 1)
+    PARAM_NAME="${1:-}"
+    shift || (echo "Missing 'param name' for 'param-default'." >&2; exit 1)
+    case "$ENV_PURPOSE" in
+      dev|test)
+        case "$PARAM_NAME" in
+          CAT_SCRIPT_CORE_API_CLOUDSQL_CONNECTION_NAME)
+            echo '127.0.0.1:3306';;
+          CAT_SCRIPT_CORE_API_CLOUDSQL_CONNECTION_PROT)
+            echo 'tcp'
+          *)
+            echo ''
+        esac;;
+      production|preproduction)
+        case "$PARAM_NAME" in
+          CAT_SCRIPT_CORE_API_CLOUDSQL_CONNECTION_PROT)
+            echo 'cloudsql'
+          *)
+            echo '';;
+        esac
+      *)
+        echo "Unknown environment purpose: '$ENV_PURPOSE'." >&2
+        exit 1
+    esac;;
   *)
     # TODO: library-ize and use 'echoerrandexit'
     echo "Unknown action '${ACTION}'." >&2
