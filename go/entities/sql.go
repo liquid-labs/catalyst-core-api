@@ -4,9 +4,7 @@ import (
   "database/sql"
   "log"
 
-  "github.com/Liquid-Labs/go-webapp-tools/rest"
-
-  "source.developers.google.com/p/uno-delivery-test/r/uno-api/db"
+  "github.com/Liquid-Labs/go-rest/rest"
 )
 
 func CreateEntity(txn *sql.Tx) (int64, rest.RestError){
@@ -25,9 +23,9 @@ func CreateEntity(txn *sql.Tx) (int64, rest.RestError){
 
 const createEntityStatement = `INSERT INTO entities VALUES ()`
 var createEntityQuery *sql.Stmt
-func SetupDb() {
+func SetupDb(DB *sql.DB) {
   var err error
-  if createEntityQuery, err = unoDb.Db.Conn.Prepare(createEntityStatement); err != nil {
+  if createEntityQuery, err = DB.Prepare(createEntityStatement); err != nil {
     log.Fatalf("mysql: prepare create entity stmt: %v", err)
   }
 }
