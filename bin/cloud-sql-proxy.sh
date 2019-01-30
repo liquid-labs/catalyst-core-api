@@ -22,9 +22,9 @@ isRunning() {
 
 startProxy() {
   # We were using the following to capture the pid, but see note on 'isRunning'
-  # bash -c "cd '${BASE_DIR}'; ( npx --no-install cloud_sql_proxy -instances='${CAT_SCRIPT_CORE_API_CLOUDSQL_CONNECTION_NAME}'=tcp:3306 -credential_file='${CAT_SCRIPT_CORE_API_CLOUDSQL_CREDS}' & echo \$! >&3 ) 3> '${PID_FILE}' 2> '${SERV_LOG}' &"
+  # bash -c "cd '${BASE_DIR}'; ( npx --no-install cloud_sql_proxy -instances='${CLOUDSQL_CONNECTION_NAME}'=tcp:3306 -credential_file='${CLOUDSQL_CREDS}' & echo \$! >&3 ) 3> '${PID_FILE}' 2> '${SERV_LOG}' &"
   # Annoyingly, cloud_sql_proxy (at time of note) emits all logs to stderr.
-  bash -c "cd '${BASE_DIR}'; npx --no-install cloud_sql_proxy -instances='${CAT_SCRIPT_CORE_API_CLOUDSQL_CONNECTION_NAME}'=tcp:3306 -credential_file='${CAT_SCRIPT_CORE_API_CLOUDSQL_CREDS}' 2> '${SERV_LOG}' &"
+  bash -c "cd '${BASE_DIR}'; npx --no-install cloud_sql_proxy -instances='${CLOUDSQL_CONNECTION_NAME}'=tcp:3306 -credential_file='${CLOUDSQL_CREDS}' 2> '${SERV_LOG}' &"
 }
 
 stopProxy() {
@@ -60,7 +60,7 @@ case "$ACTION" in
     TZ=`echo ${TZ: 0: 3}:${TZ: -2}`
     # TODO: libray-ize and use 'isReceivingPipe' or even 'isInPipe' (suppress if piping in or out?)
     test -t 0 && echo "Setting time zone: $TZ"
-    mysql -h127.0.0.1 "${CAT_SCRIPT_CORE_API_CLOUDSQL_DB}" --init-command 'SET time_zone="'$TZ'"';;
+    mysql -h127.0.0.1 "${CLOUDSQL_DB}" --init-command 'SET time_zone="'$TZ'"';;
   param-default)
     ENV_PURPOSE="${1:-}"
     shift || (echo "Missing 'environment purpose' for 'param-default'." >&2; exit 1)
@@ -69,16 +69,16 @@ case "$ACTION" in
     case "$ENV_PURPOSE" in
       dev|test)
         case "$PARAM_NAME" in
-          CAT_SCRIPT_CORE_API_CLOUDSQL_CONNECTION_NAME)
+          CLOUDSQL_CONNECTION_NAME)
             echo '127.0.0.1:3306';;
-          CAT_SCRIPT_CORE_API_CLOUDSQL_CONNECTION_PROT)
+          CLOUDSQL_CONNECTION_PROT)
             echo 'tcp'
           *)
             echo ''
         esac;;
       production|preproduction)
         case "$PARAM_NAME" in
-          CAT_SCRIPT_CORE_API_CLOUDSQL_CONNECTION_PROT)
+          CLOUDSQL_CONNECTION_PROT)
             echo 'cloudsql'
           *)
             echo '';;

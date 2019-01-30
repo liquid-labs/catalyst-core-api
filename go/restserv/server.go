@@ -52,11 +52,11 @@ var DB *sql.DB
 
 func initDb() {
   var (
-    connectionName = mustGetenv("CAT_SCRIPT_CORE_API_CLOUDSQL_CONNECTION_NAME")
-    connectionProt = mustGetenv("CAT_SCRIPT_CORE_API_CLOUDSQL_CONNECTION_PROT")
-    user           = mustGetenv("CAT_SCRIPT_CORE_API_CLOUDSQL_USER")
-    password       = mustGetenv("CAT_SCRIPT_CORE_API_CLOUDSQL_PASSWORD") // NOTE: password may NOT be empty
-    dbName         = mustGetenv("CAT_SCRIPT_CORE_API_CLOUDSQL_DB")
+    connectionName = mustGetenv("CLOUDSQL_CONNECTION_NAME")
+    connectionProt = mustGetenv("CLOUDSQL_CONNECTION_PROT")
+    user           = mustGetenv("CLOUDSQL_USER")
+    password       = mustGetenv("CLOUDSQL_PASSWORD") // NOTE: password may NOT be empty
+    dbName         = mustGetenv("CLOUDSQL_DB")
   )
   var dsn string = fmt.Sprintf("%s:%s@%s(%s)/%s", user, password, connectionProt, connectionName, dbName)
 

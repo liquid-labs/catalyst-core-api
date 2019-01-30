@@ -54,12 +54,12 @@
         "cloud-sql-service.sh"
       ],
       "params-req": [
-        "CAT_SCRIPT_CORE_API_GCP_PROJECT_ID",
-        "CAT_SCRIPT_CORE_API_CLOUDSQL_INSTANCE_NAME",
-        "CAT_SCRIPT_CORE_API_CLOUDSQL_CONNECTION_PROT",
-        "CAT_SCRIPT_CORE_API_CLOUDSQL_CONNECTION_NAME",
-        "CAT_SCRIPT_CORE_API_CLOUDSQL_CREDS",
-        "CAT_SCRIPT_CORE_API_CLOUDSQL_DB"
+        "GCP_PROJECT_ID",
+        "CLOUDSQL_INSTANCE_NAME",
+        "CLOUDSQL_CONNECTION_PROT",
+        "CLOUDSQL_CONNECTION_NAME",
+        "CLOUDSQL_CREDS",
+        "CLOUDSQL_DB"
       ],
       "params-opt": []
     },
@@ -79,8 +79,8 @@
         "go-dev-server.sh"
       ],
       "params-req": [
-        "CAT_SCRIPT_CORE_API_GOPATH",
-        "CAT_SCRIPT_CORE_API_REL_GOAPP_PATH"
+        "GOPATH",
+        "REL_GOAPP_PATH"
       ],
       "params-opt": []
     }
