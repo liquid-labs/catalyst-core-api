@@ -12,14 +12,11 @@ isRunning() {
 start() {
   local PORT_OPT=''
   local PORT_KEY="$( echo ${SERV_NAME} | tr '-' '_' | tr 'a-z' 'A-Z')_PORT"
-  echo "PORT_KEY: $PORT_KEY"
   if [[ -n "${!PORT_KEY:-}" ]]; then
     PORT_OPT="--port=${!PORT_KEY}"
   fi
 
   # Boo! dev_appserver uses stderr for logs.
-
-  
   cd ${BASE_DIR}/go && ( dev_appserver.py ${PORT_OPT} --env_var FIRBASE_DB_URL="${FIREBASE_DB_URL}" app.yaml 2>&1 & echo $! > "${PID_FILE}" ) > "${SERV_LOG}"
 }
 
@@ -48,6 +45,8 @@ case "$ACTION" in
   restart)
     stop
     start;;
+  param-default)
+    echo '';;
   *)
     # TODO: library-ize and use 'echoerrandexit'
     echo "Unknown action '${ACTION}'." >&2
