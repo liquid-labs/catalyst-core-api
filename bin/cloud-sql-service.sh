@@ -33,6 +33,8 @@ case "$ACTION" in
     gcloud sql instances patch "${CLOUDSQL_INSTANCE_NAME}" --activation-policy NEVER --project="${GCP_PROJECT_ID}" --quiet;;
   restart)
     gcloud sql instances restart "${CLOUDSQL_INSTANCE_NAME}" --project="${GCP_PROJECT_ID}" --quiet;;
+  param-default)
+    echo '';;
   *)
     # TODO: library-ize and use 'echoerrandexit'
     echo "Unknown action '${ACTION}'." >&2
