@@ -18,7 +18,9 @@ start() {
   fi
 
   # Boo! dev_appserver uses stderr for logs.
-  cd ${BASE_DIR}/go && ( dev_appserver.py ${PORT_OPT} --env_var FIRBASE_DB_URL="${FIREBASE_DB_URL}" app.yaml & echo $! > "${PID_FILE}" ) > "${SERV_LOG}" 2>&1
+
+  
+  cd ${BASE_DIR}/go && ( dev_appserver.py ${PORT_OPT} --env_var FIRBASE_DB_URL="${FIREBASE_DB_URL}" app.yaml 2>&1 & echo $! > "${PID_FILE}" ) > "${SERV_LOG}"
 }
 
 stop() {
