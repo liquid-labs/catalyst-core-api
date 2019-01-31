@@ -72,20 +72,20 @@ case "$ACTION" in
           CLOUDSQL_CONNECTION_NAME)
             echo '127.0.0.1:3306';;
           CLOUDSQL_CONNECTION_PROT)
-            echo 'tcp'
-          *)
-            echo ''
-        esac;;
-      production|preproduction)
-        case "$PARAM_NAME" in
-          CLOUDSQL_CONNECTION_PROT)
-            echo 'cloudsql'
+            echo 'tcp';;
           *)
             echo '';;
-        esac
+        esac;;
+      production|pre-production)
+        case "$PARAM_NAME" in
+          CLOUDSQL_CONNECTION_PROT)
+            echo 'cloudsql';;
+          *)
+            echo '';;
+        esac;;
       *)
         echo "Unknown environment purpose: '$ENV_PURPOSE'." >&2
-        exit 1
+        exit 1;;
     esac;;
   *)
     # TODO: library-ize and use 'echoerrandexit'
