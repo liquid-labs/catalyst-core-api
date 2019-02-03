@@ -9,7 +9,7 @@ import (
 )
 
 func pingHandler(w http.ResponseWriter, r *http.Request) {
-  fmt.Fprint(w, "root alive")
+  fmt.Fprint(w, "root alive!\n")
 }
 
 func InitAPI(r *mux.Router) {
