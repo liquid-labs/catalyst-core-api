@@ -1,0 +1,6 @@
+runtime: go111
+
+handlers:
+- url: /api/ping
+  secure: always
+  script: _go_app

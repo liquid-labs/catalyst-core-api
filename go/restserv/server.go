@@ -96,13 +96,18 @@ func Init() {
   entities.SetupDb(DB)
   locations.SetupDb(DB)
   for _, initDb := range initDbFuncs {
-    initDb(DB)
+    if initDb != nil {
+      initDb(DB)
+    }
   }
 
   r := mux.NewRouter()
+  apiR := r.PathPrefix("/api").Subrouter()
   // r.Use(contextualMw)
   for _, initApi := range initApiFuncs {
-    initApi(r)
+    if initApi != nil {
+      initApi(apiR)
+    }
   }
 
   if GetEnvPurpose() != "production" {
