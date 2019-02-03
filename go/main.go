@@ -13,7 +13,7 @@ func pingHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func InitAPI(r *mux.Router) {
-  r.HandleFunc("/", pingHandler).Methods("GET")
+  r.HandleFunc("/", pingHandler).Methods("PING")
 }
 
 func main() {
