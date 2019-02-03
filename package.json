@@ -58,10 +58,12 @@
         "CLOUDSQL_INSTANCE_NAME",
         "CLOUDSQL_CONNECTION_PROT",
         "CLOUDSQL_CONNECTION_NAME",
+        "CLOUDSQL_PROXY_CONNECTION_NAME",
         "CLOUDSQL_CREDS",
         "CLOUDSQL_DB"
       ],
-      "params-opt": []
+      "params-opt": [],
+      "config-const": {}
     },
     {
       "name": "go-dev-server",
@@ -78,11 +80,9 @@
       "ctrl-scripts": [
         "go-dev-server.sh"
       ],
-      "params-req": [
-        "GOPATH",
-        "REL_GOAPP_PATH"
-      ],
-      "params-opt": []
+      "params-req": [],
+      "params-opt": [],
+      "config-const": {}
     }
   ]
 }
