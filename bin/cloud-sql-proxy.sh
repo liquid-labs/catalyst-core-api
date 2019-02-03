@@ -7,7 +7,9 @@ set -o pipefail
 
 ACTION="${1-}"; shift || true
 
-# 'cloud_sql_proxy' is essentially a wrapper that spawns a second process; but killing the parent does not kill the child, so we have to fallback to process grepping
+# 'cloud_sql_proxy' is essentially a wrapper that spawns a second process; but
+# killing the parent does not kill the child, so we have to fallback to process
+# grepping
 isRunning() {
   set +e # grep exits with error if no match
   local PROC_COUNT=$(ps aux | grep cloud_sql_proxy | grep -v grep | wc -l)
@@ -24,7 +26,7 @@ startProxy() {
   # We were using the following to capture the pid, but see note on 'isRunning'
   # bash -c "cd '${BASE_DIR}'; ( npx --no-install cloud_sql_proxy -instances='${CLOUDSQL_CONNECTION_NAME}'=tcp:3306 -credential_file='${CLOUDSQL_CREDS}' & echo \$! >&3 ) 3> '${PID_FILE}' 2> '${SERV_LOG}' &"
   # Annoyingly, cloud_sql_proxy (at time of note) emits all logs to stderr.
-  bash -c "cd '${BASE_DIR}'; npx --no-install cloud_sql_proxy -instances='${CLOUDSQL_CONNECTION_NAME}'=tcp:3306 -credential_file='${CLOUDSQL_CREDS}' 2> '${SERV_LOG}' &"
+  bash -c "cd '${BASE_DIR}'; npx --no-install cloud_sql_proxy -instances='${CLOUDSQL_PROXY_CONNECTION_NAME}'=tcp:3306 -credential_file='${CLOUDSQL_CREDS}' 2> '${SERV_LOG}' &"
 }
 
 stopProxy() {
