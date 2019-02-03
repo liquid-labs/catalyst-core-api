@@ -9,38 +9,46 @@ isRunning() {
   test -f "${PID_FILE}" && pgrep -qF "${PID_FILE}"
 }
 
+function packToAbsPath() {
+  local PACK_PATH="${1}"
+
+  local PACK=$(echo "${PACK_PATH}" | cut -d: -f1)
+  local REL_PATH=$(echo "${PACK_PATH}" | cut -d: -f2)
+  local ABS_PATH
+  if [[ "$PACKAGE_NAME" == "$PACK" ]]; then
+    ABS_PATH="${BASE_DIR}/${REL_PATH}"
+  else
+    ABS_PATH="${MY_ROOT}/node_modules/${PACK}/${REL_PATH}"
+  fi
+  if [[ ! -f "${ABS_PATH}" ]]; then
+    echo "Did not find expected file '${!REQ_PARAM}' ($ABS_PATH)." >&2
+    exit 4
+  fi
+
+  echo "${ABS_PATH}"
+}
+
 start() {
   local CORE_APP_PATH="${1:-}"
-  local CMD="dev_appserver.py "
+  local CMD="dev_appserver.py --env_var NODE_ENV='development' "
 
-  if [[ -z "$CORE_APP_PATH" ]]; then
-    local MY_ROOT="${BASH_SOURCE[0]}"
-    if [[ -L "$MY_ROOT" ]]; then
-      cd $(dirname "${MY_ROOT}")
-      MY_ROOT=$(readlink "${MY_ROOT}")
-    fi
+  local MY_ROOT="${BASH_SOURCE[0]}"
+  if [[ -L "$MY_ROOT" ]]; then
     cd $(dirname "${MY_ROOT}")
-    MY_ROOT=$(dirname "$PWD")
-    CORE_APP_PATH="${MY_ROOT}/go/app.yaml"
+    MY_ROOT=$(readlink "${MY_ROOT}")
   fi
+  cd $(dirname "${MY_ROOT}")
+  MY_ROOT=$(dirname "$PWD")
+  CORE_APP_PATH="${MY_ROOT}/go/app.yaml"
 
   local APPS="${CORE_APP_PATH}"
   for REQ_PARAM in $REQ_PARAMS; do
     CMD="${CMD} --env_var $REQ_PARAM='${!REQ_PARAM}'"
     if [[ "${REQ_PARAM}" == "ADD_GO_APP_"* ]]; then
-      local APP_PACK=$(echo "${!REQ_PARAM}" | cut -d: -f1)
-      local APP_PATH=$(echo "${!REQ_PARAM}" | cut -d: -f2)
-      local APP_ABS_PATH
-      if [[ "$PACKAGE_NAME" == "$APP_PACK" ]]; then
-        APP_ABS_PATH="${BASE_DIR}/${APP_PATH}"
-      else
-        APP_ABS_PATH="${MY_ROOT}/node_modules/${APP_PACK}/${APP_PATH}"
-      fi
-      if [[ ! -f "$APP_ABS_PATH" ]]; then
-        echo "Did not find expected app file '${!REQ_PARAM}' ($APP_ABS_PATH)." >&2
-        exit 4
-      fi
-      APPS="${APPS} ${APP_ABS_PATH}"
+      APPS="${APPS} $(packToAbsPath "${!REQ_PARAM}")"
+    fi
+    if [[ "${REQ_PARAM}" == "GO_APP_DISPATCH" ]]; then
+      CMD="${CMD} $(packToAbsPath "${!REQ_PARAM}")"
     fi
   done
 
