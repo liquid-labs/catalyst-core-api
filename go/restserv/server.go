@@ -6,6 +6,7 @@ import (
   "log"
   "net/http"
   "os"
+  "time"
 
   "github.com/gorilla/mux"
   _ "github.com/go-sql-driver/mysql"
@@ -102,7 +103,7 @@ func Init() {
   }
 
   r := mux.NewRouter()
-  apiR := r.PathPrefix("/api").Subrouter()
+  apiR := r.PathPrefix("/api/").Subrouter()
   // r.Use(contextualMw)
   for _, initApi := range initApiFuncs {
     if initApi != nil {
@@ -110,7 +111,7 @@ func Init() {
     }
   }
 
-  if GetEnvPurpose() != "production" {
+  if envPurpose != "production" {
     // 'cors.Default().Handler(r)' is not sufficient. Don't remember why
     // exactly.
     handler := cors.New(cors.Options{
@@ -123,4 +124,30 @@ func Init() {
   } else {
     http.Handle("/", r)
   }
+
+  // For debugging route configurations:
+  // r.Walk(routerReporter)
+
+  host := ""
+  if envPurpose == "test" || envPurpose == "development" {
+    host = "localhost"
+    log.Printf("Binding to 'localhost' only for '%s'", envPurpose)
+  }
+
+  port := os.Getenv("PORT")
+  if port == "" {
+    port = "8080"
+    log.Printf("Defaulting to port %s", port)
+  }
+
+  log.Printf("Listening on port %s", port)
+  srv := &http.Server{
+    Handler:      r,
+    Addr:         fmt.Sprintf("%s:%s", host, port),
+    // Good practice: enforce timeouts for servers you create!
+    WriteTimeout: 10 * time.Second,
+    ReadTimeout:  10 * time.Second,
+  }
+
+  log.Fatal(srv.ListenAndServe())
 }
