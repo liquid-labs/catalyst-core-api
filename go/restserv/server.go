@@ -1,6 +1,7 @@
 package restserv
 
 import (
+  "context"
   "database/sql"
   "fmt"
   "log"
@@ -35,16 +36,22 @@ func GetEnvPurpose() string {
   }
 }
 
+type fireauthKey string
+const FireauthKey fireauthKey = fireauthKey("fireauth")
 
-func CommonHandler(handler func(*fireauth.ScopedClient, http.ResponseWriter, *http.Request)) (func(http.ResponseWriter, *http.Request)) {
-  return func(w http.ResponseWriter, r *http.Request) {
+func addFireauthMw(next http.Handler) http.Handler {
+  return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+    log.Print("A")
     if fireauth, restErr := fireauth.GetClient(r); restErr != nil {
+      log.Print("Failed to get auth client.")
       rest.HandleError(w, restErr)
     } else {
-      handler(fireauth, w, r)
-      // TODO: it would be cool to verify that auth has been checked
+      log.Print("B")
+      log.Print("C")
+      next.ServeHTTP(w, r.WithContext(context.WithValue(r.Context(), FireauthKey, fireauth)))
+      log.Print("D")
     }
-  }
+  })
 }
 
 var firebaseDbUrl = mustGetenv("FIREBASE_DB_URL")
@@ -103,6 +110,7 @@ func Init() {
   }
 
   r := mux.NewRouter()
+  r.Use(addFireauthMw)
   apiR := r.PathPrefix("/api/").Subrouter()
   // r.Use(contextualMw)
   for _, initApi := range initApiFuncs {

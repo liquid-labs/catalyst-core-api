@@ -16,3 +16,5 @@ require (
 	google.golang.org/grpc v1.18.0 // indirect
 	googlemaps.github.io/maps v0.0.0-20181207230752-65eab92263cb
 )
+
+replace github.com/Liquid-Labs/catalyst-firewrap => /Users/zane/playground/catalyst-firewrap
