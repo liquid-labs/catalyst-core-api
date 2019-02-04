@@ -121,7 +121,7 @@ func Init() {
 
   if envPurpose != "production" {
     // 'cors.Default().Handler(r)' is not sufficient. Don't remember why
-    // exactly.
+    // exactly. I believe it didn't support our headers?
     handler := cors.New(cors.Options{
       AllowedOrigins: []string{"*"},
       // Notice we don't use delete
