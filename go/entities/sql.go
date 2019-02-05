@@ -7,7 +7,9 @@ import (
   "github.com/Liquid-Labs/go-rest/rest"
 )
 
-func CreateEntity(txn *sql.Tx) (int64, rest.RestError){
+// Since this is a non-concrete type, we return the (newly created) intetrnal
+// ID rather than retrievin the Entity record.
+func CreateEntityInTxn(txn *sql.Tx) (int64, rest.RestError){
   res, err := txn.Stmt(createEntityQuery).Exec()
   if err != nil {
 		return -1, rest.ServerError("Failure creating entity.", err)
