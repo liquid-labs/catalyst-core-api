@@ -17,6 +17,6 @@ func InitAPI(r *mux.Router) {
 }
 
 func main() {
-  restserv.RegisterResource(nil, InitAPI)
+  restserv.RegisterResource(InitAPI)
   restserv.Init()
 }

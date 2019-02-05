@@ -2,7 +2,6 @@ package restserv
 
 import (
   "context"
-  "database/sql"
   "fmt"
   "log"
   "net/http"
@@ -10,22 +9,14 @@ import (
   "time"
 
   "github.com/gorilla/mux"
-  _ "github.com/go-sql-driver/mysql"
   "github.com/Liquid-Labs/catalyst-core-api/go/entities"
   "github.com/Liquid-Labs/catalyst-core-api/go/locations"
   "github.com/Liquid-Labs/catalyst-firewrap/go/firewrap"
   "github.com/Liquid-Labs/catalyst-firewrap/go/fireauth"
+  "github.com/Liquid-Labs/go-api/sqldb"
   "github.com/Liquid-Labs/go-rest/rest"
   "github.com/rs/cors"
 )
-
-func mustGetenv(k string) string {
-  v := os.Getenv(k)
-  if v == "" {
-    log.Panicf("%s environment variable not set.", k)
-  }
-  return v
-}
 
 var envPurpose = os.Getenv(`NODE_ENV`)
 func GetEnvPurpose() string {
@@ -41,47 +32,19 @@ const FireauthKey fireauthKey = fireauthKey("fireauth")
 
 func addFireauthMw(next http.Handler) http.Handler {
   return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-    log.Print("A")
     if fireauth, restErr := fireauth.GetClient(r); restErr != nil {
       log.Print("Failed to get auth client.")
       rest.HandleError(w, restErr)
     } else {
-      log.Print("B")
-      log.Print("C")
       next.ServeHTTP(w, r.WithContext(context.WithValue(r.Context(), FireauthKey, fireauth)))
-      log.Print("D")
     }
   })
 }
 
-var firebaseDbUrl = mustGetenv("FIREBASE_DB_URL")
-
-var DB *sql.DB
-
-func initDb() {
-  var (
-    connectionName = mustGetenv("CLOUDSQL_CONNECTION_NAME")
-    connectionProt = mustGetenv("CLOUDSQL_CONNECTION_PROT")
-    user           = mustGetenv("CLOUDSQL_USER")
-    password       = mustGetenv("CLOUDSQL_PASSWORD") // NOTE: password may NOT be empty
-    dbName         = mustGetenv("CLOUDSQL_DB")
-  )
-  var dsn string = fmt.Sprintf("%s:%s@%s(%s)/%s", user, password, connectionProt, connectionName, dbName)
-
-  var err error
-  DB, err = sql.Open("mysql", dsn)
-  if err != nil {
-    log.Panicf("Could not open db: %v", err)
-  }
-}
-
-type InitDB func(db *sql.DB)
 type InitAPI func(r *mux.Router)
-var initDbFuncs = make([]InitDB, 0, 8)
 var initApiFuncs = make([]InitAPI, 0, 8)
 
-func RegisterResource(initDb InitDB, initApi InitAPI) {
-  initDbFuncs = append(initDbFuncs, initDb)
+func RegisterResource(initApi InitAPI) {
   initApiFuncs = append(initApiFuncs, initApi)
 }
 
@@ -98,16 +61,10 @@ func contextualMw(next http.Handler) http.Handler {
 }*/
 
 func Init() {
-  firewrap.Setup(firebaseDbUrl)
+  firewrap.Setup()
 
-  initDb()
-  entities.SetupDb(DB)
-  locations.SetupDb(DB)
-  for _, initDb := range initDbFuncs {
-    if initDb != nil {
-      initDb(DB)
-    }
-  }
+  sqldb.RegisterSetup(entities.SetupDb, locations.SetupDb)
+  sqldb.InitDb()
 
   r := mux.NewRouter()
   r.Use(addFireauthMw)
