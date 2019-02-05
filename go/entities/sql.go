@@ -23,7 +23,7 @@ func CreateEntity(txn *sql.Tx) (int64, rest.RestError){
 
 const createEntityStatement = `INSERT INTO entities VALUES ()`
 var createEntityQuery *sql.Stmt
-func SetupDb(DB *sql.DB) {
+func SetupDB(DB *sql.DB) {
   var err error
   if createEntityQuery, err = DB.Prepare(createEntityStatement); err != nil {
     log.Fatalf("mysql: prepare create entity stmt: %v", err)

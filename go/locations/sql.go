@@ -79,7 +79,7 @@ const insertAddressByIdStatement = `INSERT INTO entity_addresses (entity_id, loc
 const resetAddressesStatement = `DELETE ea FROM entity_addresses ea JOIN entities e ON ea.entity_id=e.id WHERE e.pub_id=?`
 
 var createQuery, insertAddressQuery, insertAddressByIdQuery, resetAddressesQuery *sql.Stmt
-func SetupDb(DB *sql.DB) {
+func SetupDB(DB *sql.DB) {
   var err error
 
   if createQuery, err = DB.Prepare(createStatement); err != nil {

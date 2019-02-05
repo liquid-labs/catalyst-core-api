@@ -63,8 +63,8 @@ func contextualMw(next http.Handler) http.Handler {
 func Init() {
   firewrap.Setup()
 
-  sqldb.RegisterSetup(entities.SetupDb, locations.SetupDb)
-  sqldb.InitDb()
+  sqldb.RegisterSetup(entities.SetupDB, locations.SetupDB)
+  sqldb.InitDB()
 
   r := mux.NewRouter()
   r.Use(addFireauthMw)
