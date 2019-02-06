@@ -63,6 +63,12 @@ case "$ACTION" in
     # TODO: libray-ize and use 'isReceivingPipe' or even 'isInPipe' (suppress if piping in or out?)
     test -t 0 && echo "Setting time zone: $TZ"
     mysql -h127.0.0.1 "${CLOUDSQL_DB}" --init-command 'SET time_zone="'$TZ'"';;
+  dump-check)
+    exit 0;;
+  dump)
+    # currently, we only support a data-only dump
+    # TODO: in future, make this a simple dump and take options as args past the action?
+    mysqldump -h127.0.0.1 --skip-triggers --no-create-info --compatible=ansi --compact --complete-insert --single-transaction "${CLOUDSQL_DB}";;
   param-default)
     ENV_PURPOSE="${1:-}"
     shift || (echo "Missing 'environment purpose' for 'param-default'." >&2; exit 1)
