@@ -68,7 +68,7 @@ case "$ACTION" in
   dump)
     # currently, we only support a data-only dump
     # TODO: in future, make this a simple dump and take options as args past the action?
-    mysqldump -h127.0.0.1 --skip-triggers --no-create-info --compatible=ansi --compact --complete-insert --single-transaction "${CLOUDSQL_DB}";;
+    mysqldump -h127.0.0.1 --skip-triggers --no-create-info --compatible=ansi --compact --complete-insert --single-transaction --ignore-table="${CLOUDSQL_DB}.catalystdb" "${CLOUDSQL_DB}";;
   param-default)
     ENV_PURPOSE="${1:-}"
     shift || (echo "Missing 'environment purpose' for 'param-default'." >&2; exit 1)
