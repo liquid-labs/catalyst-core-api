@@ -13,3 +13,7 @@ type User struct {
   entities.Entity
   Active      nulls.Bool `json:"active"`
 }
+
+func (u *User) SetActive(val bool) {
+  u.Active = nulls.NewBool(val)
+}
