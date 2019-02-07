@@ -15,6 +15,7 @@ git.apache.org/thrift.git v0.0.0-20181218151757-9b75e4fe745a/go.mod h1:fPE2ZNJGy
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/Liquid-Labs/catalyst-firewrap v0.3.0 h1:AUDWHR3kWaflzcyPA9X/KrfvJpPLPTpBCSXA6DbSygU=
 github.com/Liquid-Labs/catalyst-firewrap v0.3.0/go.mod h1:NtL7XatK2M5kA9xSQE54+CmNhZ6rcWPOegCVQfzwVvE=
+github.com/Liquid-Labs/go-api v0.0.0-20190205023444-f8206e963526 h1:LSN9BkVzzT9aIXB3Po9JRzX9ybAwUpatXqk2zabbBF4=
 github.com/Liquid-Labs/go-nullable-mysql v1.0.2 h1:FbUqf0Y1ec3Kwr4NOXawYC/OtS3mUjr9g7cwRQhlVVA=
 github.com/Liquid-Labs/go-nullable-mysql v1.0.2/go.mod h1:vpdFQvKE6cAnjDL+70ZYGJqjRc5YvGZ7fe7eX8AetfA=
 github.com/Liquid-Labs/go-rest v0.1.0 h1:MlxCRp47sV9v1jwv6vFa48+S5u3zmiompU2k9djvRKY=

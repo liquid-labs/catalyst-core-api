@@ -24,13 +24,11 @@ type Location struct {
   ChangeDesc []string    `json:"changeDesc,omitempty"`
 }
 
-type Address struct {
-  Location
-  Idx      nulls.Int64   `json:"idx"`
-  Label    nulls.String  `json:"label"`
+func (loc *Location) Clone() *Location {
+  newChangeDesc := make([]string, len(loc.ChangeDesc))
+  copy(newChangeDesc, loc.ChangeDesc)
+  return &Location{loc.LocationId, loc.Address1, loc.Address2, loc.City, loc.State, loc.Zip, loc.Lat, loc.Lng, newChangeDesc}
 }
-
-type Addresses []*Address
 
 func (loc *Location) addressComponents() ([]nulls.Nullable) {
   return []nulls.Nullable{
@@ -124,4 +122,25 @@ func (loc *Location) IsLatLngEmpty() (bool) {
     }
   }
   return true
+}
+
+type Address struct {
+  Location
+  Idx      nulls.Int64   `json:"idx"`
+  Label    nulls.String  `json:"label"`
+}
+
+func (add *Address) Clone() *Address {
+  return &Address{*add.Location.Clone(), add.Idx, add.Label}
+}
+
+type Addresses []*Address
+
+func (adds *Addresses) Clone() *Addresses {
+  clone := make(Addresses, len(*adds))
+  for i, add := range *adds {
+    clone[i] = add.Clone()
+  }
+
+  return &clone
 }

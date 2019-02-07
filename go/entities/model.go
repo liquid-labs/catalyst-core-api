@@ -15,3 +15,7 @@ type Entity struct {
   PubId       nulls.String `json:"pubId"`
   LastUpdated nulls.Int64  `json:"lastUpdated"`
 }
+
+func (e *Entity) Clone() *Entity {
+  return &Entity{e.Id, e.PubId, e.LastUpdated}
+}

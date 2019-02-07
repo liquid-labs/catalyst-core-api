@@ -14,6 +14,10 @@ type User struct {
   Active      nulls.Bool `json:"active"`
 }
 
+func (u *User) Clone() *User {
+  return &User{Entity: *u.Entity.Clone(), Active: u.Active}
+}
+
 func (u *User) SetActive(val bool) {
   u.Active = nulls.NewBool(val)
 }
