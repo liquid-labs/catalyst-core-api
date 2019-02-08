@@ -13,7 +13,6 @@ import (
   "github.com/Liquid-Labs/catalyst-core-api/go/locations"
   "github.com/Liquid-Labs/catalyst-firewrap/go/firewrap"
   "github.com/Liquid-Labs/catalyst-firewrap/go/fireauth"
-  "github.com/Liquid-Labs/go-api/sqldb"
   "github.com/Liquid-Labs/go-rest/rest"
   "github.com/rs/cors"
 )
@@ -62,9 +61,6 @@ func contextualMw(next http.Handler) http.Handler {
 
 func Init() {
   firewrap.Setup()
-
-  sqldb.RegisterSetup(entities.SetupDB, locations.SetupDB)
-  sqldb.InitDB()
 
   r := mux.NewRouter()
   r.Use(addFireauthMw)
