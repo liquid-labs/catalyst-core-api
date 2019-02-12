@@ -18,7 +18,7 @@ function packToAbsPath() {
   if [[ "$PACKAGE_NAME" == "$PACK" ]]; then
     ABS_PATH="${BASE_DIR}/${REL_PATH}"
   else
-    ABS_PATH="${MY_ROOT}/node_modules/${PACK}/${REL_PATH}"
+    ABS_PATH="$(cd "${BASE_DIR}" && npm root)/${PACK}/${REL_PATH}"
   fi
   if [[ ! -f "${ABS_PATH}" ]]; then
     echo "Did not find expected file '${!REQ_PARAM}' ($ABS_PATH)." >&2
