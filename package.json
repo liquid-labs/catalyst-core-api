@@ -69,7 +69,7 @@
     {
       "name": "go-dev-server",
       "interface-classes": [
-        "http-rest"
+        "rest"
       ],
       "platform-types": [
         "local"
@@ -87,6 +87,6 @@
     }
   ],
   "devDependencies": {
-    "@liquid-labs/catalyst-scripts": "^1.0.0-alpha.6"
+    "@liquid-labs/catalyst-scripts": "latest"
   }
 }
