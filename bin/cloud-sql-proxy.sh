@@ -7,7 +7,9 @@ set -o pipefail
 
 ACTION="${1-}"; shift || true
 
-# 'cloud_sql_proxy' is essentially a wrapper that spawns a second process; but killing the parent does not kill the child, so we have to fallback to process grepping
+# 'cloud_sql_proxy' is essentially a wrapper that spawns a second process; but
+# killing the parent does not kill the child, so we have to fallback to process
+# grepping
 isRunning() {
   set +e # grep exits with error if no match
   local PROC_COUNT=$(ps aux | grep cloud_sql_proxy | grep -v grep | wc -l)
@@ -22,9 +24,9 @@ isRunning() {
 
 startProxy() {
   # We were using the following to capture the pid, but see note on 'isRunning'
-  # bash -c "cd '${BASE_DIR}'; ( npx --no-install cloud_sql_proxy -instances='${CAT_SCRIPT_CORE_API_CLOUDSQL_CONNECTION_NAME}'=tcp:3306 -credential_file='${CAT_SCRIPT_CORE_API_CLOUDSQL_CREDS}' & echo \$! >&3 ) 3> '${PID_FILE}' 2> '${SERV_LOG}' &"
+  # bash -c "cd '${BASE_DIR}'; ( npx --no-install cloud_sql_proxy -instances='${CLOUDSQL_CONNECTION_NAME}'=tcp:3306 -credential_file='${CLOUDSQL_CREDS}' & echo \$! >&3 ) 3> '${PID_FILE}' 2> '${SERV_LOG}' &"
   # Annoyingly, cloud_sql_proxy (at time of note) emits all logs to stderr.
-  bash -c "cd '${BASE_DIR}'; npx --no-install cloud_sql_proxy -instances='${CAT_SCRIPT_CORE_API_CLOUDSQL_CONNECTION_NAME}'=tcp:3306 -credential_file='${CAT_SCRIPT_CORE_API_CLOUDSQL_CREDS}' 2> '${SERV_LOG}' &"
+  bash -c "cd '${BASE_DIR}'; npx --no-install cloud_sql_proxy -instances='${CLOUDSQL_PROXY_CONNECTION_NAME}'=tcp:3306 -credential_file='${CLOUDSQL_CREDS}' 2> '${SERV_LOG}' &"
 }
 
 stopProxy() {
@@ -60,7 +62,13 @@ case "$ACTION" in
     TZ=`echo ${TZ: 0: 3}:${TZ: -2}`
     # TODO: libray-ize and use 'isReceivingPipe' or even 'isInPipe' (suppress if piping in or out?)
     test -t 0 && echo "Setting time zone: $TZ"
-    mysql -h127.0.0.1 "${CAT_SCRIPT_CORE_API_CLOUDSQL_DB}" --init-command 'SET time_zone="'$TZ'"';;
+    mysql -h127.0.0.1 "${CLOUDSQL_DB}" --init-command 'SET time_zone="'$TZ'"';;
+  dump-check)
+    exit 0;;
+  dump)
+    # currently, we only support a data-only dump
+    # TODO: in future, make this a simple dump and take options as args past the action?
+    mysqldump -h127.0.0.1 --skip-triggers --no-create-info --compatible=ansi --compact --complete-insert --single-transaction --ignore-table="${CLOUDSQL_DB}.catalystdb" "${CLOUDSQL_DB}";;
   param-default)
     ENV_PURPOSE="${1:-}"
     shift || (echo "Missing 'environment purpose' for 'param-default'." >&2; exit 1)
@@ -69,23 +77,23 @@ case "$ACTION" in
     case "$ENV_PURPOSE" in
       dev|test)
         case "$PARAM_NAME" in
-          CAT_SCRIPT_CORE_API_CLOUDSQL_CONNECTION_NAME)
+          CLOUDSQL_CONNECTION_NAME)
             echo '127.0.0.1:3306';;
-          CAT_SCRIPT_CORE_API_CLOUDSQL_CONNECTION_PROT)
-            echo 'tcp'
-          *)
-            echo ''
-        esac;;
-      production|preproduction)
-        case "$PARAM_NAME" in
-          CAT_SCRIPT_CORE_API_CLOUDSQL_CONNECTION_PROT)
-            echo 'cloudsql'
+          CLOUDSQL_CONNECTION_PROT)
+            echo 'tcp';;
           *)
             echo '';;
-        esac
+        esac;;
+      production|pre-production)
+        case "$PARAM_NAME" in
+          CLOUDSQL_CONNECTION_PROT)
+            echo 'cloudsql';;
+          *)
+            echo '';;
+        esac;;
       *)
         echo "Unknown environment purpose: '$ENV_PURPOSE'." >&2
-        exit 1
+        exit 1;;
     esac;;
   *)
     # TODO: library-ize and use 'echoerrandexit'

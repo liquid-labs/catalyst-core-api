@@ -1,6 +1,6 @@
 CREATE TABLE `users` (
   `id` int(10),
-  `active` tinyint(1) DEFAULT 1,
+  `active` tinyint(1) DEFAULT 1 NOT NULL,
   CONSTRAINT `users_key` PRIMARY KEY ( `id` ),
   CONSTRAINT `users_ref_entities` FOREIGN KEY ( `id` ) REFERENCES `entities` ( `id` )
 );

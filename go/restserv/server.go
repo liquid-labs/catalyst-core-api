@@ -1,14 +1,14 @@
 package restserv
 
 import (
-  "database/sql"
+  "context"
   "fmt"
   "log"
   "net/http"
   "os"
+  "time"
 
   "github.com/gorilla/mux"
-  _ "github.com/go-sql-driver/mysql"
   "github.com/Liquid-Labs/catalyst-core-api/go/entities"
   "github.com/Liquid-Labs/catalyst-core-api/go/locations"
   "github.com/Liquid-Labs/catalyst-firewrap/go/firewrap"
@@ -16,14 +16,6 @@ import (
   "github.com/Liquid-Labs/go-rest/rest"
   "github.com/rs/cors"
 )
-
-func mustGetenv(k string) string {
-  v := os.Getenv(k)
-  if v == "" {
-    log.Panicf("%s environment variable not set.", k)
-  }
-  return v
-}
 
 var envPurpose = os.Getenv(`NODE_ENV`)
 func GetEnvPurpose() string {
@@ -34,46 +26,24 @@ func GetEnvPurpose() string {
   }
 }
 
+type fireauthKey string
+const FireauthKey fireauthKey = fireauthKey("fireauth")
 
-func CommonHandler(handler func(*fireauth.ScopedClient, http.ResponseWriter, *http.Request)) (func(http.ResponseWriter, *http.Request)) {
-  return func(w http.ResponseWriter, r *http.Request) {
+func addFireauthMw(next http.Handler) http.Handler {
+  return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
     if fireauth, restErr := fireauth.GetClient(r); restErr != nil {
+      log.Print("Failed to get auth client.")
       rest.HandleError(w, restErr)
     } else {
-      handler(fireauth, w, r)
-      // TODO: it would be cool to verify that auth has been checked
+      next.ServeHTTP(w, r.WithContext(context.WithValue(r.Context(), FireauthKey, fireauth)))
     }
-  }
+  })
 }
 
-var firebaseDbUrl = mustGetenv("FIREBASE_DB_URL")
-
-var DB *sql.DB
-
-func initDb() {
-  var (
-    connectionName = mustGetenv("CAT_SCRIPT_CORE_API_CLOUDSQL_CONNECTION_NAME")
-    connectionProt = mustGetenv("CAT_SCRIPT_CORE_API_CLOUDSQL_CONNECTION_PROT")
-    user           = mustGetenv("CAT_SCRIPT_CORE_API_CLOUDSQL_USER")
-    password       = mustGetenv("CAT_SCRIPT_CORE_API_CLOUDSQL_PASSWORD") // NOTE: password may NOT be empty
-    dbName         = mustGetenv("CAT_SCRIPT_CORE_API_CLOUDSQL_DB")
-  )
-  var dsn string = fmt.Sprintf("%s:%s@%s(%s)/%s", user, password, connectionProt, connectionName, dbName)
-
-  var err error
-  DB, err = sql.Open("mysql", dsn)
-  if err != nil {
-    log.Panicf("Could not open db: %v", err)
-  }
-}
-
-type InitDB func(db *sql.DB)
 type InitAPI func(r *mux.Router)
-var initDbFuncs = make([]InitDB, 0, 8)
 var initApiFuncs = make([]InitAPI, 0, 8)
 
-func RegisterResource(initDb InitDB, initApi InitAPI) {
-  initDbFuncs = append(initDbFuncs, initDb)
+func RegisterResource(initApi InitAPI) {
   initApiFuncs = append(initApiFuncs, initApi)
 }
 
@@ -90,24 +60,21 @@ func contextualMw(next http.Handler) http.Handler {
 }*/
 
 func Init() {
-  firewrap.Setup(firebaseDbUrl)
-
-  initDb()
-  entities.SetupDb(DB)
-  locations.SetupDb(DB)
-  for _, initDb := range initDbFuncs {
-    initDb(DB)
-  }
+  firewrap.Setup()
 
   r := mux.NewRouter()
+  r.Use(addFireauthMw)
+  apiR := r.PathPrefix("/api/").Subrouter()
   // r.Use(contextualMw)
   for _, initApi := range initApiFuncs {
-    initApi(r)
+    if initApi != nil {
+      initApi(apiR)
+    }
   }
 
-  if GetEnvPurpose() != "production" {
+  if envPurpose != "production" {
     // 'cors.Default().Handler(r)' is not sufficient. Don't remember why
-    // exactly.
+    // exactly. I believe it didn't support our headers?
     handler := cors.New(cors.Options{
       AllowedOrigins: []string{"*"},
       // Notice we don't use delete
@@ -118,4 +85,30 @@ func Init() {
   } else {
     http.Handle("/", r)
   }
+
+  // For debugging route configurations:
+  // r.Walk(routerReporter)
+
+  host := ""
+  if envPurpose == "test" || envPurpose == "development" {
+    host = "localhost"
+    log.Printf("Binding to 'localhost' only for '%s'", envPurpose)
+  }
+
+  port := os.Getenv("PORT")
+  if port == "" {
+    port = "8080"
+    log.Printf("Defaulting to port %s", port)
+  }
+
+  log.Printf("Listening on port %s", port)
+  srv := &http.Server{
+    Handler:      r,
+    Addr:         fmt.Sprintf("%s:%s", host, port),
+    // Good practice: enforce timeouts for servers you create!
+    WriteTimeout: 10 * time.Second,
+    ReadTimeout:  10 * time.Second,
+  }
+
+  log.Fatal(srv.ListenAndServe())
 }

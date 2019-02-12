@@ -1,6 +1,6 @@
 {
   "name": "@liquid-labs/catalyst-core-api",
-  "version": "0.0.4",
+  "version": "1.0.0-prototype.0",
   "description": "Core backend Catalyst components.",
   "directories": {
     "doc": "docs"
@@ -18,7 +18,8 @@
     "go-dev-server.sh": "./bin/go-dev-server.sh"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "cd go && go build ./...",
+    "test": "catalyst-scripts test"
   },
   "repository": {
     "type": "git",
@@ -53,19 +54,22 @@
         "cloud-sql-service.sh"
       ],
       "params-req": [
-        "CAT_SCRIPT_CORE_API_GCP_PROJECT_ID",
-        "CAT_SCRIPT_CORE_API_CLOUDSQL_INSTANCE_NAME",
-        "CAT_SCRIPT_CORE_API_CLOUDSQL_CONNECTION_PROT",
-        "CAT_SCRIPT_CORE_API_CLOUDSQL_CONNECTION_NAME",
-        "CAT_SCRIPT_CORE_API_CLOUDSQL_CREDS",
-        "CAT_SCRIPT_CORE_API_CLOUDSQL_DB"
+        "GCP_PROJECT_ID",
+        "CLOUDSQL_INSTANCE_NAME",
+        "CLOUDSQL_CONNECTION_PROT",
+        "CLOUDSQL_CONNECTION_NAME",
+        "CLOUDSQL_PROXY_CONNECTION_NAME",
+        "CLOUDSQL_CREDS",
+        "CLOUDSQL_DB",
+        "FIREBASE_CREDS_FILE"
       ],
-      "params-opt": []
+      "params-opt": [],
+      "config-const": {}
     },
     {
       "name": "go-dev-server",
       "interface-classes": [
-        "http-rest"
+        "rest"
       ],
       "platform-types": [
         "local"
@@ -77,11 +81,12 @@
       "ctrl-scripts": [
         "go-dev-server.sh"
       ],
-      "params-req": [
-        "CAT_SCRIPT_CORE_API_GOPATH",
-        "CAT_SCRIPT_CORE_API_REL_GOAPP_PATH"
-      ],
-      "params-opt": []
+      "params-req": [],
+      "params-opt": [],
+      "config-const": {}
     }
-  ]
+  ],
+  "devDependencies": {
+    "@liquid-labs/catalyst-scripts": "latest"
+  }
 }
