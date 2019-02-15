@@ -5,10 +5,13 @@
   "directories": {
     "doc": "docs"
   },
+  "main": "./dist/index.js",
+  "module": "./dist/index.es.js",
   "files": [
-    "src/",
+    "go/",
     "data/",
     "bin/",
+    "dist/",
     ".catalyst"
   ],
   "bin": {
@@ -18,7 +21,8 @@
     "go-dev-server.sh": "./bin/go-dev-server.sh"
   },
   "scripts": {
-    "build": "cd go && go build ./...",
+    "prebuild": "rm -rf ./dist/* && mkdir -p ./dist",
+    "build": "catalyst-scripts build",
     "test": "catalyst-scripts test"
   },
   "repository": {

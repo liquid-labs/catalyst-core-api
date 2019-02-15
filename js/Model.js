@@ -13,7 +13,7 @@ const emptyOrUndefined = (propVal, valueType) =>
     || (valueType === simpleType && propVal === "")
     || (valueType === arrayType && Array.isArray(propVal) && propVal.length === 0)
 
-export class Model {
+class Model {
   static finalizeConstructor(SubClass, propsModel, newTest) {
     deepFreeze(propsModel)
     Object.defineProperty(SubClass, 'propsModel', {
