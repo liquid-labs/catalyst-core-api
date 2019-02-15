@@ -13,6 +13,10 @@ firebase.google.com/go v3.6.0+incompatible/go.mod h1:xlah6XbEyW6tbfSklcfe5FHJIwj
 git.apache.org/thrift.git v0.0.0-20180902110319-2566ecd5d999/go.mod h1:fPE2ZNJGynbRyZ4dJvy6G277gSllfV2HJqblrnkyeyg=
 git.apache.org/thrift.git v0.0.0-20181218151757-9b75e4fe745a/go.mod h1:fPE2ZNJGynbRyZ4dJvy6G277gSllfV2HJqblrnkyeyg=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
+github.com/Liquid-Labs/catalyst-firewrap v1.0.0-prototype.0 h1:K9np9j9BaMclRC3N38b+TP0hT9UPXUBXNeaC/v9YlP0=
+github.com/Liquid-Labs/catalyst-firewrap v1.0.0-prototype.0/go.mod h1:3zfBTqvkjxeSZh6JUYIaIApDeH6RCbsBxBsfVWeREY0=
+github.com/Liquid-Labs/go-api v1.0.0-protottype.0 h1:YGLzfnans6cdde7K0T0tk5Lx0tOhwVKoa88hBN9fVg0=
+github.com/Liquid-Labs/go-api v1.0.0-protottype.0/go.mod h1:TvpVihZAofIHVaaUTYuTXn6iSlo7hc8BiCqle8WVs4Y=
 github.com/Liquid-Labs/go-nullable-mysql v1.0.2 h1:FbUqf0Y1ec3Kwr4NOXawYC/OtS3mUjr9g7cwRQhlVVA=
 github.com/Liquid-Labs/go-nullable-mysql v1.0.2/go.mod h1:vpdFQvKE6cAnjDL+70ZYGJqjRc5YvGZ7fe7eX8AetfA=
 github.com/Liquid-Labs/go-rest v1.0.0-prototype.2 h1:u8bYPdJ5DEvL/xWnIFclI7f2r4zRa475UXC9b0Tqagk=
@@ -50,6 +54,7 @@ github.com/google/martian v2.1.0+incompatible/go.mod h1:9I4somxYTbIHy5NJKHRl3wXi
 github.com/google/pprof v0.0.0-20181206194817-3ea8567a2e57/go.mod h1:zfwlbNMJ+OItoe0UupaVj+oy1omPYYDuagoSzA8v9mc=
 github.com/google/uuid v1.1.0 h1:Jf4mxPC/ziBnoPIdpQdPJ9OeiomAUHLvxmPRSPH9m4s=
 github.com/google/uuid v1.1.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
+github.com/googleapis/gax-go v2.0.0+incompatible h1:j0GKcs05QVmm7yesiZq2+9cxHkNK9YM6zKx4D2qucQU=
 github.com/googleapis/gax-go v2.0.0+incompatible/go.mod h1:SFVmujtThgffbyetf+mdk2eWhX2bMyUtNHzFKcPA9HY=
 github.com/googleapis/gax-go/v2 v2.0.3 h1:siORttZ36U2R/WjiJuDz8znElWBiAlO9rVt+mqJt0Cc=
 github.com/googleapis/gax-go/v2 v2.0.3/go.mod h1:LLvjysVCY1JZeum8Z6l8qUty8fiNwE08qbEPm1M08qg=

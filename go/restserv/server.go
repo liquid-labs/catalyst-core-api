@@ -9,8 +9,6 @@ import (
   "time"
 
   "github.com/gorilla/mux"
-  "github.com/Liquid-Labs/catalyst-core-api/go/entities"
-  "github.com/Liquid-Labs/catalyst-core-api/go/locations"
   "github.com/Liquid-Labs/catalyst-firewrap/go/firewrap"
   "github.com/Liquid-Labs/catalyst-firewrap/go/fireauth"
   "github.com/Liquid-Labs/go-rest/rest"
