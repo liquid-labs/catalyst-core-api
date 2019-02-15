@@ -12,6 +12,8 @@
     "data/",
     "bin/",
     "dist/",
+    "go.mod",
+    "go.sum",
     ".catalyst"
   ],
   "bin": {
