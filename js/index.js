@@ -9,7 +9,8 @@
  * - entities and locations for foundational data models which can be included
  *   in custom data models.
  */
-import * as store from './corestore'
+import * as store from './core/store'
+export * from './core/coreSetup'
 export * from './core/resources'
 
 export * from './entities/model'

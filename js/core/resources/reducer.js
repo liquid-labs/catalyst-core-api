@@ -4,9 +4,8 @@
  * error or an update is "in flight").
  */
 import * as resourceActions from './actions'
-import * as uiRoutes from '../uiRoutes'
-
-import { settings } from './settings'
+import * as routes from '../routes'
+import * as settings from './settings'
 
 import moment from 'moment-timezone'
 import omit from 'lodash.omit'
@@ -85,10 +84,10 @@ const processFetchData = (action, currentState) => {
   let itemList
   if (Array.isArray(action.data)) {
     itemList =
-      action.data.map((item) => modelItem(item, uiRoutes.extractResource(action.source)))
+      action.data.map((item) => modelItem(item, routes.extractResource(action.source)))
   }
   else {
-    itemList = [modelItem(action.data, uiRoutes.extractResource(action.source))]
+    itemList = [modelItem(action.data, routes.extractResource(action.source))]
     if (!itemList[0].isComplete()) {
       settings.invokeErrorHandler(`Retrieved item is missing expected data: '${itemList[0]._missing.join("', '")}'.`)
       return processData([], action, currentState, {},
@@ -141,7 +140,7 @@ const processFetchData = (action, currentState) => {
 }
 
 const processUpdatedData = (action, currentState) => {
-  const itemList = [modelItem(action.data, uiRoutes.extractResource(action.source))]
+  const itemList = [modelItem(action.data, routes.extractResource(action.source))]
 
   const props = {
     validatedRefs          : {},

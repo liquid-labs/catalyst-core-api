@@ -19,11 +19,12 @@ export const fetchItem = async (resourceName, pubId) => {
     const item = cache.getFreshCompleteItem(pubId)
     if (item) return { data: item, errorMessage: null }
     // else, we have more work to do
-    return await actions.fetchItem(resourceName.pubId))
+    return await actions.fetchItem(resourceName.pubId)
 }
 
 export const fetchList = async (source) => {
   const { itemList, searchParams, permanentError } =
     cache.getFreshSourceData(source)
-  const list = cache.getFreshSourceData(source)
+  if (itemList) return { data: itemList, errorMessage: null }
+  return await actions.fetchList(source)
 }

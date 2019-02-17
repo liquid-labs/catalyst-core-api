@@ -1,37 +1,42 @@
 /**
  * store provides an API for configuring and initializing the redux store for
- * an apllication. It pre-configures support for the resources state used by
- * the 'resources' API to cache local item and meta-call data. Applications
- * should cofigure and initialize the store through this API
+ * a Catalyst apllication. It should be combined with 'coreSetup' to configures
+ * core resources.
  *
  * Usage:
  *
- *     import { store } from '@liquid-labs/catalyst-core-api'
- *    ...
- *    store.addReducer('appState', appReducer)
- *    store.addMiddleware(middlewareA, middlewareB) // optional
- *    store.init()
+ *      import { store, coreSetup } from '@liquid-labs/catalyst-core-api'
+ *     ...
+ *     coreSetup()
+ *     store.addReducer('appState', appReducer) // optional
+ *     store.addMiddleware(middlewareA, middlewareB) // optional
+ *     store.init()
+ *
+ * And then:
+ *
+ *     <StoreProvider value={store.getStore()}>
+ *       ...
+ *     </StoreProvider>
  */
 import { applyMiddleware, combineReducers, compose, createStore } from 'redux'
-import thunk from 'redux-thunk'
-import { RESOURCES_STATE_KEY } from './resources/constants'
-import { resourceReducer } from './resources/reducer'
 
 const settings = {
-  reducers: { RESOURCES_STATE_KEY: resourceReducer },
-  middlewares: [thunk],
+  reducers: {},
+  middlewares: [],
   store: null
 }
 
 /**
- * Adds a single reducer to the store settings. These reducers will be combined
- * into a single "root" reducer when `init` creates the redux store.
+ * addReducer adds a single reducer to the store settings. These reducers will
+ * be combined into a single "root" reducer when `init` creates the redux store.
+ * This must be called prior to `init`.
  */
 export const addReducer = (stateKey, stateReducer) => {
   if (settings.reducers[stateKey]) {
     throw new Error(`State key '${stateKey}' already in use.`)
   }
   settings.reducers[stateKey] = stateReducer
+}
 
 /**
  * addReducers accepts an object of the form:
@@ -41,6 +46,13 @@ export const addReducer = (stateKey, stateReducer) => {
  */
 export const addReducers = (reducerMap) =>
   Object.assign(settings.reducers, reducerMap)
+
+/**
+ * addMiddleware adds a redux-middleware to the redux store configuration. This
+ * must be called prior to `init`.
+ */
+export const addMiddleware = (middleware) =>
+  settings.middleware.unshift(middleware)
 
 export const init = () => {
   const { reducers, middlewares } = settings

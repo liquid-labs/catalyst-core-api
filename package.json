@@ -93,6 +93,22 @@
     }
   ],
   "devDependencies": {
-    "@liquid-labs/catalyst-scripts": "latest"
+    "@liquid-labs/catalyst-scripts": "latest",
+    "@liquid-labs/regex-repo": "latest",
+    "lodash.omit": "^4.5.0",
+    "lodash.reduce": "^4.6.0",
+    "moment-timezone": "^0.5.23",
+    "normalizr": "^3.3.0",
+    "redux": "^4.0.1",
+    "redux-thunk": "^2.3.0"
+  },
+  "peerDependencies": {
+    "@liquid-labs/regex-repo": "latest",
+    "lodash.omit": "^4.5.0",
+    "lodash.reduce": "^4.6.0",
+    "moment-timezone": "^0.5.23",
+    "normalizr": "^3.3.0",
+    "redux": "^4.0.1",
+    "redux-thunk": "^2.3.0"
   }
 }

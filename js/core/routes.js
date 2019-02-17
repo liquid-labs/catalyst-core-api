@@ -1,6 +1,6 @@
 import * as store from './store'
 import * as resourceSettings from './resources/settings'
-import * as contextSettings from './contexts/settings'
+import * as contextSettings from './context/settings'
 
 import * as regex from '@liquid-labs/regex-repo'
 
@@ -28,7 +28,7 @@ const getContextListRoute = (contextResource, resource, generic=true) => {
   else if (contextSettings.getContexts().info[contextResource]) {
     const contextId = generic
       ? ':contextId'
-      : store.getState()['contextState'][contextSettings.getContexts().info[contextResource].itemName].pubId
+      : store.getStore().getState()['contextState'][contextSettings.getContexts().info[contextResource].itemName].pubId
     return `/${contextResource}/${contextId}/${resource}`
   }
   else throw new Error(`Unmapple context list context '${contextResource}' and resource '${resource}'.`)

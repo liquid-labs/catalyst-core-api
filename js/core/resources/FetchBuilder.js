@@ -4,15 +4,13 @@
  * isolated library used by 'resourceActions' and is not currently exported by
  * the 'resources/index' file.
  */
-import { settings } from './settings'
+import * as settings from './settings'
 import * as cache from './cache'
-
-import { settings } from './settings'
 
 class FetchBuilder {
   constructor(source) {
     this.source = source
-    this.url = settings.baseUrl + source
+    this.url = settings.getBaseUrl() + source
     this.method = 'GET' // default method if none specified
     this.isForced = false // by default we do not force the fetch
   }
@@ -84,7 +82,7 @@ class FetchBuilder {
             cache.sourcePermanentError(this.source)
           if (permanentError) {
             const msg = `${permanentError.message} (${this.source})`
-            settings.errorHandler(msg)
+            settings.invokeErrorHandler(msg)
             return Promise.resolve(null)
           }
         }
@@ -104,7 +102,7 @@ class FetchBuilder {
         const token = getState().sessionState.authToken
         if (!token) {
           const msg = `Request to '${this.url}' requires authentication.`
-          settings.errorHandler(msg)
+          settings.invokeErrorHandler(msg)
           return Promise.resolve(null)
         }
         headers['Authorization'] = `Bearer ${token}`

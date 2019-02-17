@@ -1,4 +1,4 @@
-import { Model } from '../Model'
+import { Model } from '../core/resources/Model'
 
 const locationInvalidators = ['address1', 'address2', 'city', 'state', 'zip']
 const locationPropsModel = [
