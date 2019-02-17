@@ -7,12 +7,16 @@
 import * as settings from './settings'
 import * as cache from './cache'
 
+const AUTH_TOKEN_REQUIRED = 1
+const AUTH_TOKEN_OPTIONAL = 2
+
 class FetchBuilder {
   constructor(source) {
     this.source = source
     this.url = settings.getBaseUrl() + source
     this.method = 'GET' // default method if none specified
     this.isForced = false // by default we do not force the fetch
+    this.authToken = AUTH_TOKEN_OPTIONAL
   }
   forPost() {
     this.method = 'POST'
@@ -31,8 +35,8 @@ class FetchBuilder {
     this.contentType = 'application/json'
     return this
   }
-  withToken() {
-    this.withToken = true
+  withAuthToken() {
+    this.authToken = AUTH_TOKEN_REQUIRED
     return this
   }
   withRequestAction(requestAction) {
@@ -98,7 +102,9 @@ class FetchBuilder {
       // 2) Prepare to issue the async call.
       // 2a) Prepare the auth header.
       const headers = {}
-      if (this.withToken) {
+      if (this.authToken == AUTH_TOKEN_REQUIRED
+          || (this.AUTH_TOKEN_REQUIRED == AUTH_TOKEN_REQUIRED
+              && getState().sessionState && getState().sessionState.authToken)) {
         const token = getState().sessionState.authToken
         if (!token) {
           const msg = `Request to '${this.url}' requires authentication.`

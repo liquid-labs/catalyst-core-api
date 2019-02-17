@@ -11,7 +11,7 @@ import moment from 'moment-timezone'
 import omit from 'lodash.omit'
 import reduce from 'lodash.reduce'
 
-const INITIAL_STATE = {
+export const INITIAL_STATE = {
   // general database
   /* { [pubId]: <modeled item> } */
   items                  : {},

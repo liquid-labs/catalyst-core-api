@@ -83,3 +83,9 @@ export const init = () => {
  * Used to access the store directly.
  */
 export const getStore = () => settings.store
+
+/**
+ * setStore sets the store in settings. This is intended primarily to be used
+ * in testing and should generally not be called in application code.
+ */
+export const setStore = (store) => settings.store = store
