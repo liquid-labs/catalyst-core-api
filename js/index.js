@@ -1,3 +1,18 @@
-export * from './Model'
+/**
+ * Catalyst Core API client side libraries provide core client support and
+ * foundational models. Refer to:
+ *
+ * - store.js for setting up and configuring the required redux store, as well
+ *   as how to integrate with additional reducers and redux middleware.
+ * - resources for APIs and classes and to configure and access REST-ful
+ *   resources.
+ * - entities and locations for foundational data models which can be included
+ *   in custom data models.
+ */
+import * as store from './store'
+
+export * from './resources'
 export * from './entities/model'
 export * from './locations/model'
+
+export { store }
