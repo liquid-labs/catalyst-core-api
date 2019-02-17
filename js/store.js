@@ -68,7 +68,6 @@ export const init = () => {
 }
 
 /**
- * Used to access the store directly. We don't believe this should be necessary
- * and should be avoided, but is provided as an escape hatch.
+ * Used to access the store directly.
  */
-const setStore = () => settings.store
+export const getStore = () => settings.store

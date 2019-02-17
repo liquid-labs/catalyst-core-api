@@ -5,6 +5,6 @@ const fetchItem = async (resourceName, pubId) => {
       || await resourceActions.fetchItem(resourceName.pubId)
   }
   catch (err) {
-
+    
   }
 }

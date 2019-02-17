@@ -1,9 +1,10 @@
 /**
- * cache rovides an high level API to get locally cached resources (items,
+ * cache provides a higher level API to get locally cached resources (items,
  * lists, and events). It is essentially a wrapper around the resources data in
  * the redux store.
  */
-import { config } from '../config'
+import { getStore } from '../store'
+import { RESOURCES_STATE_KEY } from './constants'
 
 import moment from 'moment-timezone'
 
@@ -11,11 +12,7 @@ import moment from 'moment-timezone'
 // considered fresh.
 const refreshDelay = 5 * 60
 
-export const reduxStore = () => config.reduxStore
-
-export const getState = () => reduxStore().getState()
-
-const getResourceState = () => getState()['resourceState']
+const getResourceState = () => getStore().getState()[RESOURCES_STATE_KEY]
 
 export const isFetching = (source) =>
   getResourceState().inFlightSources[source]

@@ -3,11 +3,10 @@
  * and resource related information (such as wether the resource is in permanent
  * error or an update is "in flight").
  */
-import * as resourceActions from '../actions/resourceActions'
-import * as appActions from '../actions/appActions'
+import * as resourceActions from './actions'
 import * as uiRoutes from '../uiRoutes'
 
-import { config } from '../config'
+import { settings } from './settings'
 
 import moment from 'moment-timezone'
 import omit from 'lodash.omit'
@@ -36,7 +35,7 @@ const INITIAL_STATE = {
 }
 
 const modelItem = (item, resourceName) =>
-  new config.resources[resourceName].model(item)
+  new settings.resources[resourceName].model(item)
 
 const calculateFailedSources = (action, currentState) => ({
   ...currentState.sources,

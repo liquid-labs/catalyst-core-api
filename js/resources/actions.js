@@ -15,7 +15,7 @@
  *    XXX_FAILURE action to the reducer and thus update the underlying store
  *    with the results.
  */
-import * as resourceCache from './resourceCache'
+import * as cache from './cache'
 import { FetchBuilder } from './FetchBuilder'
 
 // 1) Define the action types. These are exported for use in the reducer.
@@ -185,7 +185,7 @@ export const completeItem = (resourceName, pubId) => new FetchBuilder(`/${resour
   .withFailureAction(fetchItemFailed)
   .withToken()
   .withInFlightCheck()
-  .withPreFlightCheck(() => !resourceCache.getFreshCompleteItem(pubId))
+  .withPreFlightCheck(() => !cache.getFreshCompleteItem(pubId))
   .build()
 
 export const forceFetchItem = (resourceName, pubId) => new FetchBuilder(`/${resourceName}/${pubId}`)
