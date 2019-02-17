@@ -25,6 +25,7 @@
   "scripts": {
     "prebuild": "rm -rf ./dist/* && mkdir -p ./dist",
     "build": "catalyst-scripts build",
+    "pretest": "catalyst-scripts pretest",
     "test": "catalyst-scripts test"
   },
   "repository": {

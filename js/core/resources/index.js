@@ -12,7 +12,7 @@
  * description of the internal flow and handling of calls and data.
  */
 import * as resources from './resources'
-import * as resourceSettings from './settings'
+import * as resourcesSettings from './settings'
 
 export * from './Model'
 export * from './CommonResourceConf'
