@@ -35,7 +35,7 @@ const INITIAL_STATE = {
 }
 
 const modelItem = (item, resourceName) =>
-  new settings.resources[resourceName].model(item)
+  new settings.getResources()[resourceName].model(item)
 
 const calculateFailedSources = (action, currentState) => ({
   ...currentState.sources,
@@ -90,9 +90,7 @@ const processFetchData = (action, currentState) => {
   else {
     itemList = [modelItem(action.data, uiRoutes.extractResource(action.source))]
     if (!itemList[0].isComplete()) {
-      // TODO: give user visible feedback!
-      // eslint-disable-next-line no-console
-      console.warn(`Retrieved item is missing: '${itemList[0]._missing.join("', '")}'.`)
+      settings.invokeErrorHandler(`Retrieved item is missing expected data: '${itemList[0]._missing.join("', '")}'.`)
       return processData([], action, currentState, {},
         { calculateNewSources : calculateFailedSources })
     }

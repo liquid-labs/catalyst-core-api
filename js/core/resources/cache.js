@@ -29,7 +29,7 @@ const emptySourceData = {
   permanentError : null,
   refList        : null,
   itemList       : null,
-  itemListSeq    : null
+  itemListSeq    : null // A sequential identifier used to tell track when a list has potentiall gone stale
 }
 
 export const getCompleteItem = (itemId) => {
@@ -79,7 +79,8 @@ export const getSourceData = (source) => {
     })) {
       return emptySourceData
     }
-    // 3) If we don't bail out of building the itemList, then cache it and return
+    // TODO: it doesn't seem like this is being cached...
+    // 3) If we don't bail out of building the itemList, then cache it and
     //    return the updated source.
     else {
       return {

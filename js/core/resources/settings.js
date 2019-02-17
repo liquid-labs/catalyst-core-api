@@ -14,4 +14,4 @@ export const getResources = () => settings.resources
 
 export const setErrorHandler = (errorHandler) =>
   settings.errorHandler = errorHandler
-export const getErrorHandler = () => settings.errorHandler
+export const invokeErrorHandler = (msg) => settings.errorHandler(msg)
