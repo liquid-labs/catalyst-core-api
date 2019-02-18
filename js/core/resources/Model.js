@@ -1,3 +1,15 @@
+/**
+ * Model encapsulates an item property model. This defines the possible
+ * properties and their (partial) types, which properties are requried for
+ * 'completeness', along with a few useful utilities.
+ *
+ * Property 'typing' is either simple-value or model-value. This is not
+ * currently used for validation, but rather to transform raw property-value
+ * object input parameters into `Model`ed items. Future versions will likely
+ * incorporate validation.
+ */
+// TODO: Superficially, I don't see any reason why 'lastChecked' can't be milis
+// since the epoch, which would allow us to drop this dependency.
 import moment from 'moment-timezone'
 
 // TODO: should export each model individually.
