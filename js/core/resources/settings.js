@@ -1,8 +1,11 @@
-const defaultErrorHandler = (message) => alert(message)
+const defaultErrorHandler = (message) => {
+  if (typeof window !== 'undefined' && window.alert) window.alert(message)
+  else console.error(message)
+}
 
 const settings = {
   baseUrl: null,
-  resources: [],
+  resources: null,
   errorHandler: defaultErrorHandler
 }
 
