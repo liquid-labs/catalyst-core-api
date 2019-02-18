@@ -10,21 +10,25 @@
  * the data, be it from the local cache or a REST-ful call. Also, usage is
  * unified with data manipulation functions (create, update, and delete).
  */
+import * as cache from './cache'
+import * as actions from './actions'
+import * as store from '../store'
+
 
 /**
  * Fetches an item. Cached data will be used if fresh, otherwise the item will
  * be fetched from the remote source.
  */
 export const fetchItem = async (resourceName, pubId) => {
-    const item = cache.getFreshCompleteItem(pubId)
-    if (item) return { data: item, errorMessage: null }
-    // else, we have more work to do
-    return await actions.fetchItem(resourceName.pubId)
+  const item = cache.getFreshCompleteItem(pubId)
+  if (item) return { data: item, errorMessage: null }
+  // else, we have more work to do
+  return await store.getStore().dispatch(actions.fetchItem(resourceName, pubId))
 }
 
 export const fetchList = async (source) => {
   const { itemList, searchParams, permanentError } =
     cache.getFreshSourceData(source)
   if (itemList) return { data: itemList, errorMessage: null }
-  return await actions.fetchList(source)
+  return await store.getStore().dispatch(actions.fetchList(source))
 }
