@@ -4,7 +4,7 @@ import { resourceReducer } from './resources/reducer'
 import * as resourcesSettings from './resources/settings'
 import thunk from 'redux-thunk'
 
-export const coreSteup = () => {
+export const coreSetup = () => {
   store.addReducer(RESOURCES_STATE_KEY, resourceReducer)
   store.addMiddleware(thunk)
 }
