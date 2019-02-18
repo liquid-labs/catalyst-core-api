@@ -52,7 +52,7 @@ export const addReducers = (reducerMap) =>
  * must be called prior to `init`.
  */
 export const addMiddleware = (middleware) =>
-  settings.middleware.unshift(middleware)
+  settings.middlewares.unshift(middleware)
 
 export const init = () => {
   const { reducers, middlewares } = settings
@@ -64,7 +64,10 @@ export const init = () => {
   }*/
   const store = createStore(rootReducer, {}, compose(
     applyMiddleware(...middlewares),
-    window.devToolsExtension ? window.devToolsExtension() : f => f // add support for Redux dev tools
+    // add support for Redux dev tools
+    typeof window !== 'undefined' && window.devToolsExtension
+      ? window.devToolsExtension()
+      : f => f
   ))
   /* TODO: Now that we've library-ized this, can we still support this? It
   worked fine when we distributed babel-compiled files, but using rollup, this
