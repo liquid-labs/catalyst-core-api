@@ -60,7 +60,7 @@ const buildFetchRequestAction = (type) => (source, searchParams) => ({
   source : source
 })
 
-const buildFetchSuccessAction = (type, extractor, list) => (responseData, source, timestamp) => ({
+const buildFetchSuccessAction = (type, extractor) => (responseData, source, timestamp) => ({
   type         : type,
   data         : extractor(responseData.data),
   searchParams : responseData.searchParams,
@@ -91,12 +91,12 @@ const buildErrorAction = (type) => (message, code, source) => ({
 
 const fetchListRequest = buildFetchRequestAction(FETCH_LIST_REQUEST)
 const fetchListSuccess =
-  buildFetchSuccessAction(FETCH_LIST_SUCCESS, (data) => data || [], true);
+  buildFetchSuccessAction(FETCH_LIST_SUCCESS, (data) => data || []);
 const fetchListFailed = buildErrorAction(FETCH_LIST_FAILURE)
 // item fetch
 const fetchItemRequest = buildFetchRequestAction(FETCH_ITEM_REQUEST)
-const fetchItemSuccess =
-  buildFetchSuccessAction(FETCH_ITEM_SUCCESS, (data) => data, false)
+export const fetchItemSuccess =
+  buildFetchSuccessAction(FETCH_ITEM_SUCCESS, (data) => data)
 const fetchItemFailed = buildErrorAction(FETCH_ITEM_FAILURE)
 // add item
 const addItemRequest = buildUpdateRequest(ADD_ITEM_REQUEST)
@@ -116,7 +116,7 @@ const deleteItemFailed = buildErrorAction(DELETE_ITEM_FAILURE)*/
 const fetchItemEventListRequest =
   buildFetchRequestAction(FETCH_EVENT_LIST_REQUEST)
 const fetchItemEventListSuccess =
-  buildFetchSuccessAction(FETCH_EVENT_LIST_SUCCESS, (data) => data || [], true)
+  buildFetchSuccessAction(FETCH_EVENT_LIST_SUCCESS, (data) => data || [])
 const fetchItemEventListFailed = buildErrorAction(FETCH_EVENT_LIST_FAILURE)
 // add item event
 const addItemEventRequest = buildUpdateRequest(ADD_EVENT_REQUEST)
