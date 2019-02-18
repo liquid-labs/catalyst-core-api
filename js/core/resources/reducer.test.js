@@ -42,8 +42,7 @@ describe('resource reducer', () => {
     expect(newState.sources[resUrl].lastChecked.valueOf()).toBeLessThan(ts + callAllowance)
     delete newState.sources[resUrl].lastChecked
     expect(newState).toEqual({
-        events: {},
-        inFlightSources: {},
+        ...INITIAL_STATE,
         items: {
           [resId]: new User(userData)
         },
@@ -57,46 +56,4 @@ describe('resource reducer', () => {
         }
       })
   })
-/*
-  it('should handle ADD_TODO', () => {
-    expect(
-      reducer([], {
-        type: types.ADD_TODO,
-        text: 'Run the tests'
-      })
-    ).toEqual([
-      {
-        text: 'Run the tests',
-        completed: false,
-        id: 0
-      }
-    ])
-
-    expect(
-      reducer(
-        [
-          {
-            text: 'Use Redux',
-            completed: false,
-            id: 0
-          }
-        ],
-        {
-          type: types.ADD_TODO,
-          text: 'Run the tests'
-        }
-      )
-    ).toEqual([
-      {
-        text: 'Run the tests',
-        completed: false,
-        id: 1
-      },
-      {
-        text: 'Use Redux',
-        completed: false,
-        id: 0
-      }
-    ])
-  })*/
 })
