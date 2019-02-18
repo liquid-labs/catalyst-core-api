@@ -53,7 +53,7 @@ describe('resources', () => {
     expect(data).toEqual(userData)
   })
 
-  test('fetchItem() should return fetched when no cache available', async () => {
+  test('fetchItem() should return remotely fetched when no cache available', async () => {
     const callTs = Date.now()
     fetchMock.getOnce(`/api${resUrl}`, {
       body: resBody,
