@@ -87,7 +87,7 @@ const splitPath = (path) => {
     bits.splice(0, 1)
   }
   else {
-    throw new Error(`Cannot extract resource from a non-canonical path: '${path}''.`)
+    throw new Error(`Cannot extract information from a non-absolute/canonical path: '${path}'.`)
   }
 
   return { bits, query }
@@ -104,6 +104,10 @@ export const isListView = (path) => {
 
 export const isItemRoute = (path) => {
   const { bits } = splitPath(path)
+  return isItemRouteFromBits(bits)
+}
+
+const isItemRouteFromBits = (bits) => {
   return regex.uuid.test(bits[1])
     && (bits.length === 2 || (bits.length === 3 && bits[2] === 'edit'))
 }
@@ -128,6 +132,15 @@ export const extractResource = (path) => {
     return bits[2]
   }
   else return null
+}
+
+export const extractItemIdentifiers = (path) => {
+  const { bits } = splitPath(path)
+  if (!isItemRouteFromBits(bits)) {
+    throw new Error(`Cannot extract item identifiers from non-item path: '${path}'.`)
+  }
+
+  return { resName: bits[0], resId: bits[1] }
 }
 
 export const extractListContext = (path) => {

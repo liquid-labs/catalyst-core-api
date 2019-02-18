@@ -1,3 +1,4 @@
+// TODO: this file should be named simply 'setup' and use the path as context like the others
 import * as store from './store'
 import { RESOURCES_STATE_KEY } from './resources/constants'
 import { resourceReducer } from './resources/reducer'
