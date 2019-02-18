@@ -33,8 +33,15 @@ export const INITIAL_STATE = {
   refreshItemListsBefore : 0
 }
 
-const modelItem = (item, resourceName) =>
-  new settings.getResources()[resourceName].model(item)
+const modelItem = (item, resourceName) => {
+  if (process.env.NODE_ENV !== 'production') {
+    if (!settings.getResources()[resourceName]) {
+      throw new Error(`No such resource '${resourceName}' defined.`)
+    }
+  }
+  const constructor = settings.getResources()[resourceName].model
+  return new constructor(item)
+}
 
 const calculateFailedSources = (action, currentState) => ({
   ...currentState.sources,
