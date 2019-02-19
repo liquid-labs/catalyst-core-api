@@ -28,12 +28,16 @@ const resolveItem = async(resName, resId, itemUrl, setCheckProps) => {
 const ItemFetcher = ({itemUrl, itemKey, awaitProps, children, ...props}) => {
   itemKey = itemKey || 'item'
   const { resName, resId } = routes.extractItemIdentifiers(itemUrl)
-  // We get the items directly from cache synchronously to avoid the inevitable
-  const item = resourcesCache.getFreshCompleteItem(resId)
-  const [ checkProps, setCheckProps ] = useState({item : item, errorMessage : null, url : itemUrl})
+  // We check the cache synchronously to avoid blinking.
+  const initialCheckProps = {item : null, errorMessage : null, url : itemUrl}
+  const { permanentError } = resourcesCache.getFreshSourceData(itemUrl)
+  if (permanentError) initialCheckProps.errorMessage = permanentError.message
+  else initialCheckProps.item = resourcesCache.getFreshCompleteItem(resId)
+
+  const [ checkProps, setCheckProps ] = useState(initialCheckProps)
 
   useEffect(() => {
-    if (!item) resolveItem(resName, resId, itemUrl, setCheckProps)
+    if (!checkProps.item) resolveItem(resName, resId, itemUrl, setCheckProps)
   }, [ itemUrl, itemKey ])
 
   const childProps = {

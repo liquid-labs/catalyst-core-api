@@ -14,12 +14,6 @@ export const userReqBody = {
   message : `Retrieved user '${userId}'.`
 }
 
-export const loadUserInCache = () => {
-  store.getStore().dispatch(
-    actions.fetchItemSuccess(userReqBody, userUrl, ts)
-  )
-}
-
 export const setupResources = () => {
   settings.setBaseUrl('/api')
   const resourceList = [
@@ -32,4 +26,16 @@ export const setupResources = () => {
 export const setupStore = () => {
   setupResources()
   coreSetup()
+}
+
+export const loadUserInCache = () => {
+  store.getStore().dispatch(
+    actions.fetchItemSuccess(userReqBody, userUrl, ts)
+  )
+}
+
+export const loadUserErrorInCache = () => {
+  store.getStore().dispatch(
+    actions.fetchItemFailed(`Server down.`, 500, userUrl)
+  )
 }

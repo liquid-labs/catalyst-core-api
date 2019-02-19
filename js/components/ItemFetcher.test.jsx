@@ -4,7 +4,7 @@ import { act, render, cleanup, waitForElement } from 'react-testing-library'
 import * as store from '../core/store'
 import fetchMock from 'fetch-mock'
 import { ItemFetcher } from './ItemFetcher'
-import { userId, userReqBody, userUrl, loadUserInCache, setupStore } from '../testlib'
+import { userId, userReqBody, userUrl, loadUserInCache, loadUserErrorInCache, setupStore } from '../testlib'
 import { makeGate } from '@liquid-labs/lock-and-key'
 
 // const callAllowance = 500
@@ -17,18 +17,27 @@ const testWait = jest.fn(() => null)
 const testBlock = jest.fn(() => null)
 const testAwaitProps = { spinner : testWait, blocked : testBlock }
 
+const expectChildWaitBlock = (childN, waitN, blockN) => {
+  expect(testChild.mock.calls).toHaveLength(childN)
+  expect(testWait.mock.calls).toHaveLength(waitN)
+  expect(testBlock.mock.calls).toHaveLength(blockN)
+}
+
 describe('ItemFetcher', () => {
   // jest.useFakeTimers()
 
-  beforeAll(setupStore)
-  beforeEach(store.init)
+  beforeAll(() => { setupStore() })
+  beforeEach(() => { store.init() })
   afterEach(() => {
     fetchMock.restore()
+    // TODO: these are cleared by the jest config
     testWait.mockClear()
+    testBlock.mockClear()
+    testChild.mockClear()
     cleanup()
   })
 
-  test('should immediately render a cached item', async() => {
+  test('should immediately render a cached item', () => {
     loadUserInCache()
 
     const { getByTestId } = render(
@@ -37,9 +46,7 @@ describe('ItemFetcher', () => {
       </ItemFetcher>
     )
     expect(getByTestId('content').textContent).toBe(userId)
-    expect(testChild.mock.calls).toHaveLength(1)
-    expect(testWait.mock.calls).toHaveLength(0)
-    expect(testBlock.mock.calls).toHaveLength(0)
+    expectChildWaitBlock(1, 0, 0)
   })
 
   test('should render a remotely fetched item after displaying the wait screen',
@@ -59,15 +66,27 @@ describe('ItemFetcher', () => {
           { testChild }
         </ItemFetcher>
       )
-      expect(testChild.mock.calls).toHaveLength(0)
-      expect(testWait.mock.calls).toHaveLength(1)
-      expect(testBlock.mock.calls).toHaveLength(0)
+      expectChildWaitBlock(0, 1, 0)
+
 
       act(() => { key.openGate() })
       await waitForElement(() => getByTestId('content'))
       expect(queryByTestId('content')).toHaveProperty('textContent', userId)
-      expect(testChild.mock.calls).toHaveLength(1)
-      expect(testWait.mock.calls).toHaveLength(1)
-      expect(testBlock.mock.calls).toHaveLength(0)
-    })
+      expectChildWaitBlock(1, 1, 0)
+  })
+
+  test('should render the blocker if the item has a cached error', () => {
+    // suppress expected console error
+    jest.spyOn(global, 'alert').mockImplementation(() => {})
+    try {
+      loadUserErrorInCache()
+      render(
+        <ItemFetcher itemUrl={userUrl} awaitProps={testAwaitProps}>
+          { testChild }
+        </ItemFetcher>
+      )
+      expectChildWaitBlock(0, 0, 1)
+    }
+    finally { global.alert.mockRestore() }
+  })
 })

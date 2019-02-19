@@ -20,16 +20,21 @@ import * as store from '../store'
  * be fetched from the remote source.
  */
 export const fetchItem = async(resourceName, pubId) => {
+  const source = `/${resourceName}/${pubId}`
+  const { permanentError } = cache.getFreshSourceData(source)
+
+  if (permanentError) return { data : null, errorMessage : permanentError.message }
   const item = cache.getFreshCompleteItem(pubId)
   if (item) return { data : item, errorMessage : null }
-  // else, we have more work to do
+
   return await store.getStore().dispatch(actions.fetchItem(resourceName, pubId))
 }
 
 export const fetchList = async(source) => {
-  const { itemList, permanentError } =
-    cache.getFreshSourceData(source)
-  if (itemList) return { data : itemList, errorMessage : null }
-  else if (permanentError) return { data : null, errorMessage : permanentError }
+  const { itemList, permanentError } = cache.getFreshSourceData(source)
+
+  if (permanentError) return { data : null, errorMessage : permanentError.message }
+  else if (itemList) return { data : itemList, errorMessage : null }
+
   return await store.getStore().dispatch(actions.fetchList(source))
 }
