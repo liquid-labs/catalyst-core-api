@@ -19,12 +19,12 @@ const awaitChecks = [ ({item, errorMessage, url}) =>
         }
 ]
 
-const resolveItem = async (resName, resId, setCheckProps) => {
+const resolveItem = async (resName, resId, itemUrl, setCheckProps) => {
   const { data, errorMessage } = await resources.fetchItem(resName, resId)
   setCheckProps({ item: data, errorMessage: errorMessage, url: itemUrl })
 }
 
-const ItemFetcher = ({itemUrl, itemKey, children, ...props}) => {
+const ItemFetcher = ({itemUrl, itemKey, awaitProps, children, ...props}) => {
   itemKey = itemKey || 'item'
   const { resName, resId } = routes.extractItemIdentifiers(itemUrl)
   // We get the items directly from cache synchronously to avoid the inevitable
@@ -32,9 +32,7 @@ const ItemFetcher = ({itemUrl, itemKey, children, ...props}) => {
   const [ checkProps, setCheckProps ] = useState({item: item, errorMessage: null, url: itemUrl})
 
   useEffect(() => {
-    if (!item) {
-      resolveItem(resName, resId, setCheckProps)
-    }
+    if (!item) resolveItem(resName, resId, itemUrl, setCheckProps)
   }, [ itemUrl, itemKey ])
 
   const childProps = {
@@ -43,8 +41,8 @@ const ItemFetcher = ({itemUrl, itemKey, children, ...props}) => {
   }
 
   return (
-    <Await checks={ awaitChecks } checkProps={ checkProps }>
-      { typeof children === 'function' ? children(childProps) : children }
+    <Await checks={ awaitChecks } checkProps={ checkProps } { ...awaitProps }>
+      { () => typeof children === 'function' ? children(childProps) : children }
     </Await>
   )
 }

@@ -108,9 +108,11 @@
   ],
   "devDependencies": {
     "@liquid-labs/catalyst-scripts": "latest",
-    "@liquid-labs/react-await": "^1.0.0-prototype.3",
+    "@liquid-labs/lock-and-key": "0.0.4",
+    "@liquid-labs/react-await": "^1.0.0-prototype.4",
     "@liquid-labs/regex-repo": "latest",
     "fetch-mock": "^7.3.0",
+    "lodash.isequal": "^4.5.0",
     "lodash.omit": "^4.5.0",
     "lodash.reduce": "^4.6.0",
     "moment-timezone": "^0.5.23",
