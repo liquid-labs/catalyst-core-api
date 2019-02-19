@@ -56,9 +56,7 @@ describe('ItemFetcher', () => {
     expect(queryByTestId('content')).toBeNull()
     expect(testWait.mock.calls).toHaveLength(1)
 
-    act(() => {
-      key.openGate()
-    })
+    act(key.openGate)
     await waitForElement(() => getByTestId('content'))
     expect(queryByTestId('content')).toHaveProperty('textContent', userId)
     expect(testWait.mock.calls).toHaveLength(1)
