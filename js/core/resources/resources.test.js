@@ -1,4 +1,4 @@
-/* global describe expect test */
+/* global afterEach beforeAll beforeEach describe expect test */
 import * as store from '../store'
 import * as resources from './resources'
 import fetchMock from 'fetch-mock'
@@ -11,7 +11,7 @@ describe('resources', () => {
   beforeEach(store.init)
   afterEach(fetchMock.restore)
 
-  test('fetchItem() should return recently cached item', async () => {
+  test('fetchItem() should return recently cached item', async() => {
     loadUserInCache()
     const { data, errorMessage } = await resources.fetchItem('users', userId)
     expect(fetchMock.called()).toBe(false)
@@ -19,11 +19,10 @@ describe('resources', () => {
     expect(data).toEqual(userData)
   })
 
-  test('fetchItem() should return remotely fetched when no cache available', async () => {
-    const callTs = Date.now()
+  test('fetchItem() should return remotely fetched when no cache available', async() => {
     fetchMock.getOnce(`/api${userUrl}`, {
-      body: userReqBody,
-      headers: { 'content-type': 'application/json' }
+      body    : userReqBody,
+      headers : { 'content-type' : 'application/json' }
     })
 
     const { data, errorMessage } = await resources.fetchItem('users', userId)

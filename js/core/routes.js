@@ -95,7 +95,7 @@ const splitPath = (path) => {
 
 export const isListView = (path) => {
   const { bits } = splitPath(path)
-  return Boolean((bits.length === 1 && resources[bits[0]])
+  return Boolean((bits.length === 1 && resourceSettings.getResources()[bits[0]])
     || (bits.length === 3
         && resourceSettings.getResources()[bits[0]]
         && regex.uuid.test(bits[1])
@@ -140,7 +140,7 @@ export const extractItemIdentifiers = (path) => {
     throw new Error(`Cannot extract item identifiers from non-item path: '${path}'.`)
   }
 
-  return { resName: bits[0], resId: bits[1] }
+  return { resName : bits[0], resId : bits[1] }
 }
 
 export const extractListContext = (path) => {

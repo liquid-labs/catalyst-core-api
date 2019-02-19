@@ -1,4 +1,4 @@
-/* global describe expect test */
+/* global beforeAll describe expect test */
 import { resourceReducer, INITIAL_STATE } from './reducer'
 import * as actions from './actions'
 import * as resourcesSettings from './settings'
@@ -27,13 +27,13 @@ describe('resource reducer', () => {
     const resId = '8BBF68AB-96D6-43EB-BDAE-36F55BC6EFD6'
     const resUrl = `/users/${resId}`
     const ts = Date.now()
-    const userData = { pubId: resId, lastUpdated: ts -1000, active: true }
+    const userData = { pubId : resId, lastUpdated : ts -1000, active : true }
 
     const newState = resourceReducer(INITIAL_STATE,
       actions.fetchItemSuccess(
         {
-          data: userData,
-          message: `Retrieved user '${resId}'.`
+          data    : userData,
+          message : `Retrieved user '${resId}'.`
         },
         resUrl,
         ts
@@ -42,18 +42,18 @@ describe('resource reducer', () => {
     expect(newState.sources[resUrl].lastChecked.valueOf()).toBeLessThan(ts + callAllowance)
     delete newState.sources[resUrl].lastChecked
     expect(newState).toEqual({
-        ...INITIAL_STATE,
-        items: {
-          [resId]: new User(userData)
-        },
-        refreshItemListsBefore: 1,
-        sources: {
-          [resUrl]: {
-            refList: [ resId ],
-            searchParams: undefined,
-            source: resUrl
-          }
+      ...INITIAL_STATE,
+      items : {
+        [resId] : new User(userData)
+      },
+      refreshItemListsBefore : 1,
+      sources                : {
+        [resUrl] : {
+          refList      : [ resId ],
+          searchParams : undefined,
+          source       : resUrl
         }
-      })
+      }
+    })
   })
 })

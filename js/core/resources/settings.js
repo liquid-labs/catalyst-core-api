@@ -5,13 +5,13 @@
  */
 const defaultErrorHandler = (message) => {
   if (typeof window !== 'undefined' && window.alert) window.alert(message)
-  else console.error(message)
+  else console.error(message) // eslint-disable-line no-console
 }
 
 const settings = {
-  baseUrl: null,
-  resources: null,
-  errorHandler: defaultErrorHandler
+  baseUrl      : null,
+  resources    : null,
+  errorHandler : defaultErrorHandler
 }
 
 export const setBaseUrl = (baseUrl) => settings.baseUrl = baseUrl

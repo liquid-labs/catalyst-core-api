@@ -21,9 +21,9 @@
 import { applyMiddleware, combineReducers, compose, createStore } from 'redux'
 
 const settings = {
-  reducers: {},
-  middlewares: [],
-  store: null
+  reducers    : {},
+  middlewares : [],
+  store       : null
 }
 
 /**

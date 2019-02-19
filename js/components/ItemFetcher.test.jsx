@@ -1,4 +1,4 @@
-/* global describe expect test */
+/* global afterEach beforeAll beforeEach describe expect jest test */
 import React from 'react'
 import { act, render, cleanup, waitForElement } from 'react-testing-library'
 import * as store from '../core/store'
@@ -9,9 +9,10 @@ import { makeGate } from '@liquid-labs/lock-and-key'
 
 // const callAllowance = 500
 
+// eslint-disable-next-line react/prop-types
 const testChild = ({item}) => <span data-testid="content">{item.pubId}</span>
 const testWait = jest.fn(() => null)
-const testAwaitProps = { spinner: testWait, blocked: testWait }
+const testAwaitProps = { spinner : testWait, blocked : testWait }
 
 describe('ItemFetcher', () => {
   // jest.useFakeTimers()
@@ -24,7 +25,7 @@ describe('ItemFetcher', () => {
     cleanup()
   })
 
-  test('should immediately render a cached item', async () => {
+  test('should immediately render a cached item', async() => {
     loadUserInCache()
 
     const { getByTestId } = render(
@@ -37,28 +38,28 @@ describe('ItemFetcher', () => {
   })
 
   test('should render a remotely fetched item after displaying the wait screen',
-      async () => {
-    const { gate, key } = makeGate()
-    const resultPromise = async () => {
-      await gate
-      return {
-        body: userReqBody,
-        headers: { 'content-type': 'application/json' }
+    async() => {
+      const { gate, key } = makeGate()
+      const resultPromise = async() => {
+        await gate
+        return {
+          body    : userReqBody,
+          headers : { 'content-type' : 'application/json' }
+        }
       }
-    }
-    fetchMock.getOnce(`/api${userUrl}`, resultPromise)
+      fetchMock.getOnce(`/api${userUrl}`, resultPromise)
 
-    const { rerender, queryByTestId, getByTestId } = render(
-      <ItemFetcher itemUrl={userUrl} awaitProps={testAwaitProps}>
-        { testChild }
-      </ItemFetcher>
-    )
-    expect(queryByTestId('content')).toBeNull()
-    expect(testWait.mock.calls).toHaveLength(1)
+      const { queryByTestId, getByTestId } = render(
+        <ItemFetcher itemUrl={userUrl} awaitProps={testAwaitProps}>
+          { testChild }
+        </ItemFetcher>
+      )
+      expect(queryByTestId('content')).toBeNull()
+      expect(testWait.mock.calls).toHaveLength(1)
 
-    act(key.openGate)
-    await waitForElement(() => getByTestId('content'))
-    expect(queryByTestId('content')).toHaveProperty('textContent', userId)
-    expect(testWait.mock.calls).toHaveLength(1)
-  })
+      act(key.openGate)
+      await waitForElement(() => getByTestId('content'))
+      expect(queryByTestId('content')).toHaveProperty('textContent', userId)
+      expect(testWait.mock.calls).toHaveLength(1)
+    })
 })

@@ -19,16 +19,17 @@ import * as store from '../store'
  * Fetches an item. Cached data will be used if fresh, otherwise the item will
  * be fetched from the remote source.
  */
-export const fetchItem = async (resourceName, pubId) => {
+export const fetchItem = async(resourceName, pubId) => {
   const item = cache.getFreshCompleteItem(pubId)
-  if (item) return { data: item, errorMessage: null }
+  if (item) return { data : item, errorMessage : null }
   // else, we have more work to do
   return await store.getStore().dispatch(actions.fetchItem(resourceName, pubId))
 }
 
-export const fetchList = async (source) => {
-  const { itemList, searchParams, permanentError } =
+export const fetchList = async(source) => {
+  const { itemList, permanentError } =
     cache.getFreshSourceData(source)
-  if (itemList) return { data: itemList, errorMessage: null }
+  if (itemList) return { data : itemList, errorMessage : null }
+  else if (permanentError) return { data : null, errorMessage : permanentError }
   return await store.getStore().dispatch(actions.fetchList(source))
 }

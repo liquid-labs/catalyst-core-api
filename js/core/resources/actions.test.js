@@ -1,4 +1,4 @@
-/* global describe expect test */
+/* global afterEach describe expect test */
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import fetchMock from 'fetch-mock'
@@ -18,26 +18,26 @@ describe('async actions', () => {
     fetchMock.restore()
   })
 
-  test('creates FETCH_ITEM_SUCCESS when fetching item done', async () => {
+  test('creates FETCH_ITEM_SUCCESS when fetching item done', async() => {
     const personUuid = '67269E64-1635-49B6-9ACC-A708E7FF1A3D'
     const message = `Retrieved person '${personUuid}'.`
-    const personJson = { displayName: "John Doe" }
+    const personJson = { displayName : "John Doe" }
     const responseJson = {
-      message: message,
-      data: personJson
+      message : message,
+      data    : personJson
     }
     const personUrl = `/persons/${personUuid}`
     const callTs = Date.now()
     fetchMock.getOnce(`/api${personUrl}`, {
-      body: responseJson,
-      headers: { 'content-type': 'application/json' }
+      body    : responseJson,
+      headers : { 'content-type' : 'application/json' }
     })
 
     const expectedActions = [
-      { type: actions.FETCH_ITEM_REQUEST, source: personUrl  },
-      { type: actions.FETCH_ITEM_SUCCESS, source: personUrl, searchParams: undefined, ...responseJson }
+      { type : actions.FETCH_ITEM_REQUEST, source : personUrl },
+      { type : actions.FETCH_ITEM_SUCCESS, source : personUrl, searchParams : undefined, ...responseJson }
     ]
-    store.setStore(mockStore({ [RESOURCES_STATE_KEY]: INITIAL_STATE }))
+    store.setStore(mockStore({ [RESOURCES_STATE_KEY] : INITIAL_STATE }))
 
     await store.getStore().dispatch(actions.fetchItem('persons', personUuid))
     // first, we have to test and then remove the 'receivedAt' info
