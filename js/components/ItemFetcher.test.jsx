@@ -10,9 +10,12 @@ import { makeGate } from '@liquid-labs/lock-and-key'
 // const callAllowance = 500
 
 // eslint-disable-next-line react/prop-types
-const testChild = ({item}) => <span data-testid="content">{item.pubId}</span>
+const testChild = jest.fn(
+  ({item}) => <span data-testid="content">{item.pubId}</span>
+)
 const testWait = jest.fn(() => null)
-const testAwaitProps = { spinner : testWait, blocked : testWait }
+const testBlock = jest.fn(() => null)
+const testAwaitProps = { spinner : testWait, blocked : testBlock }
 
 describe('ItemFetcher', () => {
   // jest.useFakeTimers()
@@ -34,7 +37,9 @@ describe('ItemFetcher', () => {
       </ItemFetcher>
     )
     expect(getByTestId('content').textContent).toBe(userId)
+    expect(testChild.mock.calls).toHaveLength(1)
     expect(testWait.mock.calls).toHaveLength(0)
+    expect(testBlock.mock.calls).toHaveLength(0)
   })
 
   test('should render a remotely fetched item after displaying the wait screen',
@@ -54,12 +59,15 @@ describe('ItemFetcher', () => {
           { testChild }
         </ItemFetcher>
       )
-      expect(queryByTestId('content')).toBeNull()
+      expect(testChild.mock.calls).toHaveLength(0)
       expect(testWait.mock.calls).toHaveLength(1)
+      expect(testBlock.mock.calls).toHaveLength(0)
 
       act(() => { key.openGate() })
       await waitForElement(() => getByTestId('content'))
       expect(queryByTestId('content')).toHaveProperty('textContent', userId)
+      expect(testChild.mock.calls).toHaveLength(1)
       expect(testWait.mock.calls).toHaveLength(1)
+      expect(testBlock.mock.calls).toHaveLength(0)
     })
 })
