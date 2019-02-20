@@ -12,6 +12,8 @@
     "data/",
     "bin/",
     "dist/",
+    "go.mod",
+    "go.sum",
     ".catalyst"
   ],
   "bin": {
@@ -23,7 +25,10 @@
   "scripts": {
     "prebuild": "rm -rf ./dist/* && mkdir -p ./dist",
     "build": "catalyst-scripts build",
-    "test": "catalyst-scripts test"
+    "pretest": "catalyst-scripts pretest",
+    "test": "catalyst-scripts test",
+    "lint": "catalyst-scripts lint",
+    "lint-fix": "catalyst-scripts lint-fix"
   },
   "repository": {
     "type": "git",
@@ -36,7 +41,20 @@
   },
   "homepage": "https://github.com/Liquid-Labs/catalyst-core-api#readme",
   "catalyst": {
-    "version": "0.1"
+    "version": "0.0.0",
+    "rollupConfig": {
+      "commonjsConfig": {
+        "namedExports": {
+          "node_modules/react/index.js": [
+            "useEffect",
+            "useState"
+          ]
+        }
+      }
+    },
+    "jestConfig": {
+      "testEnvironment": "jsdom"
+    }
   },
   "_catServices": [
     {
@@ -91,6 +109,33 @@
     }
   ],
   "devDependencies": {
-    "@liquid-labs/catalyst-scripts": "latest"
+    "@liquid-labs/catalyst-scripts": "latest",
+    "@liquid-labs/lock-and-key": "0.0.4",
+    "@liquid-labs/react-await": "^1.0.0-prototype.6",
+    "@liquid-labs/regex-repo": "latest",
+    "fetch-mock": "^7.3.0",
+    "lodash.isequal": "^4.5.0",
+    "lodash.omit": "^4.5.0",
+    "lodash.reduce": "^4.6.0",
+    "moment-timezone": "^0.5.23",
+    "node-fetch": "^2.3.0",
+    "normalizr": "^3.3.0",
+    "react": "^16.8.2",
+    "react-dom": "^16.8.2",
+    "react-testing-library": "^5.8.0",
+    "redux": "^4.0.1",
+    "redux-mock-store": "^1.5.3",
+    "redux-thunk": "^2.3.0"
+  },
+  "peerDependencies": {
+    "@liquid-labs/regex-repo": "latest",
+    "lodash.omit": "^4.5.0",
+    "lodash.reduce": "^4.6.0",
+    "moment-timezone": "^0.5.23",
+    "normalizr": "^3.3.0",
+    "react": "^16.8.2",
+    "react-dom": "^16.8.2",
+    "redux": "^4.0.1",
+    "redux-thunk": "^2.3.0"
   }
 }

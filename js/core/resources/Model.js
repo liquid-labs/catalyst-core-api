@@ -1,3 +1,15 @@
+/**
+ * Model encapsulates an item property model. This defines the possible
+ * properties and their (partial) types, which properties are requried for
+ * 'completeness', along with a few useful utilities.
+ *
+ * Property 'typing' is either simple-value or model-value. This is not
+ * currently used for validation, but rather to transform raw property-value
+ * object input parameters into `Model`ed items. Future versions will likely
+ * incorporate validation.
+ */
+// TODO: Superficially, I don't see any reason why 'lastChecked' can't be milis
+// since the epoch, which would allow us to drop this dependency.
 import moment from 'moment-timezone'
 
 // TODO: should export each model individually.
@@ -17,10 +29,10 @@ class Model {
   static finalizeConstructor(SubClass, propsModel, newTest) {
     deepFreeze(propsModel)
     Object.defineProperty(SubClass, 'propsModel', {
-      value: propsModel,
-      writable: false,
-      enumerable: true,
-      configurable: false
+      value        : propsModel,
+      writable     : false,
+      enumerable   : true,
+      configurable : false
     })
     const propsMap = propsModel.reduce((acc, propModel) => {
       acc[propModel.propName] = propModel
@@ -28,10 +40,10 @@ class Model {
     }, {})
     deepFreeze(propsMap)
     Object.defineProperty(SubClass, 'propsMap', {
-      value: propsMap,
-      writable: false,
-      enumerable: true,
-      configurable: false
+      value        : propsMap,
+      writable     : false,
+      enumerable   : true,
+      configurable : false
     })
     if (!newTest) {
       newTest = (props) => !props || !props.pubId
@@ -57,24 +69,24 @@ class Model {
       : newDefaults || {}
 
     Object.defineProperty(this, '_missing', {
-      value: [],
-      writable: false,
-      enumerable: false,
-      configurable: false
+      value        : [],
+      writable     : false,
+      enumerable   : false,
+      configurable : false
     })
     Object.defineProperty(this, '_opts', {
-      value: opts,
-      writable: false,
-      enumerable: false,
-      configurable: false
+      value        : opts,
+      writable     : false,
+      enumerable   : false,
+      configurable : false
     })
     // List of resource items referenced by this resource item. Any existing
     // references will be
     Object.defineProperty(this, '_references', {
-      value: [],
-      writable: false,
-      enumerable: false,
-      configurable: false
+      value        : [],
+      writable     : false,
+      enumerable   : false,
+      configurable : false
     })
 
     // The empty value must be an empty string for the UI, but null for the API.
@@ -112,8 +124,11 @@ class Model {
       // 2) is it a new value that should be 'unset'?
       else if (isNew(props) && unsetForNew) {
         value = valueType === arrayType ? [] : emptyVal
-        if (!emptyOrUndefined(propVal, valueType)) {
-          console.warn(`Unset property '${propName}' for new '${this.resourceName}'.`)
+        if (process.env.NODE_ENV !== 'production') {
+          if (!emptyOrUndefined(propVal, valueType)) {
+            // eslint-disable-next-line no-console
+            console.warn(`Unset property '${propName}' for new '${this.resourceName}'.`)
+          }
         }
       }
       else if (propVal !== undefined) {
@@ -124,7 +139,7 @@ class Model {
             arrayCheck(propName, propVal)
             value = []
             if (propVal && propVal.length > 0) {
-              props[propName].forEach((val) => value.push(new model(val, Object.assign({ skipFreeze: true}, opts))))
+              props[propName].forEach((val) => value.push(new model(val, Object.assign({ skipFreeze : true }, opts))))
               value.forEach((val) => this._references.push(val.pubId))
             }
           }
@@ -132,7 +147,7 @@ class Model {
             value = emptyVal
           }
           else { // not an array, and not empty; i.e., a single property set
-            value = new model(props[propName], Object.assign({ skipFreeze: true}, opts))
+            value = new model(props[propName], Object.assign({ skipFreeze : true }, opts))
             this._references.push(value.pubId)
           }
         }
@@ -147,7 +162,10 @@ class Model {
         value = emptyVal
       }
       else if (!optionalForComplete) {
-        console.warn(`Unexpected state encountered while creatieng ${this.resourceName}.`, propName, propVal, isNew(props))
+        if (process.env.NODE_ENV !== 'production') {
+          // eslint-disable-next-line no-console
+          console.warn(`Unexpected state encountered while creatieng ${this.resourceName}.`, propName, propVal, isNew(props))
+        }
         throw new Error("Unexpected value Model creation state.")
       }
       // else, value stays empty
@@ -158,18 +176,18 @@ class Model {
       // 'true'.
       if (value !== undefined) {
         Object.defineProperty(this, propName, {
-          value: value,
-          writable: false, // 'writable' props can be updated, but the property itself is unumerable
-          enumerable: true,
-          configurable: false
+          value        : value,
+          writable     : false, // 'writable' props can be updated, but the property itself is unumerable
+          enumerable   : true,
+          configurable : false
         })
       }
     })
     Object.defineProperty(this, 'lastChecked', {
-      value: props.lastChecked || opts.lastChecked || moment(),
-      writable: false,
-      enumerable: false,
-      configurable: false
+      value        : props.lastChecked || opts.lastChecked || moment(),
+      writable     : false,
+      enumerable   : false,
+      configurable : false
     })
 
     if (!opts.skipFreeze) {
@@ -178,11 +196,11 @@ class Model {
   }
 
   forApi() {
-    return new this.constructor(this, { emptyVal: null })
+    return new this.constructor(this, { emptyVal : null })
   }
 
   forUi() {
-    return new this.constructor(this, { emptyVal: "" })
+    return new this.constructor(this, { emptyVal : "" })
   }
 
   update(updates) {
@@ -201,14 +219,16 @@ class Model {
     const model = this.constructor
     model.propsModel.forEach((propModel) => {
       if (propModel.fragile && (propModel.fragile === true
-          || propModel.fragile.some((bProp) => updates[bProp])))
-         updates[propModel.propName] = null
+          || propModel.fragile.some((bProp) => updates[bProp]))) {updates[propModel.propName] = null}
     })
     // validate the updates
     updateKeys.forEach((updateKey) => {
       const propModel = model.propsMap[updateKey]
       if (!propModel) {
-        console.warn(`Found and removing unknown key in item update map: '${updateKey}'.`)
+        if (process.env.NODE_ENV !== 'production') {
+          // eslint-disable-next-line no-console
+          console.warn(`Found and removing unknown key in item update map: '${updateKey}'.`)
+        }
         delete updates[updateKey]
       }
       // For new items, everything can be updated. If not new, then we check
@@ -216,7 +236,6 @@ class Model {
       // TODO: writeable should be 'updatable'
       else if (!model.isNew(this) && !propModel.writable) {
         const message = `Attempt to update non-updatable property '${updateKey} of resource '${this.resourceName}'.`
-        console.error(message)
         throw new Error(message)
       }
     })
@@ -229,27 +248,29 @@ class Model {
   }
 
   diff(other, bailout=false) {
-    if (!(other instanceof Model))
+    if (!(other instanceof Model)) {
       return {
-        diffs: [`Compared item does not appear to be a Model.`],
-        isDiff: true
+        diffs  : [`Compared item does not appear to be a Model.`],
+        isDiff : true
       }
+    }
 
     const model = this.constructor
     // '.constructor' and '.constructor.name' aren't generally relaibale, but
     // as we've confirmed we're dealing with Models, we expect them to work.
-    if (other.constructor.name !== model.name)
+    if (other.constructor.name !== model.name) {
       return {
-        diffs: [`Items are of different type: '${model.name}' -> ${other.constructor.name}'.`],
-        isDiff: true
+        diffs  : [`Items are of different type: '${model.name}' -> ${other.constructor.name}'.`],
+        isDiff : true
       }
+    }
 
     const isEmptyVal = (val) =>
       val === null || val === undefined || val === ""
     const diffs = []
     model.propsModel.some((propModel) => {
       const propName = propModel.propName
-      const addDiff = (diffData) => diffs.push({ propName: propName, diff: diffData })
+      const addDiff = (diffData) => diffs.push({ propName : propName, diff : diffData })
       const myVal = this[propName]
       const otherVal = other[propName]
       if (!(isEmptyVal(myVal) && isEmptyVal(otherVal))) {
@@ -304,12 +325,12 @@ class Model {
 
     if (diffs.length > 0) {
       return {
-        diffs: diffs,
-        isDiff: true
+        diffs  : diffs,
+        isDiff : true
       }
     }
     else {
-      return { isDiff: false }
+      return { isDiff : false }
     }
   }
 
