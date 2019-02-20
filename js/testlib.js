@@ -14,6 +14,8 @@ export const userReqBody = {
   message : `Retrieved user '${userId}'.`
 }
 
+export const userErrorMessage = 'Server error.'
+
 export const setupResources = () => {
   settings.setBaseUrl('/api')
   const resourceList = [
@@ -36,6 +38,6 @@ export const loadUserInCache = () => {
 
 export const loadUserErrorInCache = () => {
   store.getStore().dispatch(
-    actions.fetchItemFailed(`Server down.`, 500, userUrl)
+    actions.fetchItemFailed(userErrorMessage, 500, userUrl)
   )
 }

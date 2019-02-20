@@ -10,7 +10,8 @@ const awaitChecks = [ ({item, errorMessage, url}) =>
   errorMessage
     ? {
       status  : awaitStatus.BLOCKED,
-      summary : `Encountered an error while retrieving the item: '${errorMessage}'`
+      summary : `Error encountered retrieving '${url}': '${errorMessage}'`,
+      errorMessage: errorMessage
     }
     : item
       ? { status : awaitStatus.RESOLVED }

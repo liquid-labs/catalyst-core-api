@@ -4,7 +4,9 @@ import { act, render, cleanup, waitForElement } from 'react-testing-library'
 import * as store from '../core/store'
 import fetchMock from 'fetch-mock'
 import { ItemFetcher } from './ItemFetcher'
-import { userId, userReqBody, userUrl, loadUserInCache, loadUserErrorInCache, setupStore } from '../testlib'
+import {
+  userErrorMessage, userId, userReqBody, userUrl,
+  loadUserInCache, loadUserErrorInCache, setupStore } from '../testlib'
 import { makeGate } from '@liquid-labs/lock-and-key'
 
 // const callAllowance = 500
@@ -14,7 +16,8 @@ const testChild = jest.fn(
   ({item}) => <span data-testid="content">{item.pubId}</span>
 )
 const testWait = jest.fn(() => null)
-const testBlock = jest.fn(() => null)
+const testBlock = jest.fn(({errorMessage}) =>
+  <span data-testid="errorMessage">{errorMessage}</span>)
 const testAwaitProps = { spinner : testWait, blocked : testBlock }
 
 const expectChildWaitBlock = (childN, waitN, blockN) => {
@@ -69,17 +72,39 @@ describe('ItemFetcher', () => {
   })
 
   test('should render the blocker if the item has a cached error', () => {
-    // suppress expected console error
-    jest.spyOn(global, 'alert').mockImplementation(() => {})
-    try {
-      loadUserErrorInCache()
-      render(
-        <ItemFetcher itemUrl={userUrl} awaitProps={testAwaitProps}>
-          { testChild }
-        </ItemFetcher>
-      )
-      expectChildWaitBlock(0, 0, 1)
+    loadUserErrorInCache()
+    const { queryByTestId } = render(
+      <ItemFetcher itemUrl={userUrl} awaitProps={testAwaitProps}>
+        { testChild }
+      </ItemFetcher>
+    )
+    expect(testBlock).toHaveBeenCalledTimes(1)
+    expect(queryByTestId('errorMessage')).toHaveProperty('textContent', userErrorMessage)
+    expectChildWaitBlock(0, 0, 1)
+  })
+
+  test('should render the blocker if a fetch error occurs', async() => {
+    const { gate, key } = makeGate()
+    const resultPromise = async() => {
+      await gate
+      return {
+        body   : userErrorMessage,
+        status : 500
+      }
     }
-    finally { global.alert.mockRestore() }
+    fetchMock.getOnce(`/api${userUrl}`, resultPromise)
+
+    const { queryByTestId, getByTestId } = render(
+      <ItemFetcher itemUrl={userUrl} awaitProps={testAwaitProps}>
+        { testChild }
+      </ItemFetcher>
+    )
+    expectChildWaitBlock(0, 1, 0)
+
+    act(() => { key.openGate() })
+    await waitForElement(() => getByTestId('errorMessage'))
+    expect(testBlock).toHaveBeenCalledTimes(1)
+    expect(queryByTestId('errorMessage')).toHaveProperty('textContent', userErrorMessage)
+    expectChildWaitBlock(0, 1, 1)
   })
 })
