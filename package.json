@@ -109,7 +109,7 @@
     }
   ],
   "devDependencies": {
-    "@liquid-labs/catalyst-scripts": "latest",
+    "@liquid-labs/catalyst-scripts": "^1.0.0-alpha.11",
     "@liquid-labs/lock-and-key": "0.0.4",
     "@liquid-labs/react-await": "^1.0.0-prototype.6",
     "@liquid-labs/regex-repo": "latest",
@@ -128,7 +128,10 @@
     "redux-thunk": "^2.3.0"
   },
   "peerDependencies": {
+    "@liquid-labs/lock-and-key": "0.0.4",
+    "@liquid-labs/react-await": "^1.0.0-prototype.6",
     "@liquid-labs/regex-repo": "latest",
+    "lodash.isequal": "^4.5.0",
     "lodash.omit": "^4.5.0",
     "lodash.reduce": "^4.6.0",
     "moment-timezone": "^0.5.23",
