@@ -24,8 +24,6 @@ const expectChildWaitBlock = (childN, waitN, blockN) => {
 }
 
 describe('ItemFetcher', () => {
-  // jest.useFakeTimers()
-
   beforeAll(() => { setupStore() })
   beforeEach(() => { store.init() })
   afterEach(() => {
@@ -63,7 +61,6 @@ describe('ItemFetcher', () => {
         </ItemFetcher>
       )
       expectChildWaitBlock(0, 1, 0)
-
 
       act(() => { key.openGate() })
       await waitForElement(() => getByTestId('content'))
