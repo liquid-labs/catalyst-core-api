@@ -30,10 +30,6 @@ describe('ItemFetcher', () => {
   beforeEach(() => { store.init() })
   afterEach(() => {
     fetchMock.restore()
-    // TODO: these are cleared by the jest config
-    testWait.mockClear()
-    testBlock.mockClear()
-    testChild.mockClear()
     cleanup()
   })
 
