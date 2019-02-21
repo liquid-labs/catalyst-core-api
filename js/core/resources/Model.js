@@ -357,6 +357,10 @@ class Model {
   isComplete() {
     return this._missing.length === 0
   }
+
+  getMissing() {
+    return this._missing
+  }
 }
 
 const deepFreeze = (obj) => {
