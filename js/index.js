@@ -9,6 +9,7 @@
  * - entities and locations for foundational data models which can be included
  *   in custom data models.
  */
+import * as resourcesSettings from './core/resources/settings'
 import * as store from './core/store'
 export * from './core/coreSetup'
 export * from './core/resources'
@@ -16,4 +17,4 @@ export * from './core/resources'
 export * from './entities/model'
 export * from './locations/model'
 
-export { store }
+export { resourcesSettings, store }
