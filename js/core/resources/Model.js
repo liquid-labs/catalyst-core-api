@@ -3,6 +3,14 @@
  * properties and their (partial) types, which properties are requried for
  * 'completeness', along with a few useful utilities.
  *
+ * 'Completeness' is used to distinguish summary from non-summary items and is
+ * not intended for general validation. In particular, it is not applied to
+ * new items, generally created clientside, which have not yet been created and
+ * stored through the API. Rather, when the API returns items, it may generally
+ * return incomplete items. In particular, when returning many items in a list
+ * particular fields may be left undefined to avoid 'JOIN's or other
+ * calculations on a multiplicity of items.
+ *
  * Property 'typing' is either simple-value or model-value. This is not
  * currently used for validation, but rather to transform raw property-value
  * object input parameters into `Model`ed items. Future versions will likely

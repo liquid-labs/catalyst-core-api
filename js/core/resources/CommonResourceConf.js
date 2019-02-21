@@ -54,6 +54,14 @@ export class CommonResourceConf {
       // always define a model; in the simple case, that's all that's needed
       defineConst(this, 'model', apiConfig.model)
       defineConst(this, 'sortOptions', apiConfig.sortOptions)
+      if (apiConfig.sortOptions) {
+        defineConst(this, 'sortMap', apiConfig.sortOptions.reduce((map, opt) =>
+        {
+          map[opt.value] = opt.func
+          return map
+        }, {}))
+      }
+      else defineConst(this, 'sortMap', {})
       defineConst(this, 'sortDefault', apiConfig.sortDefault)
       // Creating a new UI-item runs through:
       // - createExport
