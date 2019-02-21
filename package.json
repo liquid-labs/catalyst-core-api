@@ -27,6 +27,7 @@
     "build": "catalyst-scripts build",
     "pretest": "TEST_TYPES=unit catalyst-scripts pretest",
     "test": "TEST_TYPES=unit catalyst-scripts test",
+    "postversion": "git push && git push --tags",
     "lint": "catalyst-scripts lint",
     "lint-fix": "catalyst-scripts lint-fix"
   },
