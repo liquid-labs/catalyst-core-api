@@ -17,4 +17,6 @@ export * from './core/resources'
 export * from './entities/model'
 export * from './locations/model'
 
+export * from './components/ItemFetcher'
+
 export { resourcesSettings, store }
