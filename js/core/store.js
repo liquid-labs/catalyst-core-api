@@ -80,6 +80,7 @@ export const init = () => {
     })
   }*/
   settings.store = store
+  return store
 }
 
 /**
