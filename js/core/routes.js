@@ -1,6 +1,6 @@
 import * as store from './store'
-import * as resourceSettings from './resources/settings'
-import * as contextSettings from './context/settings'
+import * as resourcesSettings from './resources/settings'
+import * as contextSettings from './contextSettings'
 
 import * as regex from '@liquid-labs/regex-repo'
 
@@ -8,7 +8,7 @@ import * as regex from '@liquid-labs/regex-repo'
  * Given a resource name, returns the UI path to the global list.
  */
 export const getGlobalListRoute = (resource) => {
-  if (!resourceSettings.getResources()[resource]) {
+  if (!resourcesSettings.getResources()[resource]) {
     throw new Error(`Unknown resource '${resource}'. (Check that resource name is plural.)`)
   }
   return `/${resource}`
@@ -95,11 +95,11 @@ const splitPath = (path) => {
 
 export const isListView = (path) => {
   const { bits } = splitPath(path)
-  return Boolean((bits.length === 1 && resourceSettings.getResources()[bits[0]])
+  return Boolean((bits.length === 1 && resourcesSettings.getResources()[bits[0]])
     || (bits.length === 3
-        && resourceSettings.getResources()[bits[0]]
+        && resourcesSettings.getResources()[bits[0]]
         && regex.uuid.test(bits[1])
-        && resourceSettings.getResources()[bits[2]]))
+        && resourcesSettings.getResources()[bits[2]]))
 }
 
 export const isItemRoute = (path) => {
