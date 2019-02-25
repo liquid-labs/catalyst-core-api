@@ -9,7 +9,8 @@
  * - entities and locations for foundational data models which can be included
  *   in custom data models.
  */
-import * as resourcesSettings from './core/resources/settings'
+import * as contextSettings from './core/contextSettings'
+import * as routes from './core/routes'
 import * as store from './core/store'
 export * from './core/coreSetup'
 export * from './core/resources'
@@ -19,4 +20,4 @@ export * from './locations/model'
 
 export * from './components/ItemFetcher'
 
-export { resourcesSettings, store }
+export { contextSettings, routes, store }

@@ -5,11 +5,6 @@ import { resourceReducer } from './resources/reducer'
 import * as resourcesSettings from './resources/settings'
 import thunk from 'redux-thunk'
 
-export const coreSetup = () => {
-  store.addReducer(RESOURCES_STATE_KEY, resourceReducer)
-  store.addMiddleware(thunk)
-}
-
 const tryResource = `Try something like:
 import { CommonResourceConf, resourcesSettings } from '@liquid-labs/catalyst-core-api'
 
@@ -21,6 +16,11 @@ const yourSetup = () => {
   resourcesSettings.setResources(CommonResourceConf.listToMap(resourceList))
 }`
 
+export const coreSetup = () => {
+  store.addReducer(RESOURCES_STATE_KEY, resourceReducer)
+  store.addMiddleware(thunk)
+}
+
 export const verifyCatalystSetup = () => {
   if (process.env.NODE_ENV !=='production') {
     const resources = resourcesSettings.getResources()
@@ -30,5 +30,12 @@ export const verifyCatalystSetup = () => {
     if (typeof resources !== 'object') {
       throw new Error(`'getResources()' returned unexpected type.` )
     }
+  }
+}
+
+export const coreInit = () => {
+  verifyCatalystSetup()
+  return {
+    reduxStore : store.init()
   }
 }
