@@ -1,6 +1,6 @@
 /**
  * The 'resources' package exports two public APIs and two support classes:
- * - `resourceSettings` API to configure application resources,
+ * - `resourcesSettings` API to configure application resources,
  * - `resources` API to manage resources,
  * - `Model` class used to describe a resource-item data model, and
  * - `CommonResourceConf` class used to configure handling of API calls.
