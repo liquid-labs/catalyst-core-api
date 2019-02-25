@@ -29,7 +29,8 @@
     "test": "TEST_TYPES=unit catalyst-scripts test",
     "postversion": "git push && git push --tags",
     "lint": "catalyst-scripts lint",
-    "lint-fix": "catalyst-scripts lint-fix"
+    "lint-fix": "catalyst-scripts lint-fix",
+    "watch": "catalyst-scripts watch"
   },
   "repository": {
     "type": "git",
@@ -140,5 +141,6 @@
     "react-dom": "^16.8.2",
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0"
-  }
+  },
+  "dependencies": {}
 }
