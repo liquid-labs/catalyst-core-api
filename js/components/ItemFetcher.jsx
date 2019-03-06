@@ -6,6 +6,8 @@ import * as resourcesCache from '../core/resources/cache'
 
 import { Await, awaitStatus } from '@liquid-labs/react-await'
 
+import upperFirst from 'lodash.upperfirst'
+
 const awaitChecks = [ ({item, errorMessage, url}) =>
   errorMessage
     ? {
@@ -27,6 +29,7 @@ const resolveItem = async(resName, resId, itemUrl, setCheckProps) => {
 }
 
 const ItemFetcher = ({itemUrl, itemKey='item', children, ...props}) => {
+  const awaitName = `${upperFirst(itemKey)} fetch`
   const { resName, resId } = routes.extractItemIdentifiers(itemUrl)
   // We check the cache synchronously to avoid blinking.
   const initialCheckProps = {item : null, errorMessage : null, url : itemUrl}
@@ -46,7 +49,7 @@ const ItemFetcher = ({itemUrl, itemKey='item', children, ...props}) => {
   }
 
   return (
-    <Await checks={awaitChecks} checkProps={checkProps} {...props}>
+    <Await checks={awaitChecks} checkProps={checkProps} name={awaitName} {...props}>
       { () => typeof children === 'function' ? children(childProps) : children }
     </Await>
   )
