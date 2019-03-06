@@ -25,6 +25,7 @@
   "scripts": {
     "prebuild": "rm -rf ./dist/* && mkdir -p ./dist",
     "build": "catalyst-scripts build",
+    "prepare": "npm run build",
     "pretest": "TEST_TYPES=unit catalyst-scripts pretest",
     "test": "TEST_TYPES=unit catalyst-scripts test",
     "postversion": "git push && git push --tags",
