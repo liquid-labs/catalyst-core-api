@@ -26,7 +26,7 @@ const resolveItem = async(resName, resId, itemUrl, setCheckProps) => {
   setCheckProps({ item : data, errorMessage : errorMessage, url : itemUrl })
 }
 
-const ItemFetcher = ({itemUrl, itemKey='item', awaitProps, children, ...props}) => {
+const ItemFetcher = ({itemUrl, itemKey='item', children, ...props}) => {
   const { resName, resId } = routes.extractItemIdentifiers(itemUrl)
   // We check the cache synchronously to avoid blinking.
   const initialCheckProps = {item : null, errorMessage : null, url : itemUrl}
@@ -40,13 +40,13 @@ const ItemFetcher = ({itemUrl, itemKey='item', awaitProps, children, ...props}) 
     if (!checkProps.item) resolveItem(resName, resId, itemUrl, setCheckProps)
   }, [ itemUrl, itemKey ])
 
+  // this isn't always used, but no need to memo-ize
   const childProps = {
-    ...props,
     [itemKey] : checkProps.item
   }
 
   return (
-    <Await checks={awaitChecks} checkProps={checkProps} {...awaitProps}>
+    <Await checks={awaitChecks} checkProps={checkProps} {...props}>
       { () => typeof children === 'function' ? children(childProps) : children }
     </Await>
   )

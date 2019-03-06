@@ -38,7 +38,7 @@ describe('ItemFetcher', () => {
     loadUserInCache()
 
     const { getByTestId } = render(
-      <ItemFetcher itemUrl={userUrl} awaitProps={testAwaitProps}>
+      <ItemFetcher itemUrl={userUrl} {...testAwaitProps}>
         { testChild }
       </ItemFetcher>
     )
@@ -59,7 +59,7 @@ describe('ItemFetcher', () => {
       fetchMock.getOnce(`/api${userUrl}`, resultPromise)
 
       const { queryByTestId, getByTestId } = render(
-        <ItemFetcher itemUrl={userUrl} awaitProps={testAwaitProps}>
+        <ItemFetcher itemUrl={userUrl} {...testAwaitProps}>
           { testChild }
         </ItemFetcher>
       )
@@ -74,7 +74,7 @@ describe('ItemFetcher', () => {
   test('should render the blocker if the item has a cached error', () => {
     loadUserErrorInCache()
     const { queryByTestId } = render(
-      <ItemFetcher itemUrl={userUrl} awaitProps={testAwaitProps}>
+      <ItemFetcher itemUrl={userUrl} {...testAwaitProps}>
         { testChild }
       </ItemFetcher>
     )
@@ -95,7 +95,7 @@ describe('ItemFetcher', () => {
     fetchMock.getOnce(`/api${userUrl}`, resultPromise)
 
     const { queryByTestId, getByTestId } = render(
-      <ItemFetcher itemUrl={userUrl} awaitProps={testAwaitProps}>
+      <ItemFetcher itemUrl={userUrl} {...testAwaitProps}>
         { testChild }
       </ItemFetcher>
     )
