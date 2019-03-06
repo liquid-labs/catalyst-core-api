@@ -26,8 +26,7 @@ const resolveItem = async(resName, resId, itemUrl, setCheckProps) => {
   setCheckProps({ item : data, errorMessage : errorMessage, url : itemUrl })
 }
 
-const ItemFetcher = ({itemUrl, itemKey, awaitProps, children, ...props}) => {
-  itemKey = itemKey || 'item'
+const ItemFetcher = ({itemUrl, itemKey='item', awaitProps, children, ...props}) => {
   const { resName, resId } = routes.extractItemIdentifiers(itemUrl)
   // We check the cache synchronously to avoid blinking.
   const initialCheckProps = {item : null, errorMessage : null, url : itemUrl}
