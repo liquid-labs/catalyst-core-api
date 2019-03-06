@@ -108,7 +108,7 @@ export const isItemRoute = (path) => {
 }
 
 const isItemRouteFromBits = (bits) => {
-  return regex.uuid.test(bits[1])
+  return (regex.uuid.test(bits[1]) || (bits[0] === 'persons' && bits[1] === 'self'))
     && (bits.length === 2 || (bits.length === 3 && bits[2] === 'edit'))
 }
 
