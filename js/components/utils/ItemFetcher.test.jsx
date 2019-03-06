@@ -1,12 +1,12 @@
 /* global afterEach beforeAll beforeEach describe expect jest test */
 import React from 'react'
 import { act, render, cleanup, waitForElement } from 'react-testing-library'
-import * as store from '../core/store'
+import * as store from '../../core/store'
 import fetchMock from 'fetch-mock'
 import { ItemFetcher } from './ItemFetcher'
 import {
   userErrorMessage, userId, userReqBody, userUrl,
-  loadUserInCache, loadUserErrorInCache, setupStore } from '../testlib'
+  loadUserInCache, loadUserErrorInCache, setupStore } from '../../testlib'
 import { makeGate } from '@liquid-labs/lock-and-key'
 
 // const callAllowance = 500

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import * as routes from '../core/routes'
-import * as resources from '../core/resources/resources'
-import * as resourcesCache from '../core/resources/cache'
+import * as routes from '../../core/routes'
+import * as resources from '../../core/resources/resources'
+import * as resourcesCache from '../../core/resources/cache'
 
 import { Await, awaitStatus } from '@liquid-labs/react-await'
 
