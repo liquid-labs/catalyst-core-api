@@ -55,8 +55,7 @@ export class CommonResourceConf {
       defineConst(this, 'model', apiConfig.model)
       defineConst(this, 'sortOptions', apiConfig.sortOptions)
       if (apiConfig.sortOptions) {
-        defineConst(this, 'sortMap', apiConfig.sortOptions.reduce((map, opt) =>
-        {
+        defineConst(this, 'sortMap', apiConfig.sortOptions.reduce((map, opt) => {
           map[opt.value] = opt.func
           return map
         }, {}))

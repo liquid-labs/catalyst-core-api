@@ -69,7 +69,7 @@ describe('ItemFetcher', () => {
       await waitForElement(() => getByTestId('content'))
       expect(queryByTestId('content')).toHaveProperty('textContent', userId)
       expectChildWaitBlock(1, 1, 0)
-  })
+    })
 
   test('should render the blocker if the item has a cached error', () => {
     loadUserErrorInCache()

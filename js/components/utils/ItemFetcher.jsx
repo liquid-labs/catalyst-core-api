@@ -11,9 +11,9 @@ import upperFirst from 'lodash.upperfirst'
 const waiterChecks = [ ({item, errorMessage, url}) =>
   errorMessage
     ? {
-      status  : waiterStatus.BLOCKED,
-      summary : `Error encountered retrieving '${url}': '${errorMessage}'`,
-      errorMessage: errorMessage
+      status       : waiterStatus.BLOCKED,
+      summary      : `Error encountered retrieving '${url}': '${errorMessage}'`,
+      errorMessage : errorMessage
     }
     : item
       ? { status : waiterStatus.RESOLVED }
@@ -57,10 +57,10 @@ const ItemFetcher = ({itemUrl, itemKey='item', children, ...props}) => {
 
 if (process.env.NODE_ENV !== 'production') {
   ItemFetcher.propTypes = {
-    itemUrl    : PropTypes.string.isRequired,
-    itemKey    : PropTypes.string,
+    itemUrl     : PropTypes.string.isRequired,
+    itemKey     : PropTypes.string,
     waiterProps : PropTypes.object,
-    children   : PropTypes.oneOfType([PropTypes.node, PropTypes.func]).isRequired,
+    children    : PropTypes.oneOfType([PropTypes.node, PropTypes.func]).isRequired,
   }
 }
 
