@@ -15,15 +15,17 @@ import { makeGate } from '@liquid-labs/lock-and-key'
 const testChild = jest.fn(
   ({item}) => <span data-testid="content">{item.pubId}</span>
 )
-const testWait = jest.fn(() => null)
-const testBlock = jest.fn(({errorMessage}) =>
-  <span data-testid="errorMessage">{errorMessage}</span>)
-const testWaiterProps = { spinner : testWait, blocked : testBlock }
+const testWaitFn = jest.fn(() => null)
+const TestWait = ({report}) => <div>{testWaitFn()}</div>
+const testBlockFn = jest.fn(({errorMessage}) => errorMessage)
+const TestBlock = ({report}) =>
+  <span data-testid="errorMessage">{testBlockFn(report)}</span>
+const testWaiterProps = { spinner : TestWait, blocker : TestBlock }
 
 const expectChildWaitBlock = (childN, waitN, blockN) => {
   expect(testChild.mock.calls).toHaveLength(childN)
-  expect(testWait.mock.calls).toHaveLength(waitN)
-  expect(testBlock.mock.calls).toHaveLength(blockN)
+  expect(testWaitFn.mock.calls).toHaveLength(waitN)
+  expect(testBlockFn.mock.calls).toHaveLength(blockN)
 }
 
 describe('ItemFetcher', () => {
@@ -78,7 +80,7 @@ describe('ItemFetcher', () => {
         { testChild }
       </ItemFetcher>
     )
-    expect(testBlock).toHaveBeenCalledTimes(1)
+    expect(testBlockFn).toHaveBeenCalledTimes(1)
     expect(queryByTestId('errorMessage')).toHaveProperty('textContent', userErrorMessage)
     expectChildWaitBlock(0, 0, 1)
   })
@@ -103,7 +105,7 @@ describe('ItemFetcher', () => {
 
     act(() => { key.openGate() })
     await waitForElement(() => getByTestId('errorMessage'))
-    expect(testBlock).toHaveBeenCalledTimes(1)
+    expect(testBlockFn).toHaveBeenCalledTimes(1)
     expect(queryByTestId('errorMessage')).toHaveProperty('textContent', userErrorMessage)
     expectChildWaitBlock(0, 1, 1)
   })

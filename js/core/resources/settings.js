@@ -9,16 +9,21 @@ const defaultErrorHandler = (message) => {
 }
 
 const settings = {
-  baseUrl      : null,
   resources    : null,
+  resourcesMap : null,
   errorHandler : defaultErrorHandler
 }
 
-export const setBaseUrl = (baseUrl) => settings.baseUrl = baseUrl
-export const getBaseUrl = () => settings.baseUrl
-
-export const setResources = (resources) => settings.resources = resources
+export const setResources = (resources) => {
+  settings.resources = resources
+  settings.resourcesMap = resources.reduce(
+    (map, resourceConf) => {
+      map[resourceConf.resourceName] = resourceConf
+      return map
+    }, {})
+}
 export const getResources = () => settings.resources
+export const getResourcesMap = () => settings.resourcesMap
 
 export const setErrorHandler = (errorHandler) =>
   settings.errorHandler = errorHandler

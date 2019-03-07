@@ -35,11 +35,11 @@ export const INITIAL_STATE = {
 
 const modelItem = (item, resourceName) => {
   if (process.env.NODE_ENV !== 'production') {
-    if (!settings.getResources()[resourceName]) {
+    if (!settings.getResourcesMap()[resourceName]) {
       throw new Error(`No such resource '${resourceName}' defined.`)
     }
   }
-  const constructor = settings.getResources()[resourceName].model
+  const constructor = settings.getResourcesMap()[resourceName].model
   return new constructor(item)
 }
 

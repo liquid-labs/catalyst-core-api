@@ -4,8 +4,9 @@
  * isolated library used by 'resourceActions' and is not currently exported by
  * the 'resources/index' file.
  */
-import * as settings from './settings'
 import * as cache from './cache'
+import * as routes from '../routes'
+import * as settings from './settings'
 
 const AUTH_TOKEN_REQUIRED = 1
 const AUTH_TOKEN_OPTIONAL = 2
@@ -13,7 +14,12 @@ const AUTH_TOKEN_OPTIONAL = 2
 class FetchBuilder {
   constructor(source) {
     this.source = source
-    this.url = settings.getBaseUrl() + source
+    const resource = routes.extractResource(source)
+    // console.log(`source: ${source}`)
+    // console.log(settings.getResourcesMap())
+    const baseURL = settings.getResourcesMap()[resource].baseURL
+    // console.log(`baseURL: ${baseURL} / source: ${source}`)
+    this.url = baseURL + source
     this.method = 'GET' // default method if none specified
     this.isForced = false // by default we do not force the fetch
     this.authToken = AUTH_TOKEN_OPTIONAL

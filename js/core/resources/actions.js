@@ -167,14 +167,14 @@ export const forceFetchSingleFromList = (source) => new FetchBuilder(source)
   .force()
   .build()
 
-export const fetchItem = (resourceName, pubId) => new FetchBuilder(`/${resourceName}/${pubId}`)
+export const fetchItem = (resourceName, pubId) => new FetchBuilder(`/${resourceName}/${pubId}/`)
   .withRequestAction(fetchItemRequest)
   .withSuccessAction(fetchItemSuccess)
   .withFailureAction(fetchItemFailed)
   .withInFlightCheck()
   .build()
 
-export const completeItem = (resourceName, pubId) => new FetchBuilder(`/${resourceName}/${pubId}`)
+export const completeItem = (resourceName, pubId) => new FetchBuilder(`/${resourceName}/${pubId}/`)
   .withRequestAction(fetchItemRequest)
   .withSuccessAction(fetchItemSuccess)
   .withFailureAction(fetchItemFailed)
@@ -182,7 +182,7 @@ export const completeItem = (resourceName, pubId) => new FetchBuilder(`/${resour
   .withPreFlightCheck(() => !cache.getFreshCompleteItem(pubId))
   .build()
 
-export const forceFetchItem = (resourceName, pubId) => new FetchBuilder(`/${resourceName}/${pubId}`)
+export const forceFetchItem = (resourceName, pubId) => new FetchBuilder(`/${resourceName}/${pubId}/`)
   .withRequestAction(fetchItemRequest)
   .withSuccessAction(fetchItemSuccess)
   .withFailureAction(fetchItemFailed)
@@ -190,7 +190,7 @@ export const forceFetchItem = (resourceName, pubId) => new FetchBuilder(`/${reso
   .force()
   .build()
 
-export const addItem = (item) => new FetchBuilder(`/${item.resourceName}`)
+export const addItem = (item) => new FetchBuilder(`/${item.resourceName}/`)
   .forPost()
   .withJson(item)
   .withRequestAction(addItemRequest)
@@ -198,7 +198,7 @@ export const addItem = (item) => new FetchBuilder(`/${item.resourceName}`)
   .withFailureAction(addItemFailed)
   .build()
 
-export const updateItem = (item) => new FetchBuilder(`/${item.resourceName}/${item.pubId}`)
+export const updateItem = (item) => new FetchBuilder(`/${item.resourceName}/${item.pubId}/`)
   .forPut()
   .withJson(item)
   .withRequestAction(updateItemRequest)
@@ -209,7 +209,7 @@ export const updateItem = (item) => new FetchBuilder(`/${item.resourceName}/${it
 // Somewhere in the API chain, it's rejecting with '"DELETE" requests
 // may not contain bodies'. While this seems totally bogus and is an
 // extra-spec constraint, no time to fight it.
-export const deleteItem = (resourceName, pubId, reason) => new FetchBuilder(`/${resourceName}/${pubId}?reason=${encodeURIComponent(reason)}`)
+export const deleteItem = (resourceName, pubId, reason) => new FetchBuilder(`/${resourceName}/${pubId}/?reason=${encodeURIComponent(reason)}`)
   .forDelete()
   .withRequestAction(updateItemRequest)
   .withSuccessAction(updateItemSuccess)
@@ -217,7 +217,7 @@ export const deleteItem = (resourceName, pubId, reason) => new FetchBuilder(`/${
   // .withJson({reason: reason})
   .build()
 
-export const fetchItemEventList = (resourceName, pubId) => new FetchBuilder(`/${resourceName}/${pubId}/events`)
+export const fetchItemEventList = (resourceName, pubId) => new FetchBuilder(`/${resourceName}/${pubId}/events/`)
   .withRequestAction(fetchItemEventListRequest)
   .withSuccessAction(fetchItemEventListSuccess)
   .withFailureAction(fetchItemEventListFailed)
@@ -226,7 +226,7 @@ export const fetchItemEventList = (resourceName, pubId) => new FetchBuilder(`/${
   .force()
   .build()
 
-export const addItemEvent = (resourceName, ev) => new FetchBuilder(`/${resourceName}/${ev.pubId}/events`)
+export const addItemEvent = (resourceName, ev) => new FetchBuilder(`/${resourceName}/${ev.pubId}/events/`)
   .forPost()
   .withJson(ev)
   .withRequestAction(addItemEventRequest)

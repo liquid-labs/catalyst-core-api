@@ -6,7 +6,7 @@ import { CommonResourceConf } from './core/resources/CommonResourceConf'
 import { User } from './users/model'
 
 export const userId = '8BBF68AB-96D6-43EB-BDAE-36F55BC6EFD6'
-export const userUrl = `/users/${userId}`
+export const userUrl = `/users/${userId}/`
 export const ts = Date.now()
 export const userData = { pubId : userId, lastUpdated : ts -1000, active : true }
 export const userReqBody = {
@@ -17,11 +17,9 @@ export const userReqBody = {
 export const userErrorMessage = 'Server error.'
 
 export const setupResources = () => {
-  settings.setBaseUrl('/api')
-  const resourceList = [
-    new CommonResourceConf('user', { model : User })
-  ]
-  settings.setResources(CommonResourceConf.listToMap(resourceList))
+  const usersResourceConf = new CommonResourceConf('user', { model : User })
+  usersResourceConf.baseURL = '/api'
+  settings.setResources([usersResourceConf])
   verifyCatalystSetup()
 }
 

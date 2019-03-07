@@ -8,10 +8,10 @@ import * as regex from '@liquid-labs/regex-repo'
  * Given a resource name, returns the UI path to the global list.
  */
 export const getGlobalListRoute = (resource) => {
-  if (!resourcesSettings.getResources()[resource]) {
+  if (!resourcesSettings.getResourcesMap()[resource]) {
     throw new Error(`Unknown resource '${resource}'. (Check that resource name is plural.)`)
   }
-  return `/${resource}`
+  return `/${resource}/`
 }
 /**
  * Given a context resource, final (displayed) resource, and optional context ID
@@ -23,13 +23,13 @@ const getContextListRoute = (contextResource, resource, generic=true) => {
     && contextSettings.getContexts().contextMaps[resource][contextResource]
   if (resourceMapper) {
     const { mappedContext, mappedId } = resourceMapper(generic)
-    return `/${mappedContext}/${mappedId || ':contextId' }/${resource}`
+    return `/${mappedContext}/${mappedId || ':contextId' }/${resource}/`
   }
   else if (contextSettings.getContexts().info[contextResource]) {
     const contextId = generic
       ? ':contextId'
       : store.getStore().getState()['contextState'][contextSettings.getContexts().info[contextResource].itemName].pubId
-    return `/${contextResource}/${contextId}/${resource}`
+    return `/${contextResource}/${contextId}/${resource}/`
   }
   else throw new Error(`Unmapple context list context '${contextResource}' and resource '${resource}'.`)
 }
@@ -42,21 +42,21 @@ export const getContextListRouteForState = (contextResource, resource) =>
 
 export const getContextListRouteFor = (context, resourceName) => {
   if (!Array.isArray(context)) {
-    return `/${context.type}/${context.id}/${resourceName}`
+    return `/${context.type}/${context.id}/${resourceName}/`
   }
   else {
-    return `${context.reduce((path, bit) => `/${context.type}/${context.id}`)}/${resourceName}`
+    return `${context.reduce((path, bit) => `/${context.type}/${context.id}`)}/${resourceName}/`
   }
 }
 
 export const getItemCreateRoute = (resource) =>
-  `/${resource}/create`
+  `/${resource}/create/`
 
 export const getItemViewRoute = (resource, itemId) =>
-  `/${resource}/${itemId || ':id'}`
+  `/${resource}/${itemId || ':id'}/`
 
 export const getItemEditRoute = (resource, itemId) =>
-  `/${resource}/${itemId || ':id'}/edit`
+  `/${resource}/${itemId || ':id'}/edit/`
 
 export const getDefaultListRoute = (resource, context) => {
   if (context.contextResolved && !context.contextError) {
@@ -82,24 +82,29 @@ export const getDefaultListRoute = (resource, context) => {
 const splitPath = (path) => {
   const [pathName, query] = path.split('?')
   const bits = pathName.split('/')
-  // Canonical path names work start with '/'
-  if (bits[0] === '') {
-    bits.splice(0, 1)
-  }
-  else {
-    throw new Error(`Cannot extract information from a non-absolute/canonical path: '${path}'.`)
+  // We are stringent with our path and expect a leading and trailing '/'
+  if (bits.shift() !== '' || bits.pop() !== '') {
+    throw new Error(`Cannot extract information from a non-absolute/canonical path: '${path}'. Ensure to include a leading and trailing '/'.`)
   }
 
   return { bits, query }
 }
 
+// TODO: hardcoding 'self' isn't great... Either decide it's pracitcally OK and
+// clearly document or support some per-resource 'special ID' definition.
+const bitsHaveValidId = (bits) =>
+  // the ID slot is either regex
+  regex.uuid.test(bits[1])
+  // or 'self' with a context resource of either 'persons' or 'users'
+    || ((bits[0] === 'persons' || bits[0] === 'users') && bits[1] === 'self')
+
 export const isListView = (path) => {
   const { bits } = splitPath(path)
-  return Boolean((bits.length === 1 && resourcesSettings.getResources()[bits[0]])
+  return Boolean((bits.length === 1 && resourcesSettings.getResourcesMap()[bits[0]])
     || (bits.length === 3
-        && resourcesSettings.getResources()[bits[0]]
+        && resourcesSettings.getResourcesMap()[bits[0]]
         && regex.uuid.test(bits[1])
-        && resourcesSettings.getResources()[bits[2]]))
+        && resourcesSettings.getResourcesMap()[bits[2]]))
 }
 
 export const isItemRoute = (path) => {
@@ -108,7 +113,7 @@ export const isItemRoute = (path) => {
 }
 
 const isItemRouteFromBits = (bits) => {
-  return (regex.uuid.test(bits[1]) || (bits[0] === 'persons' && bits[1] === 'self'))
+  return bitsHaveValidId(bits)
     && (bits.length === 2 || (bits.length === 3 && bits[2] === 'edit'))
 }
 
@@ -122,13 +127,13 @@ export const extractResource = (path) => {
 
   if (bits.length === 1 // global list
       || (bits.length === 2
-          && (bits[1] === 'create' || regex.uuid.test(bits[1]))) // create  or veiew item
+          && (bits[1] === 'create' || bitsHaveValidId(bits))) // create  or veiw item
       || (bits.length === 3 && bits[2] === 'edit')) { // edit item
     return bits[0]
   }
   else if (bits.length === 3 // context access
     // valid entity IDs
-    && (regex.uuid.test(bits[1]) || (bits[0] === 'users' && bits[1] === 'self'))) {
+    && bitsHaveValidId(bits)) {
     return bits[2]
   }
   else return null
@@ -148,11 +153,11 @@ export const extractListContext = (path) => {
 
   if (bits.length === 1 // global list
       || (bits.length === 2
-          && (bits[1] === 'create' || regex.uuid.test(bits[1]))) // create  or veiew item
+          && (bits[1] === 'create' || bitsHaveValidId(bits))) // create  or veiew item
       || (bits.length === 3 && bits[2] === 'edit')) { // edit item
     return null
   }
-  else if (bits.length === 3 && regex.uuid.test(bits[1])) { // context list
+  else if (bits.length === 3 && bitsHaveValidId(bits)) { // context list
     return bits[0]
   }
   else return null

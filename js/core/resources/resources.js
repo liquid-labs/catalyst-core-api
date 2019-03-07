@@ -20,7 +20,7 @@ import * as store from '../store'
  * be fetched from the remote source.
  */
 export const fetchItem = async(resourceName, pubId) => {
-  const source = `/${resourceName}/${pubId}`
+  const source = `/${resourceName}/${pubId}/`
   const { permanentError } = cache.getFreshSourceData(source)
 
   if (permanentError) return { data : null, errorMessage : permanentError.message }

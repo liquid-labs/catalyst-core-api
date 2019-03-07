@@ -17,13 +17,6 @@ const defineConst = (obj, name, value) =>
   })
 
 export class CommonResourceConf {
-  static listToMap(resourceList) {
-    return resourceList.reduce((acc, resourceConf) => {
-      acc[resourceConf.resourceName] = resourceConf
-      return acc
-    }, {})
-  }
-
   /**
    * A number of common constants used for UI and internal processing are
    * generated from the item name. The `apiConfig` parameter is necessary for
