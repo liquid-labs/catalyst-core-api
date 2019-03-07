@@ -4,21 +4,21 @@ import * as routes from '../../core/routes'
 import * as resources from '../../core/resources/resources'
 import * as resourcesCache from '../../core/resources/cache'
 
-import { Await, awaitStatus } from '@liquid-labs/react-await'
+import { Waiter, waiterStatus } from '@liquid-labs/react-waiter'
 
 import upperFirst from 'lodash.upperfirst'
 
-const awaitChecks = [ ({item, errorMessage, url}) =>
+const waiterChecks = [ ({item, errorMessage, url}) =>
   errorMessage
     ? {
-      status  : awaitStatus.BLOCKED,
+      status  : waiterStatus.BLOCKED,
       summary : `Error encountered retrieving '${url}': '${errorMessage}'`,
       errorMessage: errorMessage
     }
     : item
-      ? { status : awaitStatus.RESOLVED }
+      ? { status : waiterStatus.RESOLVED }
       : {
-        status  : awaitStatus.WAITING,
+        status  : waiterStatus.WAITING,
         summary : `Waiting on response from '${url}'...`
       }
 ]
@@ -29,7 +29,7 @@ const resolveItem = async(resName, resId, itemUrl, setCheckProps) => {
 }
 
 const ItemFetcher = ({itemUrl, itemKey='item', children, ...props}) => {
-  const awaitName = `${upperFirst(itemKey)} fetch`
+  const waiterName = `${upperFirst(itemKey)} fetch`
   const { resName, resId } = routes.extractItemIdentifiers(itemUrl)
   // We check the cache synchronously to avoid blinking.
   const initialCheckProps = {item : null, errorMessage : null, url : itemUrl}
@@ -49,9 +49,9 @@ const ItemFetcher = ({itemUrl, itemKey='item', children, ...props}) => {
   }
 
   return (
-    <Await checks={awaitChecks} checkProps={checkProps} name={awaitName} {...props}>
+    <Waiter checks={waiterChecks} checkProps={checkProps} name={waiterName} {...props}>
       { () => typeof children === 'function' ? children(childProps) : children }
-    </Await>
+    </Waiter>
   )
 }
 
@@ -59,7 +59,7 @@ if (process.env.NODE_ENV !== 'production') {
   ItemFetcher.propTypes = {
     itemUrl    : PropTypes.string.isRequired,
     itemKey    : PropTypes.string,
-    awaitProps : PropTypes.object,
+    waiterProps : PropTypes.object,
     children   : PropTypes.oneOfType([PropTypes.node, PropTypes.func]).isRequired,
   }
 }

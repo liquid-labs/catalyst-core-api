@@ -31,7 +31,8 @@
     "postversion": "git push && git push --tags",
     "lint": "catalyst-scripts lint",
     "lint-fix": "catalyst-scripts lint-fix",
-    "watch": "catalyst-scripts watch"
+    "watch": "catalyst-scripts watch",
+    "postyalc": "chmod a+x ~/.yalc/packages/@liquid-labs/catalyst-core-api/*/bin/*"
   },
   "repository": {
     "type": "git",
@@ -114,7 +115,6 @@
   "devDependencies": {
     "@liquid-labs/catalyst-scripts": "^1.0.0-alpha.13",
     "@liquid-labs/lock-and-key": "0.0.4",
-    "@liquid-labs/react-await": "^1.0.0-prototype.6",
     "@liquid-labs/regex-repo": "latest",
     "fetch-mock": "^7.3.0",
     "lodash.isequal": "^4.5.0",

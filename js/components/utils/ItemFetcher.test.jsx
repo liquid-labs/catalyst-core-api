@@ -18,7 +18,7 @@ const testChild = jest.fn(
 const testWait = jest.fn(() => null)
 const testBlock = jest.fn(({errorMessage}) =>
   <span data-testid="errorMessage">{errorMessage}</span>)
-const testAwaitProps = { spinner : testWait, blocked : testBlock }
+const testWaiterProps = { spinner : testWait, blocked : testBlock }
 
 const expectChildWaitBlock = (childN, waitN, blockN) => {
   expect(testChild.mock.calls).toHaveLength(childN)
@@ -38,7 +38,7 @@ describe('ItemFetcher', () => {
     loadUserInCache()
 
     const { getByTestId } = render(
-      <ItemFetcher itemUrl={userUrl} {...testAwaitProps}>
+      <ItemFetcher itemUrl={userUrl} {...testWaiterProps}>
         { testChild }
       </ItemFetcher>
     )
@@ -59,7 +59,7 @@ describe('ItemFetcher', () => {
       fetchMock.getOnce(`/api${userUrl}`, resultPromise)
 
       const { queryByTestId, getByTestId } = render(
-        <ItemFetcher itemUrl={userUrl} {...testAwaitProps}>
+        <ItemFetcher itemUrl={userUrl} {...testWaiterProps}>
           { testChild }
         </ItemFetcher>
       )
@@ -74,7 +74,7 @@ describe('ItemFetcher', () => {
   test('should render the blocker if the item has a cached error', () => {
     loadUserErrorInCache()
     const { queryByTestId } = render(
-      <ItemFetcher itemUrl={userUrl} {...testAwaitProps}>
+      <ItemFetcher itemUrl={userUrl} {...testWaiterProps}>
         { testChild }
       </ItemFetcher>
     )
@@ -95,7 +95,7 @@ describe('ItemFetcher', () => {
     fetchMock.getOnce(`/api${userUrl}`, resultPromise)
 
     const { queryByTestId, getByTestId } = render(
-      <ItemFetcher itemUrl={userUrl} {...testAwaitProps}>
+      <ItemFetcher itemUrl={userUrl} {...testWaiterProps}>
         { testChild }
       </ItemFetcher>
     )
