@@ -15,14 +15,11 @@ class FetchBuilder {
   constructor(source) {
     this.source = source
     const resource = routes.extractResource(source)
-    // console.log(`source: ${source}`)
-    // console.log(settings.getResourcesMap())
     const baseURL = settings.getResourcesMap()[resource].baseURL
-    // console.log(`baseURL: ${baseURL} / source: ${source}`)
     this.url = baseURL + source
     this.method = 'GET' // default method if none specified
     this.isForced = false // by default we do not force the fetch
-    this.authToken = AUTH_TOKEN_OPTIONAL
+    this.authTokenRequirement = AUTH_TOKEN_OPTIONAL
   }
   forPost() {
     this.method = 'POST'
@@ -41,8 +38,13 @@ class FetchBuilder {
     this.contentType = 'application/json'
     return this
   }
-  withAuthToken() {
-    this.authToken = AUTH_TOKEN_REQUIRED
+  withAuthTokenRequirement(authTokenRequirement) {
+    this.authTokenRequirement = authTokenRequirement
+    return this
+  }
+  withAuthToken(authToken) {
+    this.authToken = authToken
+    console.log("fetchbuldier withAuthToken: ", authToken, this.authToken)
     return this
   }
   withRequestAction(requestAction) {
@@ -108,16 +110,15 @@ class FetchBuilder {
       // 2) Prepare to issue the async call.
       // 2a) Prepare the auth header.
       const headers = {}
-      if (this.authToken == AUTH_TOKEN_REQUIRED
-          || (this.AUTH_TOKEN_REQUIRED == AUTH_TOKEN_REQUIRED
-              && getState().sessionState && getState().sessionState.authToken)) {
-        const token = getState().sessionState.authToken
-        if (!token) {
+      if (this.authTokenRequirement == AUTH_TOKEN_REQUIRED
+          || (this.authTokenRequirement == AUTH_TOKEN_OPTIONAL
+              && this.authToken)) {
+        if (!this.authToken) {
           const msg = `Request to '${this.url}' requires authentication.`
           settings.invokeErrorHandler(msg)
           return Promise.resolve(null)
         }
-        headers['Authorization'] = `Bearer ${token}`
+        headers['Authorization'] = `Bearer ${this.authToken}`
       }
       // 2b) Set the basic options.
       const fetchOptions = {
@@ -125,7 +126,8 @@ class FetchBuilder {
         headers : headers
       }
       // 2c) Setup the cors policy based on production or dev context.
-      //     Note: 'production' here just means "in the cloud".
+      //     Note: 'production' here just means "in the cloud", and would
+      //     include cloud-based test, integration, beta, etc.
       if (process.env.NODE_ENV !== 'production') {
         fetchOptions.mode = 'cors'
       }
@@ -145,9 +147,11 @@ class FetchBuilder {
             return response.json().then(data => {
               let error
               if (!this.validator || !(error = this.validator(data))) {
+                console.log('success with: ', data)
                 return dispatch(this.successAction.call(null, data, this.source))
               }
               else {
+                console.log('validation error: ', error)
                 return dispatch(this.failureAction.call(null,
                   error,
                   response.status,
@@ -168,7 +172,7 @@ class FetchBuilder {
           }
         })
         .catch((error) => {
-          console.warn(error) // eslint-disable-line no-console
+          console.warn(`Error in fetch: ${error}`) // eslint-disable-line no-console
           if (this.failureAction) {
             return dispatch(this.failureAction.call(null,
               error + "",

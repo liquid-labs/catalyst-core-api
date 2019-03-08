@@ -17,9 +17,10 @@ import * as store from '../store'
 
 /**
  * Fetches an item. Cached data will be used if fresh, otherwise the item will
- * be fetched from the remote source.
+ * be fetched from the remote source. Note that authorization is not checked if
+ * the item is in cache, it's treated as accessible.
  */
-export const fetchItem = async(resourceName, pubId) => {
+export const fetchItem = async(resourceName, pubId, authToken) => {
   const source = `/${resourceName}/${pubId}/`
   const { permanentError } = cache.getFreshSourceData(source)
 
@@ -27,14 +28,14 @@ export const fetchItem = async(resourceName, pubId) => {
   const item = cache.getFreshCompleteItem(pubId)
   if (item) return { data : item, errorMessage : null }
 
-  return await store.getStore().dispatch(actions.fetchItem(resourceName, pubId))
+  return await store.getStore().dispatch(actions.fetchItem(resourceName, pubId, authToken))
 }
 
-export const fetchList = async(source) => {
+export const fetchList = async(source, authToken) => {
   const { itemList, permanentError } = cache.getFreshSourceData(source)
 
   if (permanentError) return { data : null, errorMessage : permanentError.message }
   else if (itemList) return { data : itemList, errorMessage : null }
 
-  return await store.getStore().dispatch(actions.fetchList(source))
+  return await store.getStore().dispatch(actions.fetchList(source, authToken))
 }

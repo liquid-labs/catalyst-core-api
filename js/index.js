@@ -18,6 +18,4 @@ export * from './core/resources'
 export * from './entities/model'
 export * from './locations/model'
 
-export * from './components'
-
 export { contextSettings, routes, store }
