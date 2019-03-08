@@ -5,6 +5,7 @@ require (
 	github.com/Liquid-Labs/go-nullable-mysql v1.0.2
 	github.com/Liquid-Labs/go-rest v1.0.0-prototype.2
 	github.com/google/uuid v1.1.0 // indirect
+	github.com/gorilla/handlers v1.4.0
 	github.com/gorilla/mux v1.7.0
 	github.com/rs/cors v1.6.0
 	github.com/stretchr/testify v1.3.0
