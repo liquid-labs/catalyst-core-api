@@ -8,6 +8,7 @@ CREATE TABLE `users` (
   `auth_id` varchar(128),
   `active` tinyint(1) DEFAULT 1 NOT NULL,
   CONSTRAINT `users_key` PRIMARY KEY ( `id` ),
+  CONSTRAINT `users_auth_id_unique` UNIQUE (`auth_id`),
   CONSTRAINT `users_ref_entities` FOREIGN KEY ( `id` ) REFERENCES `entities` ( `id` )
 );
 
