@@ -98,7 +98,7 @@ const processFetchData = (action, currentState) => {
     if (!itemList[0].isComplete()) {
       settings.invokeErrorHandler(`Retrieved item is missing expected data: '${itemList[0]._missing.join("', '")}'.`)
       return processData([], action, currentState, {},
-        { calculateNewSources : calculateFailedSources })
+        { calculateNewSources : () => calculateFailedSources(action, currentState) })
     }
   }
 
