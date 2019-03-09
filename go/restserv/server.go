@@ -75,8 +75,10 @@ func Init() {
     log.Print("setting up CORS support for non-production environment\n")
     handler = handlers.CORS(
       handlers.AllowedOrigins([]string{"*"}),
-      // appended to the default allowed headers
-      handlers.AllowedHeaders([]string{"Authorization"}),
+      // appendeds to the default allowed headers
+      handlers.AllowedHeaders([]string{"Authorization", "Content-Type"}),
+      // replaces the default allowed methods
+      handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD"}),
     )(r)
   }/* else {
     http.Handle("/", r)
