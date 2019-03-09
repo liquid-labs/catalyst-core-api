@@ -182,6 +182,15 @@ export const fetchItem = (resourceName, pubId, authToken) =>
     .withInFlightCheck()
     .build()
 
+export const fetchItemBySource = (source, authToken) =>
+  new FetchBuilder(source)
+    .withAuthToken(authToken)
+    .withRequestAction(fetchItemRequest)
+    .withSuccessAction(fetchItemSuccess)
+    .withFailureAction(fetchItemFailed)
+    .withInFlightCheck()
+    .build()
+
 export const completeItem = (resourceName, pubId, authToken) =>
   new FetchBuilder(`/${resourceName}/${pubId}/`)
     .withAuthToken(authToken)
@@ -202,6 +211,7 @@ export const forceFetchItem = (resourceName, pubId, authToken) =>
     .force()
     .build()
 
+// TODO: 'createItem'
 export const addItem = (item, authToken) =>
   new FetchBuilder(`/${item.resourceName}/`)
     .withAuthToken(authToken)

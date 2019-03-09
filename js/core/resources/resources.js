@@ -13,7 +13,10 @@
 import * as cache from './cache'
 import * as actions from './actions'
 import * as store from '../store'
+import * as routes from '../routes'
 
+export const createItem = async(item, authToken) =>
+  await store.getStore().dispatch(actions.addItem(item.forApi(), authToken))
 
 /**
  * Fetches an item. Cached data will be used if fresh, otherwise the item will
@@ -22,13 +25,26 @@ import * as store from '../store'
  */
 export const fetchItem = async(resourceName, pubId, authToken) => {
   const source = `/${resourceName}/${pubId}/`
+  return await fetchItemBySource(source)
+}
+
+export const fetchItemBySource = async(source, authToken) => {
+  // TODO: Use 'source' consistently and get away from the special casing for
+  // item using the pubId (should be pubID). It's REST, so the URL (or path, at
+  // least) should be use consistently.
   const { permanentError } = cache.getFreshSourceData(source)
 
   if (permanentError) return { data : null, errorMessage : permanentError.message }
-  const item = cache.getFreshCompleteItem(pubId)
-  if (item) return { data : item, errorMessage : null }
 
-  return await store.getStore().dispatch(actions.fetchItem(resourceName, pubId, authToken))
+  const { pubId } = routes.extractItemIdentifiers(source)
+  if (pubId !== null) { // then it's a standard item ID and we'll check cache for
+    const item = cache.getFreshCompleteItem(pubId)
+    if (item) return { data : item, errorMessage : null }
+  }
+
+  // TODO: once we fix special casing, should handle caching for all items.
+  //if we fail either if, then we fall through here
+  return await store.getStore().dispatch(actions.fetchItemBySource(source, authToken))
 }
 
 export const fetchList = async(source, authToken) => {
