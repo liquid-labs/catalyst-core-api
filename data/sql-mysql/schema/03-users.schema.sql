@@ -1,5 +1,11 @@
 CREATE TABLE `users` (
   `id` int(10),
+  -- Based on firebase User uid. Not well documented, but if you dig into this:
+  -- https://firebase.google.com/docs/auth/admin/manage-users
+  -- we find that an assigned ID may be up to 128 characters, though generated
+  -- uids are 28 characters at time of writing (2019-03-08), though that's not
+  -- guaranteed
+  `auth_id` varchar(128),
   `active` tinyint(1) DEFAULT 1 NOT NULL,
   CONSTRAINT `users_key` PRIMARY KEY ( `id` ),
   CONSTRAINT `users_ref_entities` FOREIGN KEY ( `id` ) REFERENCES `entities` ( `id` )
