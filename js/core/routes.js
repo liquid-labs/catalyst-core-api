@@ -4,6 +4,9 @@ import * as contextSettings from './contextSettings'
 
 import * as regex from '@liquid-labs/regex-repo'
 
+const authIdRegex = /^auth-id-.{1,}/
+const ALLOW_ALT_IDS = true
+
 /**
  * Given a resource name, returns the UI path to the global list.
  */
@@ -92,11 +95,13 @@ const splitPath = (path) => {
 
 // TODO: hardcoding 'self' isn't great... Either decide it's pracitcally OK and
 // clearly document or support some per-resource 'special ID' definition.
-const bitsHaveValidId = (bits) =>
+const bitsHaveValidId = (bits, allowAltIds=false) =>
   // the ID slot is either regex
   regex.uuid.test(bits[1])
-  // or 'self' with a context resource of either 'persons' or 'users'
+    // or 'self' with a context resource of either 'persons' or 'users'
     || ((bits[0] === 'persons' || bits[0] === 'users') && bits[1] === 'self')
+    // or alt 'auth-id' variant with 'persons'
+    || (allowAltIds && bits[0] === 'persons' && authIdRegex.test(bits[1]))
 
 export const isListView = (path) => {
   const { bits } = splitPath(path)
@@ -127,7 +132,7 @@ export const extractResource = (path) => {
 
   if (bits.length === 1 // global list
       || (bits.length === 2
-          && (bits[1] === 'create' || bitsHaveValidId(bits))) // create  or veiw item
+          && (bits[1] === 'create' || bitsHaveValidId(bits, ALLOW_ALT_IDS))) // create  or veiw item
       || (bits.length === 3 && bits[2] === 'edit')) { // edit item
     return bits[0]
   }
@@ -139,13 +144,12 @@ export const extractResource = (path) => {
   else return null
 }
 
+
 export const extractItemIdentifiers = (path) => {
   const { bits } = splitPath(path)
-  if (!isItemRouteFromBits(bits)) {
-    throw new Error(`Cannot extract item identifiers from non-item path: '${path}'.`)
-  }
-
-  return { resName : bits[0], resId : bits[1] }
+  return isItemRouteFromBits(bits)
+    ? { resourceName : bits[0], pubId : bits[1] }
+    : {}
 }
 
 export const extractListContext = (path) => {
