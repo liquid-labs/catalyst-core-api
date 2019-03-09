@@ -12,7 +12,7 @@ Model.finalizeConstructor(Foo, fooPropsModel)
 
 describe('Model', () => {
   test("'forApi()' should set empty, plain (non-model) values to null", () => {
-    const foo = new Foo({name: ""})
+    const foo = new Foo({name : ""})
     expect(foo.forApi().name).toBeNull()
   })
 })

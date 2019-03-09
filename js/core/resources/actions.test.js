@@ -4,10 +4,9 @@ import thunk from 'redux-thunk'
 import fetchMock from 'fetch-mock'
 import * as actions from './actions'
 import * as store from '../store'
-import * as settings from './settings'
 import { INITIAL_STATE } from './reducer'
 import { RESOURCES_STATE_KEY } from './constants'
-import { userData, userId, userReqBody, userUrl, setupResources, ts } from '../../testlib'
+import { userId, userReqBody, userUrl, setupResources, ts } from '../../testlib'
 
 const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)

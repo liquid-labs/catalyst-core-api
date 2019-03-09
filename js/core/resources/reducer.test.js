@@ -1,7 +1,6 @@
 /* global beforeAll describe expect test */
 import { resourceReducer, INITIAL_STATE } from './reducer'
 import * as actions from './actions'
-import * as resourcesSettings from './settings'
 import { User } from '../../users/model'
 import { userData, userId, userUrl, setupResources, ts } from '../../testlib'
 
