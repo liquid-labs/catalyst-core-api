@@ -44,7 +44,6 @@ class FetchBuilder {
   }
   withAuthToken(authToken) {
     this.authToken = authToken
-    console.log("fetchbuldier withAuthToken: ", authToken, this.authToken)
     return this
   }
   withRequestAction(requestAction) {
@@ -147,11 +146,9 @@ class FetchBuilder {
             return response.json().then(data => {
               let error
               if (!this.validator || !(error = this.validator(data))) {
-                console.log('success with: ', data)
                 return dispatch(this.successAction.call(null, data, this.source))
               }
               else {
-                console.log('validation error: ', error)
                 return dispatch(this.failureAction.call(null,
                   error,
                   response.status,
