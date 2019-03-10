@@ -25,7 +25,7 @@ export const createItem = async(item, authToken) =>
  */
 export const fetchItem = async(resourceName, pubId, authToken) => {
   const source = `/${resourceName}/${pubId}/`
-  return await fetchItemBySource(source)
+  return await fetchItemBySource(source, authToken)
 }
 
 export const fetchItemBySource = async(source, authToken) => {
