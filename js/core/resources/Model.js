@@ -235,6 +235,7 @@ class Model {
           || propModel.fragile.some((bProp) => updates[bProp]))) {updates[propModel.propName] = null}
     })
     // validate the updates
+    const model = this.constructor
     updateKeys.forEach((updateKey) => {
       const propModel = model.propsMap[updateKey]
       if (!propModel) {
@@ -247,7 +248,7 @@ class Model {
       // For new items, everything can be updated. If not new, then we check
       // whether the props being sent in are allowed.
       // TODO: writeable should be 'updatable'
-      else if (!this.constructor.isNew(this) && !propModel.writable) {
+      else if (!model.isNew(this) && !propModel.writable) {
         const message = `Attempt to update non-updatable property '${updateKey} of resource '${this.resourceName}'.`
         throw new Error(message)
       }
