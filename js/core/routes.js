@@ -166,3 +166,16 @@ export const extractListContext = (path) => {
   }
   else return null
 }
+
+/**
+ * Determines a resource item "view mode" by examining the URL and sets 'mode'
+ * on the properties. If the pathname ends with '/edit', or '/create', then the
+ * mode is set to 'edit' and 'create' respectively. Otherwise, mode defaults to
+ * 'view'.
+ */
+export const getRenderMode = (pathname = window.location.pathname) =>
+  pathname.endsWith("/edit")
+    ? "edit"
+    : pathname.endsWith("/create")
+      ? "create"
+      : "view" // default
