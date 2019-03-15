@@ -113,13 +113,12 @@
     }
   ],
   "devDependencies": {
-    "@liquid-labs/catalyst-scripts": "file:.yalc/@liquid-labs/catalyst-scripts",
+    "@liquid-labs/catalyst-scripts": "^1.0.0-alpha.16",
     "@liquid-labs/lock-and-key": "0.0.4",
     "@liquid-labs/react-waiter": "^1.0.0-prototype.10",
     "@liquid-labs/regex-repo": "latest",
     "fetch-mock": "^7.3.0",
     "lodash.isequal": "^4.5.0",
-    "lodash.omit": "^4.5.0",
     "lodash.reduce": "^4.6.0",
     "lodash.upperfirst": "^4.3.1",
     "moment-timezone": "^0.5.23",
