@@ -174,8 +174,8 @@ export const extractListContext = (path) => {
  * 'view'.
  */
 export const getRenderMode = (pathname = window.location.pathname) =>
-  pathname.endsWith("/edit")
+  pathname.endsWith("/edit/")
     ? "edit"
-    : pathname.endsWith("/create")
+    : pathname.endsWith("/create/")
       ? "create"
       : "view" // default
