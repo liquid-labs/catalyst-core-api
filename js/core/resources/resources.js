@@ -22,7 +22,7 @@
  * ```
  * { // success set
  *   data: <modeled item or null>,
- *   errorMessage: <string or null>,
+ *   message: <string or null>,
  *   // error set
  *   errorMessage: <string or null>,
  *   code: <integer HTTP code or null>
@@ -36,10 +36,17 @@
  * as appropriatae and callers should make use of renaming syntax when
  * deconstructing fields. E.g., `data:item` or `data:list`.
  *
- * The 'success set', `data` and `message` are joined and both togither either
- * null or non-null. If null, then `errorMessage` will be provided and should be
- * used to detect errors. If not null, then `errorMessage` (and the joined
- * `code`) will be null.
+ * One of `data` and `errorMessage` will always be null and the other non-null.
+ * `message` will always be null if `data` is null. `message` should be present
+ * if any remote calls where made, and otherwise may be null. This should not
+ * be relied upon, however. At this level, there is no method to determine the
+ * source of data by design.
+ *
+ * `code` will always be null if `errorMessage` is null and should be non-null
+ * otherwise.
+ *
+ * The 'meta-info' set may be null at this time. This will be [remedied in
+ * future versions](https://github.com/Liquid-Labs/catalyst-core-api/issues/2).
  *
  * `source` is the URL resource path used to invoke the remote call. So, for a
  * 'create' (POST) call, the `source` would be something like: `/foos`, and not
@@ -54,19 +61,31 @@ import * as actions from './actions'
 import * as store from '../store'
 import * as routes from '../routes'
 
-const createOrUpdateItem = async(action, item, authToken) => {
-  const result = await
-  store.getStore().dispatch(action(item.forApi(), authToken))
-  // Internally, the actions always use lists to keep the cache consistent.
-  // Let's convert that to an 'item'.
-  if (result.data !== null) {
-    if (result.data.length > 1) {
-      return { errorMessage : 'Unexpected multiple results.', code : 500 }
-    }
-    result.data = result.data[0]
-  }
+const nullResult = Object.freeze({
+  data         : null,
+  message      : null,
+  errorMessage : null,
+  code         : null,
+  source       : null,
+  receivedAt   : null,
+})
+
+/**
+ * When we interact with the `reducer`, we get the success or failure action
+ * struct. The `data` field at this point contains the results from the
+ */
+const finalizeResult = async(actionPromise) => {
+  const result = await actionPromise
+  // TODO: I assume this is the most efficient way, but should check.
+  delete result.type
+  delete result.searchParams
+
   return result
 }
+
+const createOrUpdateItem = async(action, item, authToken) =>
+  finalizeResult(
+    store.getStore().dispatch(action(item.forApi(), authToken)))
 
 export const createItem = async(item, authToken) => createOrUpdateItem(actions.addItem, item, authToken)
 
@@ -86,29 +105,42 @@ export const fetchItemBySource = async(source, authToken) => {
   // least) should be use consistently.
   const { permanentError } = cache.getFreshSourceData(source)
 
-  if (permanentError) return { data : null, errorMessage : permanentError.message }
+  if (permanentError) {
+    return {
+      ...nullResult,
+      errorMessage : permanentError.message,
+      code         : permanentError.code
+    }
+  }
 
   const { pubId } = routes.extractItemIdentifiers(source)
-  console.log(`got pubId: ${pubId}`)
   if (pubId !== null) { // then it's a standard item ID and we'll check cache for
     const item = cache.getFreshCompleteItem(pubId)
-    console.log('got item: ', item)
-    if (item) return { data : item, errorMessage : null }
+    // notice, no need to finalize this
+    if (item) return { ...nullResult, data : item }
   }
 
   // TODO: once we fix special casing, should handle caching for all items.
   //if we fail either if, then we fall through here
   // return await store.getStore().dispatch(actions.fetchItemBySource(source, authToken))
-  return store.getStore().dispatch(actions.fetchItemBySource(source, authToken))
+  return finalizeResult(
+    store.getStore().dispatch(actions.fetchItemBySource(source, authToken)))
 }
 
 export const fetchList = async(source, authToken) => {
   const { itemList, permanentError } = cache.getFreshSourceData(source)
 
-  if (permanentError) return { data : null, errorMessage : permanentError.message }
-  else if (itemList) return { data : itemList, errorMessage : null }
+  if (permanentError) {
+    return {
+      ...nullResult,
+      errorMessage : permanentError.message,
+      code         : permanentError.code
+    }
+  }
+  else if (itemList) return { ...nullResult, data : itemList }
 
-  return store.getStore().dispatch(actions.fetchList(source, authToken))
+  return finalizeResult(
+    store.getStore().dispatch(actions.fetchList(source, authToken)))
 }
 
 export const updateItem = async(item, authToken) =>

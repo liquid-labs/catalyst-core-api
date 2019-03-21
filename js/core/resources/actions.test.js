@@ -6,7 +6,8 @@ import * as actions from './actions'
 import * as store from '../store'
 import { INITIAL_STATE } from './reducer'
 import { RESOURCES_STATE_KEY } from './constants'
-import { userId, userReqBody, userUrl, setupResources, ts } from '../../testlib'
+import { userData, userId, userReqBody, userUrl, setupResources, ts } from '../../testlib'
+import { User } from '../../users/model'
 
 const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)
@@ -27,7 +28,15 @@ describe('async actions', () => {
 
     const expectedActions = [
       { type : actions.FETCH_ITEM_REQUEST, source : userUrl },
-      { type : actions.FETCH_ITEM_SUCCESS, source : userUrl, searchParams : undefined, ...userReqBody }
+      {
+        type : actions.FETCH_ITEM_SUCCESS,
+        data : new User(userData),
+        message : userReqBody.message,
+        errorMessage : null,
+        code : null,
+        source : userUrl,
+        searchParams : undefined,
+       }
     ]
     store.setStore(mockStore({ [RESOURCES_STATE_KEY] : INITIAL_STATE }))
 

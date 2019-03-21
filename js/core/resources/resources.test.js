@@ -27,7 +27,7 @@ describe('resources', () => {
 
     const { data, errorMessage } = await resources.fetchItem('users', userId)
     expect(fetchMock.done()).toBe(true)
-    expect(errorMessage).toBeUndefined()
+    expect(errorMessage).toBeNull()
     expect(data).toEqual(userData)
   })
 })

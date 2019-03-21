@@ -17,6 +17,8 @@
  */
 import * as cache from './cache'
 import { FetchBuilder } from './FetchBuilder'
+import * as routes from '../routes'
+import * as settings from './settings'
 
 // 1) Define the action types. These are exported for use in the reducer.
 // 2) Define the synchronous actions. These are interal.
@@ -60,11 +62,17 @@ const buildFetchRequestAction = (type) => (source, searchParams) => ({
   source : source
 })
 
+// Notice that in all the results, we provide fields as specified in `routes`
+// even when null. This provides for a consistent interface and asserts that the
+// fields are 'known empty' rather than 'unknown' (which is the standard
+// Catalyst interpretation of `undefined`). (TODO: link that assertion)
 const buildFetchSuccessAction = (type, extractor) => (responseData, source, timestamp) => ({
   type         : type,
-  data         : extractor(responseData.data),
+  data         : extractor(responseData.data, source),
   searchParams : responseData.searchParams,
   message      : responseData.message,
+  errorMessage : null,
+  code         : null,
   source       : source,
   receivedAt   : timestamp || Date.now()
 })
@@ -73,30 +81,59 @@ const buildUpdateRequest = (type) => () => ({type : type});
 
 const buildUpdateSuccessAction = (type) => (responseData, source) => {
   return {
-    type       : type,
-    data       : responseData.data,
-    message    : responseData.message,
-    source     : source,
-    receivedAt : Date.now()
+    type         : type,
+    data         : responseData.data,
+    message      : responseData.message,
+    errorMessage : null,
+    code         : null,
+    source       : source,
+    receivedAt   : Date.now()
   }
 }
 
 const buildErrorAction = (type) => (message, code, source) => ({
   type         : type,
+  data         : null,
+  message      : null,
   errorMessage : message,
   code         : code,
   source       : source,
   receivedAt   : Date.now()
 })
 
+const modelItems = (itemsData, source) => {
+  if (!itemsData) return []
+  // Then we get our model for the resource type.
+  const resourceName = routes.extractResource(source)
+  const resourceConf = settings.getResourcesMap()[resourceName]
+  const Model = resourceConf && resourceConf.model // TODO: big 'M'
+  // Give feedback on dev and test.
+  if (process.env.NODE_ENV !== 'production') {
+    if (!resourceConf) {
+      // eslint-disable-next-line no-console
+      console.error(`No such resource '${resourceName}' defined.`)
+    }
+    if (!Model) {
+      // eslint-disable-next-line no-console
+      console.error(`No 'model' defined for resource: ${resourceName}. Check your resources configuration.`)
+    }
+  }
+
+  return itemsData.map((itemData) => new Model(itemData))
+}
+
 export const fetchListRequest = buildFetchRequestAction(FETCH_LIST_REQUEST)
 export const fetchListSuccess =
-  buildFetchSuccessAction(FETCH_LIST_SUCCESS, (data) => data || []);
+  buildFetchSuccessAction(
+    FETCH_LIST_SUCCESS,
+    (data, source) => modelItems(data, source))
 export const fetchListFailed = buildErrorAction(FETCH_LIST_FAILURE)
 // item fetch
 export const fetchItemRequest = buildFetchRequestAction(FETCH_ITEM_REQUEST)
 export const fetchItemSuccess =
-  buildFetchSuccessAction(FETCH_ITEM_SUCCESS, (data) => data)
+  buildFetchSuccessAction(
+    FETCH_ITEM_SUCCESS,
+    (data, source) => modelItems([data], source)[0])
 export const fetchItemFailed = buildErrorAction(FETCH_ITEM_FAILURE)
 // add item
 export const addItemRequest = buildUpdateRequest(ADD_ITEM_REQUEST)
@@ -116,7 +153,9 @@ const deleteItemFailed = buildErrorAction(DELETE_ITEM_FAILURE)*/
 export const fetchItemEventListRequest =
   buildFetchRequestAction(FETCH_EVENT_LIST_REQUEST)
 export const fetchItemEventListSuccess =
-  buildFetchSuccessAction(FETCH_EVENT_LIST_SUCCESS, (data) => data || [])
+  buildFetchSuccessAction(
+    FETCH_EVENT_LIST_SUCCESS,
+    (data, source) => modelItems(data, source))
 export const fetchItemEventListFailed = buildErrorAction(FETCH_EVENT_LIST_FAILURE)
 // add item event
 export const addItemEventRequest = buildUpdateRequest(ADD_EVENT_REQUEST)

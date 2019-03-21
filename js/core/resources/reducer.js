@@ -4,7 +4,6 @@
  * error or an update is "in flight").
  */
 import * as resourceActions from './actions'
-import * as routes from '../routes'
 import * as settings from './settings'
 
 import moment from 'moment-timezone'
@@ -31,16 +30,6 @@ export const INITIAL_STATE = {
   // activity trackers
   inFlightSources        : {}, // { [source]: true }
   refreshItemListsBefore : 0
-}
-
-const modelItem = (item, resourceName) => {
-  if (process.env.NODE_ENV !== 'production') {
-    if (!settings.getResourcesMap()[resourceName]) {
-      throw new Error(`No such resource '${resourceName}' defined.`)
-    }
-  }
-  const constructor = settings.getResourcesMap()[resourceName].model
-  return new constructor(item)
 }
 
 const calculateFailedSources = (action, currentState) => ({
@@ -88,18 +77,16 @@ const processData = (itemList, action, currentState, props, handlers) => {
 }
 
 const processFetchData = (action, currentState) => {
-  let itemList
-  if (Array.isArray(action.data)) {
-    itemList =
-      action.data.map((item) => modelItem(item, routes.extractResource(action.source)))
-  }
-  else {
-    itemList = [modelItem(action.data, routes.extractResource(action.source))]
-    if (!itemList[0].isComplete()) {
-      settings.invokeErrorHandler(`Retrieved item is missing expected data: '${itemList[0]._missing.join("', '")}'.`)
-      return processData([], action, currentState, {},
-        { calculateNewSources : () => calculateFailedSources(action, currentState) })
-    }
+  const itemList = Array.isArray(action.data)
+    ? action.data
+    : [ action.data ]
+  if (!itemList[0].isComplete()) {
+    // TODO: instead pass out results array with error message and let user
+    // feedback be handled entirely externally. As is, it seems we communicate
+    // some errors here and some errors at higher levels.
+    settings.invokeErrorHandler(`Retrieved item is missing expected data: '${itemList[0]._missing.join("', '")}'.`)
+    return processData([], action, currentState, {},
+      { calculateNewSources : () => calculateFailedSources(action, currentState) })
   }
 
   const newRefresh = currentState.refreshItemListsBefore + 1
@@ -147,7 +134,7 @@ const processFetchData = (action, currentState) => {
 }
 
 const processUpdatedData = (action, currentState) => {
-  const itemList = [modelItem(action.data, routes.extractResource(action.source))]
+  const itemList = action.data
 
   const props = {
     validatedRefs          : {},
