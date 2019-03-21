@@ -217,6 +217,7 @@ const resourceReducer = (currentState = INITIAL_STATE, action) => {
   case resourceActions.UPDATE_ITEM_FAILURE:
   case resourceActions.DELETE_ITEM_FAILURE:
     return completeApiCall(action, currentState)
+  /* TODO https://github.com/Liquid-Labs/catalyst-core-api/issues/6
     // item event handlers
   case resourceActions.FETCH_EVENT_LIST_REQUEST:
     return {
@@ -256,7 +257,7 @@ const resourceReducer = (currentState = INITIAL_STATE, action) => {
       items : omit(currentState.items, action.data.pubId)
     }
   case resourceActions.ADD_EVENT_FAILURE:
-    return completeApiCall(action, currentState)
+    return completeApiCall(action, currentState)*/
   case resourceActions.UPDATE_LOCAL_ITEM: {
     const { item } = action
     return {

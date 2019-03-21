@@ -44,15 +44,14 @@ export const DELETE_ITEM_REQUEST = 'DELETE_ITEM_REQUEST'
 export const DELETE_ITEM_SUCCESS = 'DELETE_ITEM_SUCCESS'
 export const DELETE_ITEM_FAILURE = 'DELETE_ITEM_FAILURE'
 
-
-// TODO: with new rules, no longer necessary to special case events
+/* TODO https://github.com/Liquid-Labs/catalyst-core-api/issues/6
 export const FETCH_EVENT_LIST_REQUEST = 'FETCH_EVENT_LIST_REQUEST'
 export const FETCH_EVENT_LIST_SUCCESS = 'FETCH_EVENT_LIST_SUCCESS'
 export const FETCH_EVENT_LIST_FAILURE = 'FETCH_EVENT_LIST_FAILURE'
 
 export const ADD_EVENT_REQUEST = 'ADD_EVENT_REQUEST'
 export const ADD_EVENT_SUCCESS = 'ADD_EVENT_SUCCESS'
-export const ADD_EVENT_FAILURE = 'ADD_EVENT_FAILURE'
+export const ADD_EVENT_FAILURE = 'ADD_EVENT_FAILURE'*/
 
 export const UPDATE_LOCAL_ITEM = 'UPDATE_LOCAL_ITEM'
 
@@ -144,11 +143,8 @@ export const updateItemRequest = buildUpdateRequest(UPDATE_ITEM_REQUEST)
 export const updateItemSuccess =
   buildUpdateSuccessAction(UPDATE_ITEM_SUCCESS)
 export const updateItemFailed = buildErrorAction(UPDATE_ITEM_FAILURE)
-// delete item
-/*const deleteItemRequest = buildUpdateRequest(DELETE_ITEM_REQUEST)
-const deleteItemSuccess =
-  buildUpdateSuccessAction(DELETE_ITEM_SUCCESS)
-const deleteItemFailed = buildErrorAction(DELETE_ITEM_FAILURE)*/
+// TODO: handle 'delete' item as a special case update to the 'active' field.
+/* TODO https://github.com/Liquid-Labs/catalyst-core-api/issues/6
 // item events fetch
 export const fetchItemEventListRequest =
   buildFetchRequestAction(FETCH_EVENT_LIST_REQUEST)
@@ -161,7 +157,7 @@ export const fetchItemEventListFailed = buildErrorAction(FETCH_EVENT_LIST_FAILUR
 export const addItemEventRequest = buildUpdateRequest(ADD_EVENT_REQUEST)
 export const addItemEventSuccess =
   buildUpdateSuccessAction(ADD_EVENT_SUCCESS)
-export const addItemEventFailed = buildErrorAction(ADD_EVENT_FAILURE)
+export const addItemEventFailed = buildErrorAction(ADD_EVENT_FAILURE)*/
 
 // Public asynchrous actions
 // First, a helper.
@@ -250,7 +246,7 @@ export const forceFetchItem = (resourceName, pubId, authToken) =>
     .force()
     .build()
 
-// TODO: 'createItem'
+// TODO https://github.com/Liquid-Labs/catalyst-core-api/issues/5
 export const addItem = (item, authToken) =>
   new FetchBuilder(`/${item.resourceName}/`)
     .withAuthToken(authToken)
@@ -283,7 +279,7 @@ export const deleteItem = (resourceName, pubId, reason, authToken) =>
     .withFailureAction(updateItemFailed)
     // .withJson({reason: reason})
     .build()
-
+/* TODO https://github.com/Liquid-Labs/catalyst-core-api/issues/6
 export const fetchItemEventList = (resourceName, pubId, authToken) =>
   new FetchBuilder(`/${resourceName}/${pubId}/events/`)
     .withAuthToken(authToken)
@@ -305,7 +301,7 @@ export const addItemEvent = (resourceName, ev, authToken) =>
     .withFailureAction(addItemEventFailed)
     .withInFlightCheck()
     .build()
-
+*/
 // Sometimes the app needs update the redux item.
 export const updateLocalItem = (item) => ({
   type : UPDATE_LOCAL_ITEM,
