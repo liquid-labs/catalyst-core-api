@@ -48,7 +48,7 @@ const processData = (itemList, action, currentState, props, handlers) => {
       if (!handlers[handlerKey]) handlers[handlerKey] = () => {}
     })
 
-  // TODO: how efficient is this?
+  // TODO https://github.com/Liquid-Labs/catalyst-core-api/issues/7
   const items = Object.assign({}, currentState.items)
 
   itemList.forEach((item) => {
@@ -81,9 +81,7 @@ const processFetchData = (action, currentState) => {
     ? action.data
     : [ action.data ]
   if (!itemList[0].isComplete()) {
-    // TODO: instead pass out results array with error message and let user
-    // feedback be handled entirely externally. As is, it seems we communicate
-    // some errors here and some errors at higher levels.
+    // TODO https://github.com/Liquid-Labs/catalyst-core-api/issues/8
     settings.invokeErrorHandler(`Retrieved item is missing expected data: '${itemList[0]._missing.join("', '")}'.`)
     return processData([], action, currentState, {},
       { calculateNewSources : () => calculateFailedSources(action, currentState) })
@@ -106,10 +104,9 @@ const processFetchData = (action, currentState) => {
     onItemCompletion : (item, props) => {
       props.refreshItemListsBefore = newRefresh
     },
+    // TODO https://github.com/Liquid-Labs/catalyst-core-api/issues/10
     calculateNewSources : (props) => {
       const beforeMoment = moment(props.invalidateSourcesBefore, 'X')
-      // TODO: we can further optmiize source invalidation based on involved
-      // resource types
       const newSource = {
         [action.source] : {
           source       : action.source,
@@ -194,7 +191,6 @@ const resourceReducer = (currentState = INITIAL_STATE, action) => {
   case resourceActions.FETCH_LIST_SUCCESS:
   case resourceActions.FETCH_ITEM_SUCCESS:
     return processFetchData(action, currentState)
-    // TODO: consider retaining any existing data on 'no connection failures', for offline mode?
   case resourceActions.FETCH_LIST_FAILURE:
   case resourceActions.FETCH_ITEM_FAILURE:
     return failApiCall(action, currentState)

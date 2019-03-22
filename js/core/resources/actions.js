@@ -61,10 +61,11 @@ const buildFetchRequestAction = (type) => (source, searchParams) => ({
   source : source
 })
 
+// TODO https://github.com/Liquid-Labs/catalyst-standards/issues/1
 // Notice that in all the results, we provide fields as specified in `routes`
 // even when null. This provides for a consistent interface and asserts that the
 // fields are 'known empty' rather than 'unknown' (which is the standard
-// Catalyst interpretation of `undefined`). (TODO: link that assertion)
+// Catalyst interpretation of `undefined`).
 const buildFetchSuccessAction = (type, extractor) => (responseData, source, timestamp) => ({
   type         : type,
   data         : extractor(responseData.data, source),
@@ -105,7 +106,8 @@ const modelItems = (itemsData, source) => {
   // Then we get our model for the resource type.
   const resourceName = routes.extractResource(source)
   const resourceConf = settings.getResourcesMap()[resourceName]
-  const Model = resourceConf && resourceConf.model // TODO: big 'M'
+  // TODO https://github.com/Liquid-Labs/catalyst-core-api/issues/13
+  const Model = resourceConf && resourceConf.model
   // Give feedback on dev and test.
   if (process.env.NODE_ENV !== 'production') {
     if (!resourceConf) {
@@ -143,7 +145,9 @@ export const updateItemRequest = buildUpdateRequest(UPDATE_ITEM_REQUEST)
 export const updateItemSuccess =
   buildUpdateSuccessAction(UPDATE_ITEM_SUCCESS)
 export const updateItemFailed = buildErrorAction(UPDATE_ITEM_FAILURE)
-// TODO: handle 'delete' item as a special case update to the 'active' field.
+// TODO https://github.com/Liquid-Labs/catalyst-core-api/issues/14
+// TODO https://github.com/Liquid-Labs/catalyst-core-api/issues/15
+// TODO https://github.com/Liquid-Labs/catalyst-core-api/issues/16
 /* TODO https://github.com/Liquid-Labs/catalyst-core-api/issues/6
 // item events fetch
 export const fetchItemEventListRequest =

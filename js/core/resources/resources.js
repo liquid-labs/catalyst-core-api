@@ -76,7 +76,6 @@ const nullResult = Object.freeze({
  */
 const finalizeResult = async(actionPromise) => {
   const result = await actionPromise
-  // TODO: I assume this is the most efficient way, but should check.
   delete result.type
   delete result.searchParams
 
@@ -100,9 +99,8 @@ export const fetchItem = async(resourceName, pubId, authToken) =>
  * See discussion on [result construct](#result-construct).
  */
 export const fetchItemBySource = async(source, authToken) => {
-  // TODO: Use 'source' consistently and get away from the special casing for
-  // item using the pubId (should be pubID). It's REST, so the URL (or path, at
-  // least) should be use consistently.
+  // TODO https://github.com/Liquid-Labs/catalyst-core-api/issues/10
+  // TODO https://github.com/Liquid-Labs/catalyst-core-api/issues/12
   const { permanentError } = cache.getFreshSourceData(source)
 
   if (permanentError) {
@@ -119,10 +117,7 @@ export const fetchItemBySource = async(source, authToken) => {
     // notice, no need to finalize this
     if (item) return { ...nullResult, data : item }
   }
-
-  // TODO: once we fix special casing, should handle caching for all items.
-  //if we fail either if, then we fall through here
-  // return await store.getStore().dispatch(actions.fetchItemBySource(source, authToken))
+  
   return finalizeResult(
     store.getStore().dispatch(actions.fetchItemBySource(source, authToken)))
 }

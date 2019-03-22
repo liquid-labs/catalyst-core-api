@@ -247,7 +247,7 @@ class Model {
       }
       // For new items, everything can be updated. If not new, then we check
       // whether the props being sent in are allowed.
-      // TODO: writeable should be 'updatable'
+      // TODO https://github.com/Liquid-Labs/catalyst-core-api/issues/17
       else if (!model.isNew(this) && !propModel.writable) {
         const message = `Attempt to update non-updatable property '${updateKey} of resource '${this.resourceName}'.`
         throw new Error(message)

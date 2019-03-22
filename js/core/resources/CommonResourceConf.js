@@ -45,6 +45,7 @@ export class CommonResourceConf {
     // Resources that can be created define the following
     if (apiConfig) {
       // always define a model; in the simple case, that's all that's needed
+      // TODO https://github.com/Liquid-Labs/catalyst-core-api/issues/13
       defineConst(this, 'model', apiConfig.model)
       defineConst(this, 'sortOptions', apiConfig.sortOptions)
       if (apiConfig.sortOptions) {
