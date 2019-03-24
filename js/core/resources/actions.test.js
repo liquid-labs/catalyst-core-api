@@ -29,14 +29,14 @@ describe('async actions', () => {
     const expectedActions = [
       { type : actions.FETCH_ITEM_REQUEST, source : userUrl },
       {
-        type : actions.FETCH_ITEM_SUCCESS,
-        data : new User(userData),
-        message : userReqBody.message,
+        type         : actions.FETCH_ITEM_SUCCESS,
+        data         : new User(userData),
+        message      : userReqBody.message,
         errorMessage : null,
-        code : null,
-        source : userUrl,
+        code         : null,
+        source       : userUrl,
         searchParams : undefined,
-       }
+      }
     ]
     store.setStore(mockStore({ [RESOURCES_STATE_KEY] : INITIAL_STATE }))
 
