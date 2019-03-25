@@ -16,15 +16,15 @@
  *    with the results.
  */
 import * as cache from './cache'
+import { extractPathInfo } from '@liquid-labs/restful-paths'
 import { FetchBuilder } from './FetchBuilder'
-import * as routes from '../routes'
 import * as settings from './settings'
 
 
 const modelItems = (itemsData, source) => {
   if (!itemsData) return []
   // Then we get our model for the resource type.
-  const resourceName = routes.extractResource(source)
+  const { resourceName } = extractPathInfo(source)
   const resourceConf = settings.getResourcesMap()[resourceName]
   // TODO https://github.com/Liquid-Labs/catalyst-core-api/issues/13
   const Model = resourceConf && resourceConf.model
@@ -85,10 +85,10 @@ const buildFetchRequestAction = (type) => (source, searchParams) => ({
 })
 
 // TODO https://github.com/Liquid-Labs/catalyst-standards/issues/1
-// Notice that in all the results, we provide fields as specified in `routes`
-// even when null. This provides for a consistent interface and asserts that the
-// fields are 'known empty' rather than 'unknown' (which is the standard
-// Catalyst interpretation of `undefined`).
+// Notice that in all the results, we provide fields as specified in the
+// 'resources' API, even when null. This provides for a consistent interface and
+// asserts that the fields are 'known empty' rather than 'unknown' (which is the
+// standard Catalyst interpretation of `undefined`).
 const buildFetchSuccessAction = (type, extractor) => (responseData, source, timestamp) => ({
   type         : type,
   data         : extractor(responseData.data, source),

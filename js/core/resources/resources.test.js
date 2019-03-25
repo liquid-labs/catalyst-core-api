@@ -8,8 +8,10 @@ import { userId, userData, userReqBody, userUrl, loadUserInCache, setupStore } f
 
 describe('resources', () => {
   beforeAll(setupStore)
-  beforeEach(store.init)
-  afterEach(fetchMock.restore)
+  beforeEach(() => {
+    store.init()
+    fetchMock.reset()
+  })
 
   test('fetchItem() should return recently cached item', async() => {
     loadUserInCache()

@@ -58,8 +58,8 @@
  */
 import * as cache from './cache'
 import * as actions from './actions'
+import { extractPathInfo } from '@liquid-labs/restful-paths'
 import * as store from '../store'
-import * as routes from '../routes'
 
 const nullResult = Object.freeze({
   data         : null,
@@ -111,9 +111,9 @@ export const fetchItemBySource = async(source, authToken) => {
     }
   }
 
-  const { pubId } = routes.extractItemIdentifiers(source)
-  if (pubId !== null) { // then it's a standard item ID and we'll check cache for
-    const item = cache.getFreshCompleteItem(pubId)
+  const { pubID, isUUID } = extractPathInfo(source)
+  if (pubID && isUUID) { // then it's a standard item ID and we'll check cache for
+    const item = cache.getFreshCompleteItem(pubID)
     // notice, no need to finalize this
     if (item) return { ...nullResult, data : item }
   }

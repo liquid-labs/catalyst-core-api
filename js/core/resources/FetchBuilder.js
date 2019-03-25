@@ -4,8 +4,9 @@
  * isolated library used by 'resourceActions' and is not currently exported by
  * the 'resources/index' file.
  */
+/* globals fetch */
 import * as cache from './cache'
-import * as routes from '../routes'
+import { extractPathInfo } from '@liquid-labs/restful-paths'
 import * as settings from './settings'
 
 const AUTH_TOKEN_REQUIRED = 1
@@ -14,8 +15,8 @@ const AUTH_TOKEN_OPTIONAL = 2
 class FetchBuilder {
   constructor(source) {
     this.source = source
-    const resource = routes.extractResource(source)
-    const baseURL = settings.getResourcesMap()[resource].baseURL
+    const { resourceName } = extractPathInfo(source)
+    const baseURL = settings.getResourcesMap()[resourceName].baseURL
     this.url = baseURL + source
     this.method = 'GET' // default method if none specified
     this.isForced = false // by default we do not force the fetch
@@ -140,7 +141,7 @@ class FetchBuilder {
       }
 
       // 3) Do the fetch and return the Promise.
-      return fetch(this.url, fetchOptions) // eslint-disable-line no-undef
+      return fetch(this.url, fetchOptions)
         .then(response => {
           if(response.ok){
             return response.json().then(data => {
