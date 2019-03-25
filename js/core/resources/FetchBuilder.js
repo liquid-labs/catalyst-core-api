@@ -169,7 +169,7 @@ class FetchBuilder {
           }
         })
         .catch((error) => {
-          console.warn(`Error in fetch: ${error}`) // eslint-disable-line no-console
+          console.warn(`Error in fetch: ${error}`, error) // eslint-disable-line no-console
           if (this.failureAction) {
             return dispatch(this.failureAction.call(null,
               error + "",
