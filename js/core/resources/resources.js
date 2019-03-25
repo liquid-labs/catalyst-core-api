@@ -117,7 +117,7 @@ export const fetchItemBySource = async(source, authToken) => {
     // notice, no need to finalize this
     if (item) return { ...nullResult, data : item }
   }
-  
+
   return finalizeResult(
     store.getStore().dispatch(actions.fetchItemBySource(source, authToken)))
 }
@@ -138,5 +138,8 @@ export const fetchList = async(source, authToken) => {
     store.getStore().dispatch(actions.fetchList(source, authToken)))
 }
 
-export const updateItem = async(item, authToken) =>
-  createOrUpdateItem(actions.updateItem, item, authToken)
+export const updateItem = async(item, authToken) => {
+  const result = await createOrUpdateItem(actions.updateItem, item, authToken)
+  if (result.data) result.data = result.data[0]
+  return result
+}

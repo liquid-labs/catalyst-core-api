@@ -131,7 +131,9 @@ const processFetchData = (action, currentState) => {
 }
 
 const processUpdatedData = (action, currentState) => {
-  const itemList = action.data
+  const itemList = Array.isArray(action.data)
+    ? action.data
+    : [ action.data ]
 
   const props = {
     validatedRefs          : {},

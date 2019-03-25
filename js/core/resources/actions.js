@@ -20,6 +20,29 @@ import { FetchBuilder } from './FetchBuilder'
 import * as routes from '../routes'
 import * as settings from './settings'
 
+
+const modelItems = (itemsData, source) => {
+  if (!itemsData) return []
+  // Then we get our model for the resource type.
+  const resourceName = routes.extractResource(source)
+  const resourceConf = settings.getResourcesMap()[resourceName]
+  // TODO https://github.com/Liquid-Labs/catalyst-core-api/issues/13
+  const Model = resourceConf && resourceConf.model
+  // Give feedback on dev and test.
+  if (process.env.NODE_ENV !== 'production') {
+    if (!resourceConf) {
+      // eslint-disable-next-line no-console
+      console.error(`No such resource '${resourceName}' defined.`)
+    }
+    if (!Model) {
+      // eslint-disable-next-line no-console
+      console.error(`No 'model' defined for resource: ${resourceName}. Check your resources configuration.`)
+    }
+  }
+
+  return itemsData.map((itemData) => new Model(itemData))
+}
+
 // 1) Define the action types. These are exported for use in the reducer.
 // 2) Define the synchronous actions. These are interal.
 // 3) Define the asynchronous actions. These are used by the code.
@@ -82,7 +105,7 @@ const buildUpdateRequest = (type) => () => ({type : type});
 const buildUpdateSuccessAction = (type) => (responseData, source) => {
   return {
     type         : type,
-    data         : responseData.data,
+    data         : modelItems([responseData.data], source),
     message      : responseData.message,
     errorMessage : null,
     code         : null,
@@ -100,28 +123,6 @@ const buildErrorAction = (type) => (message, code, source) => ({
   source       : source,
   receivedAt   : Date.now()
 })
-
-const modelItems = (itemsData, source) => {
-  if (!itemsData) return []
-  // Then we get our model for the resource type.
-  const resourceName = routes.extractResource(source)
-  const resourceConf = settings.getResourcesMap()[resourceName]
-  // TODO https://github.com/Liquid-Labs/catalyst-core-api/issues/13
-  const Model = resourceConf && resourceConf.model
-  // Give feedback on dev and test.
-  if (process.env.NODE_ENV !== 'production') {
-    if (!resourceConf) {
-      // eslint-disable-next-line no-console
-      console.error(`No such resource '${resourceName}' defined.`)
-    }
-    if (!Model) {
-      // eslint-disable-next-line no-console
-      console.error(`No 'model' defined for resource: ${resourceName}. Check your resources configuration.`)
-    }
-  }
-
-  return itemsData.map((itemData) => new Model(itemData))
-}
 
 export const fetchListRequest = buildFetchRequestAction(FETCH_LIST_REQUEST)
 export const fetchListSuccess =
