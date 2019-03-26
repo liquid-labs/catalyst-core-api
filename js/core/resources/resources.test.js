@@ -1,4 +1,4 @@
-/* global afterEach beforeAll beforeEach describe expect test */
+/* global beforeAll beforeEach describe expect test */
 import * as store from '../store'
 import * as resources from './resources'
 import fetchMock from 'fetch-mock'

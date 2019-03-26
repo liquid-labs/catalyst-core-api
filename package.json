@@ -117,7 +117,7 @@
     "@liquid-labs/lock-and-key": "0.0.4",
     "@liquid-labs/react-waiter": "^1.0.0-prototype.10",
     "@liquid-labs/regex-repo": "latest",
-    "@liquid-labs/restful-paths": "file:.yalc/@liquid-labs/restful-paths",
+    "@liquid-labs/restful-paths": "^1.0.0-prototype.2",
     "fetch-mock": "^7.3.0",
     "lodash.isequal": "^4.5.0",
     "lodash.omit": "^4.5.0",
@@ -134,7 +134,6 @@
     "redux-thunk": "^2.3.0"
   },
   "peerDependencies": {
-    "@liquid-labs/react-await": "^1.0.0-prototype.6",
     "@liquid-labs/react-waiter": "^1.0.0-prototype.10",
     "@liquid-labs/regex-repo": "latest",
     "@liquid-labs/restful-paths": "^1.0.0-prototype.0",
