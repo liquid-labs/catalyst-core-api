@@ -230,6 +230,7 @@ class Model {
        let's re-introduce key-hash build from the props def
     Object.keys(updates).some((key) => {
     })*/
+    // nullify the 'fragile' fields
     this.getPropsModel().forEach((propModel) => {
       if (propModel.fragile && (propModel.fragile === true
           || propModel.fragile.some((bProp) => updates[bProp]))) {updates[propModel.propName] = null}
