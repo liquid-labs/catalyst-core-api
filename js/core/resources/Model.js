@@ -33,6 +33,8 @@ const emptyOrUndefined = (propVal, valueType) =>
     || (valueType === simpleType && propVal === "")
     || (valueType === arrayType && Array.isArray(propVal) && propVal.length === 0)
 
+const nonCheck = (x) => x === null || x === undefined
+
 class Model {
   static finalizeConstructor(SubClass, propsModel, newTest) {
     deepFreeze(propsModel)
@@ -211,6 +213,10 @@ class Model {
     return new this.constructor(this, { emptyVal : "" })
   }
 
+  getPropsModel() {
+    return this.constructor.propsModel
+  }
+
   update(updates) {
     if (!updates) return this // to force a copy, use 'forUi()/forApi()'
     const updateKeys = Object.keys(updates)
@@ -224,12 +230,13 @@ class Model {
        let's re-introduce key-hash build from the props def
     Object.keys(updates).some((key) => {
     })*/
-    const model = this.constructor
-    model.propsModel.forEach((propModel) => {
+    // nullify the 'fragile' fields
+    this.getPropsModel().forEach((propModel) => {
       if (propModel.fragile && (propModel.fragile === true
           || propModel.fragile.some((bProp) => updates[bProp]))) {updates[propModel.propName] = null}
     })
     // validate the updates
+    const model = this.constructor
     updateKeys.forEach((updateKey) => {
       const propModel = model.propsMap[updateKey]
       if (!propModel) {
@@ -241,7 +248,7 @@ class Model {
       }
       // For new items, everything can be updated. If not new, then we check
       // whether the props being sent in are allowed.
-      // TODO: writeable should be 'updatable'
+      // TODO https://github.com/Liquid-Labs/catalyst-core-api/issues/17
       else if (!model.isNew(this) && !propModel.writable) {
         const message = `Attempt to update non-updatable property '${updateKey} of resource '${this.resourceName}'.`
         throw new Error(message)
@@ -251,6 +258,20 @@ class Model {
     return new model(Object.assign({}, this, updates), this._opts)
   }
 
+  exportData() {
+    return this.getPropsModel().reduce((data, { propName } ) => {
+      data[propName] = this[propName]
+      return data
+    }, {})
+  }
+
+  // TODO: when written, the diff stuff was used to see when an item or list of
+  // of items had "deep equals" changed to see when to update components. With
+  // the rewrite of the way forms work, where data is exported back out only
+  // when done and managed internally otherwise, there may not be a pressing
+  // need for this. Unless a new use case comes up, we may want to delete (and
+  // perhaps note ref to implementation in so we can resurrect in future if
+  // needed).
   isDiff(other) {
     return this.diff(other, true).isDiff
   }
@@ -342,6 +363,17 @@ class Model {
     }
   }
 
+  static diffCheck(a, b) {
+    // TODO: verify that we're called on null, undef, or a modeled item.
+    if (nonCheck(a) && nonCheck(b)) return false
+    else if (nonCheck(a) || nonCheck(b)) return true
+    else if (Array.isArray(a) && Array.isArray(b)) return Model.isDiffAll(a, b)
+    else if (!Array.isArray(a) && !Array.isArray(b)) return a.isDiff(b)
+    else {
+      throw new Error('Cannot diff-check fundamentally different types.')
+    }
+  }
+
   static isDiffAll(a, b) {
     if (!a && !b) {
       return false
@@ -356,6 +388,7 @@ class Model {
       return a.some((valA, i) => valA.isDiff(b[i]))
     }
   }
+
 
   /* When constructing a Model object, an 'undefined' value will mark the object
    * as incomplete. This is used by the ResourceManager to check whether then

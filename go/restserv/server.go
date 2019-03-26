@@ -9,10 +9,10 @@ import (
   "time"
 
   "github.com/gorilla/mux"
+  "github.com/gorilla/handlers"
   "github.com/Liquid-Labs/catalyst-firewrap/go/firewrap"
   "github.com/Liquid-Labs/catalyst-firewrap/go/fireauth"
   "github.com/Liquid-Labs/go-rest/rest"
-  "github.com/rs/cors"
 )
 
 var envPurpose = os.Getenv(`NODE_ENV`)
@@ -70,19 +70,19 @@ func Init() {
     }
   }
 
+  var handler http.Handler = r
   if envPurpose != "production" {
-    // 'cors.Default().Handler(r)' is not sufficient. Don't remember why
-    // exactly. I believe it didn't support our headers?
-    handler := cors.New(cors.Options{
-      AllowedOrigins: []string{"*"},
-      // Notice we don't use delete
-      AllowedMethods: []string{"GET", "POST", "PUT", "OPTIONS"},
-      AllowedHeaders: []string{"Authorization","Content-Type"},
-      }).Handler(r)
-    http.Handle("/", handler)
-  } else {
+    log.Print("setting up CORS support for non-production environment\n")
+    handler = handlers.CORS(
+      handlers.AllowedOrigins([]string{"*"}),
+      // appendeds to the default allowed headers
+      handlers.AllowedHeaders([]string{"Authorization", "Content-Type"}),
+      // replaces the default allowed methods
+      handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD"}),
+    )(r)
+  }/* else {
     http.Handle("/", r)
-  }
+  }*/
 
   // For debugging route configurations:
   // r.Walk(routerReporter)
@@ -101,7 +101,7 @@ func Init() {
 
   log.Printf("Listening on port %s", port)
   srv := &http.Server{
-    Handler:      r,
+    Handler:      handler,
     Addr:         fmt.Sprintf("%s:%s", host, port),
     // Good practice: enforce timeouts for servers you create!
     WriteTimeout: 10 * time.Second,

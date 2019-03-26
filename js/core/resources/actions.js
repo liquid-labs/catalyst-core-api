@@ -16,7 +16,32 @@
  *    with the results.
  */
 import * as cache from './cache'
+import { extractPathInfo } from '@liquid-labs/restful-paths'
 import { FetchBuilder } from './FetchBuilder'
+import * as settings from './settings'
+
+
+const modelItems = (itemsData, source) => {
+  if (!itemsData) return []
+  // Then we get our model for the resource type.
+  const { resourceName } = extractPathInfo(source)
+  const resourceConf = settings.getResourcesMap()[resourceName]
+  // TODO https://github.com/Liquid-Labs/catalyst-core-api/issues/13
+  const Model = resourceConf && resourceConf.model
+  // Give feedback on dev and test.
+  if (process.env.NODE_ENV !== 'production') {
+    if (!resourceConf) {
+      // eslint-disable-next-line no-console
+      console.error(`No such resource '${resourceName}' defined.`)
+    }
+    if (!Model) {
+      // eslint-disable-next-line no-console
+      console.error(`No 'model' defined for resource: ${resourceName}. Check your resources configuration.`)
+    }
+  }
+
+  return itemsData.map((itemData) => new Model(itemData))
+}
 
 // 1) Define the action types. These are exported for use in the reducer.
 // 2) Define the synchronous actions. These are interal.
@@ -42,15 +67,14 @@ export const DELETE_ITEM_REQUEST = 'DELETE_ITEM_REQUEST'
 export const DELETE_ITEM_SUCCESS = 'DELETE_ITEM_SUCCESS'
 export const DELETE_ITEM_FAILURE = 'DELETE_ITEM_FAILURE'
 
-
-// TODO: with new rules, no longer necessary to special case events
+/* TODO https://github.com/Liquid-Labs/catalyst-core-api/issues/6
 export const FETCH_EVENT_LIST_REQUEST = 'FETCH_EVENT_LIST_REQUEST'
 export const FETCH_EVENT_LIST_SUCCESS = 'FETCH_EVENT_LIST_SUCCESS'
 export const FETCH_EVENT_LIST_FAILURE = 'FETCH_EVENT_LIST_FAILURE'
 
 export const ADD_EVENT_REQUEST = 'ADD_EVENT_REQUEST'
 export const ADD_EVENT_SUCCESS = 'ADD_EVENT_SUCCESS'
-export const ADD_EVENT_FAILURE = 'ADD_EVENT_FAILURE'
+export const ADD_EVENT_FAILURE = 'ADD_EVENT_FAILURE'*/
 
 export const UPDATE_LOCAL_ITEM = 'UPDATE_LOCAL_ITEM'
 
@@ -60,11 +84,18 @@ const buildFetchRequestAction = (type) => (source, searchParams) => ({
   source : source
 })
 
+// TODO https://github.com/Liquid-Labs/catalyst-standards/issues/1
+// Notice that in all the results, we provide fields as specified in the
+// 'resources' API, even when null. This provides for a consistent interface and
+// asserts that the fields are 'known empty' rather than 'unknown' (which is the
+// standard Catalyst interpretation of `undefined`).
 const buildFetchSuccessAction = (type, extractor) => (responseData, source, timestamp) => ({
   type         : type,
-  data         : extractor(responseData.data),
+  data         : extractor(responseData.data, source),
   searchParams : responseData.searchParams,
   message      : responseData.message,
+  errorMessage : null,
+  code         : null,
   source       : source,
   receivedAt   : timestamp || Date.now()
 })
@@ -73,16 +104,20 @@ const buildUpdateRequest = (type) => () => ({type : type});
 
 const buildUpdateSuccessAction = (type) => (responseData, source) => {
   return {
-    type       : type,
-    data       : responseData.data,
-    message    : responseData.message,
-    source     : source,
-    receivedAt : Date.now()
+    type         : type,
+    data         : modelItems([responseData.data], source),
+    message      : responseData.message,
+    errorMessage : null,
+    code         : null,
+    source       : source,
+    receivedAt   : Date.now()
   }
 }
 
 const buildErrorAction = (type) => (message, code, source) => ({
   type         : type,
+  data         : null,
+  message      : null,
   errorMessage : message,
   code         : code,
   source       : source,
@@ -91,12 +126,16 @@ const buildErrorAction = (type) => (message, code, source) => ({
 
 export const fetchListRequest = buildFetchRequestAction(FETCH_LIST_REQUEST)
 export const fetchListSuccess =
-  buildFetchSuccessAction(FETCH_LIST_SUCCESS, (data) => data || []);
+  buildFetchSuccessAction(
+    FETCH_LIST_SUCCESS,
+    (data, source) => modelItems(data, source))
 export const fetchListFailed = buildErrorAction(FETCH_LIST_FAILURE)
 // item fetch
 export const fetchItemRequest = buildFetchRequestAction(FETCH_ITEM_REQUEST)
 export const fetchItemSuccess =
-  buildFetchSuccessAction(FETCH_ITEM_SUCCESS, (data) => data)
+  buildFetchSuccessAction(
+    FETCH_ITEM_SUCCESS,
+    (data, source) => modelItems([data], source)[0])
 export const fetchItemFailed = buildErrorAction(FETCH_ITEM_FAILURE)
 // add item
 export const addItemRequest = buildUpdateRequest(ADD_ITEM_REQUEST)
@@ -107,22 +146,23 @@ export const updateItemRequest = buildUpdateRequest(UPDATE_ITEM_REQUEST)
 export const updateItemSuccess =
   buildUpdateSuccessAction(UPDATE_ITEM_SUCCESS)
 export const updateItemFailed = buildErrorAction(UPDATE_ITEM_FAILURE)
-// delete item
-/*const deleteItemRequest = buildUpdateRequest(DELETE_ITEM_REQUEST)
-const deleteItemSuccess =
-  buildUpdateSuccessAction(DELETE_ITEM_SUCCESS)
-const deleteItemFailed = buildErrorAction(DELETE_ITEM_FAILURE)*/
+// TODO https://github.com/Liquid-Labs/catalyst-core-api/issues/14
+// TODO https://github.com/Liquid-Labs/catalyst-core-api/issues/15
+// TODO https://github.com/Liquid-Labs/catalyst-core-api/issues/16
+/* TODO https://github.com/Liquid-Labs/catalyst-core-api/issues/6
 // item events fetch
 export const fetchItemEventListRequest =
   buildFetchRequestAction(FETCH_EVENT_LIST_REQUEST)
 export const fetchItemEventListSuccess =
-  buildFetchSuccessAction(FETCH_EVENT_LIST_SUCCESS, (data) => data || [])
+  buildFetchSuccessAction(
+    FETCH_EVENT_LIST_SUCCESS,
+    (data, source) => modelItems(data, source))
 export const fetchItemEventListFailed = buildErrorAction(FETCH_EVENT_LIST_FAILURE)
 // add item event
 export const addItemEventRequest = buildUpdateRequest(ADD_EVENT_REQUEST)
 export const addItemEventSuccess =
   buildUpdateSuccessAction(ADD_EVENT_SUCCESS)
-export const addItemEventFailed = buildErrorAction(ADD_EVENT_FAILURE)
+export const addItemEventFailed = buildErrorAction(ADD_EVENT_FAILURE)*/
 
 // Public asynchrous actions
 // First, a helper.
@@ -135,14 +175,16 @@ const singleValidator = (responseData) =>
         ? "Multiple results found where one expected."
         : null
 
-export const fetchList = (source) => new FetchBuilder(source)
+export const fetchList = (source, authToken) => new FetchBuilder(source)
+  .withAuthToken(authToken)
   .withRequestAction(fetchListRequest)
   .withSuccessAction(fetchListSuccess)
   .withFailureAction(fetchListFailed)
   .withInFlightCheck()
   .build()
 
-export const forceFetchList = (source) => new FetchBuilder(source)
+export const forceFetchList = (source, authToken) => new FetchBuilder(source)
+  .withAuthToken(authToken)
   .withRequestAction(fetchListRequest)
   .withSuccessAction(fetchListSuccess)
   .withFailureAction(fetchListFailed)
@@ -150,91 +192,121 @@ export const forceFetchList = (source) => new FetchBuilder(source)
   .force()
   .build();
 
-export const fetchSingleFromList = (source) => new FetchBuilder(source)
-  .withRequestAction(fetchListRequest)
-  .withSuccessAction(fetchListSuccess)
-  .withFailureAction(fetchListFailed)
-  .withValidator(singleValidator)
-  .withInFlightCheck()
-  .build()
+export const fetchSingleFromList = (source, authToken) =>
+  new FetchBuilder(source)
+    .withAuthToken(authToken)
+    .withRequestAction(fetchListRequest)
+    .withSuccessAction(fetchListSuccess)
+    .withFailureAction(fetchListFailed)
+    .withValidator(singleValidator)
+    .withInFlightCheck()
+    .build()
 
-export const forceFetchSingleFromList = (source) => new FetchBuilder(source)
-  .withRequestAction(fetchListRequest)
-  .withSuccessAction(fetchListSuccess)
-  .withFailureAction(fetchListFailed)
-  .withValidator(singleValidator)
-  .withInFlightCheck()
-  .force()
-  .build()
+export const forceFetchSingleFromList = (source, authToken) =>
+  new FetchBuilder(source)
+    .withAuthToken(authToken)
+    .withRequestAction(fetchListRequest)
+    .withSuccessAction(fetchListSuccess)
+    .withFailureAction(fetchListFailed)
+    .withValidator(singleValidator)
+    .withInFlightCheck()
+    .force()
+    .build()
 
-export const fetchItem = (resourceName, pubId) => new FetchBuilder(`/${resourceName}/${pubId}`)
-  .withRequestAction(fetchItemRequest)
-  .withSuccessAction(fetchItemSuccess)
-  .withFailureAction(fetchItemFailed)
-  .withInFlightCheck()
-  .build()
+export const fetchItem = (resourceName, pubId, authToken) =>
+  new FetchBuilder(`/${resourceName}/${pubId}/`)
+    .withAuthToken(authToken)
+    .withRequestAction(fetchItemRequest)
+    .withSuccessAction(fetchItemSuccess)
+    .withFailureAction(fetchItemFailed)
+    .withInFlightCheck()
+    .build()
 
-export const completeItem = (resourceName, pubId) => new FetchBuilder(`/${resourceName}/${pubId}`)
-  .withRequestAction(fetchItemRequest)
-  .withSuccessAction(fetchItemSuccess)
-  .withFailureAction(fetchItemFailed)
-  .withInFlightCheck()
-  .withPreFlightCheck(() => !cache.getFreshCompleteItem(pubId))
-  .build()
+export const fetchItemBySource = (source, authToken) =>
+  new FetchBuilder(source)
+    .withAuthToken(authToken)
+    .withRequestAction(fetchItemRequest)
+    .withSuccessAction(fetchItemSuccess)
+    .withFailureAction(fetchItemFailed)
+    .withInFlightCheck()
+    .build()
 
-export const forceFetchItem = (resourceName, pubId) => new FetchBuilder(`/${resourceName}/${pubId}`)
-  .withRequestAction(fetchItemRequest)
-  .withSuccessAction(fetchItemSuccess)
-  .withFailureAction(fetchItemFailed)
-  .withInFlightCheck()
-  .force()
-  .build()
+export const completeItem = (resourceName, pubId, authToken) =>
+  new FetchBuilder(`/${resourceName}/${pubId}/`)
+    .withAuthToken(authToken)
+    .withRequestAction(fetchItemRequest)
+    .withSuccessAction(fetchItemSuccess)
+    .withFailureAction(fetchItemFailed)
+    .withInFlightCheck()
+    .withPreFlightCheck(() => !cache.getFreshCompleteItem(pubId))
+    .build()
 
-export const addItem = (item) => new FetchBuilder(`/${item.resourceName}`)
-  .forPost()
-  .withJson(item)
-  .withRequestAction(addItemRequest)
-  .withSuccessAction(addItemSuccess)
-  .withFailureAction(addItemFailed)
-  .build()
+export const forceFetchItem = (resourceName, pubId, authToken) =>
+  new FetchBuilder(`/${resourceName}/${pubId}/`)
+    .withAuthToken(authToken)
+    .withRequestAction(fetchItemRequest)
+    .withSuccessAction(fetchItemSuccess)
+    .withFailureAction(fetchItemFailed)
+    .withInFlightCheck()
+    .force()
+    .build()
 
-export const updateItem = (item) => new FetchBuilder(`/${item.resourceName}/${item.pubId}`)
-  .forPut()
-  .withJson(item)
-  .withRequestAction(updateItemRequest)
-  .withSuccessAction(updateItemSuccess)
-  .withFailureAction(updateItemFailed)
-  .build()
+// TODO https://github.com/Liquid-Labs/catalyst-core-api/issues/5
+export const addItem = (item, authToken) =>
+  new FetchBuilder(`/${item.resourceName}/`)
+    .withAuthToken(authToken)
+    .forPost()
+    .withJson(item)
+    .withRequestAction(addItemRequest)
+    .withSuccessAction(addItemSuccess)
+    .withFailureAction(addItemFailed)
+    .build()
+
+export const updateItem = (item, authToken) =>
+  new FetchBuilder(`/${item.resourceName}/${item.pubId}/`)
+    .withAuthToken(authToken)
+    .forPut()
+    .withJson(item)
+    .withRequestAction(updateItemRequest)
+    .withSuccessAction(updateItemSuccess)
+    .withFailureAction(updateItemFailed)
+    .build()
 
 // Somewhere in the API chain, it's rejecting with '"DELETE" requests
 // may not contain bodies'. While this seems totally bogus and is an
 // extra-spec constraint, no time to fight it.
-export const deleteItem = (resourceName, pubId, reason) => new FetchBuilder(`/${resourceName}/${pubId}?reason=${encodeURIComponent(reason)}`)
-  .forDelete()
-  .withRequestAction(updateItemRequest)
-  .withSuccessAction(updateItemSuccess)
-  .withFailureAction(updateItemFailed)
-  // .withJson({reason: reason})
-  .build()
+export const deleteItem = (resourceName, pubId, reason, authToken) =>
+  new FetchBuilder(`/${resourceName}/${pubId}/?reason=${encodeURIComponent(reason)}`)
+    .withAuthToken(authToken)
+    .forDelete()
+    .withRequestAction(updateItemRequest)
+    .withSuccessAction(updateItemSuccess)
+    .withFailureAction(updateItemFailed)
+    // .withJson({reason: reason})
+    .build()
+/* TODO https://github.com/Liquid-Labs/catalyst-core-api/issues/6
+export const fetchItemEventList = (resourceName, pubId, authToken) =>
+  new FetchBuilder(`/${resourceName}/${pubId}/events/`)
+    .withAuthToken(authToken)
+    .withRequestAction(fetchItemEventListRequest)
+    .withSuccessAction(fetchItemEventListSuccess)
+    .withFailureAction(fetchItemEventListFailed)
+    .withInFlightCheck()
+    // Note: event fetch is always forced
+    .force()
+    .build()
 
-export const fetchItemEventList = (resourceName, pubId) => new FetchBuilder(`/${resourceName}/${pubId}/events`)
-  .withRequestAction(fetchItemEventListRequest)
-  .withSuccessAction(fetchItemEventListSuccess)
-  .withFailureAction(fetchItemEventListFailed)
-  .withInFlightCheck()
-  // Note: event fetch is always forced
-  .force()
-  .build()
-
-export const addItemEvent = (resourceName, ev) => new FetchBuilder(`/${resourceName}/${ev.pubId}/events`)
-  .forPost()
-  .withJson(ev)
-  .withRequestAction(addItemEventRequest)
-  .withSuccessAction(addItemEventSuccess)
-  .withFailureAction(addItemEventFailed)
-  .withInFlightCheck()
-  .build()
-
+export const addItemEvent = (resourceName, ev, authToken) =>
+  new FetchBuilder(`/${resourceName}/${ev.pubId}/events/`)
+    .withAuthToken(authToken)
+    .forPost()
+    .withJson(ev)
+    .withRequestAction(addItemEventRequest)
+    .withSuccessAction(addItemEventSuccess)
+    .withFailureAction(addItemEventFailed)
+    .withInFlightCheck()
+    .build()
+*/
 // Sometimes the app needs update the redux item.
 export const updateLocalItem = (item) => ({
   type : UPDATE_LOCAL_ITEM,

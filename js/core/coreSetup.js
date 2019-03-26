@@ -13,7 +13,7 @@ const yourSetup = () => {
     new CommonResourceConf('user')
   ]
 
-  resourcesSettings.setResources(CommonResourceConf.listToMap(resourceList))
+  resourcesSettings.setResources(resourceList)
 }`
 
 export const coreSetup = () => {
@@ -27,7 +27,7 @@ export const verifyCatalystSetup = () => {
     if (!resources) {
       throw new Error(`Resource settings are null. ${tryResource}`)
     }
-    if (typeof resources !== 'object') {
+    if (!Array.isArray(resources)) {
       throw new Error(`'getResources()' returned unexpected type.` )
     }
   }

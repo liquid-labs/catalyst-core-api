@@ -1,4 +1,4 @@
-/* global afterEach beforeAll beforeEach describe expect test */
+/* global beforeAll beforeEach describe expect test */
 import * as store from '../store'
 import * as resources from './resources'
 import fetchMock from 'fetch-mock'
@@ -8,8 +8,10 @@ import { userId, userData, userReqBody, userUrl, loadUserInCache, setupStore } f
 
 describe('resources', () => {
   beforeAll(setupStore)
-  beforeEach(store.init)
-  afterEach(fetchMock.restore)
+  beforeEach(() => {
+    store.init()
+    fetchMock.reset()
+  })
 
   test('fetchItem() should return recently cached item', async() => {
     loadUserInCache()
@@ -27,7 +29,7 @@ describe('resources', () => {
 
     const { data, errorMessage } = await resources.fetchItem('users', userId)
     expect(fetchMock.done()).toBe(true)
-    expect(errorMessage).toBeUndefined()
+    expect(errorMessage).toBeNull()
     expect(data).toEqual(userData)
   })
 })

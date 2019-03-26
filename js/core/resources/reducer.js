@@ -4,7 +4,6 @@
  * error or an update is "in flight").
  */
 import * as resourceActions from './actions'
-import * as routes from '../routes'
 import * as settings from './settings'
 
 import moment from 'moment-timezone'
@@ -33,16 +32,6 @@ export const INITIAL_STATE = {
   refreshItemListsBefore : 0
 }
 
-const modelItem = (item, resourceName) => {
-  if (process.env.NODE_ENV !== 'production') {
-    if (!settings.getResources()[resourceName]) {
-      throw new Error(`No such resource '${resourceName}' defined.`)
-    }
-  }
-  const constructor = settings.getResources()[resourceName].model
-  return new constructor(item)
-}
-
 const calculateFailedSources = (action, currentState) => ({
   ...currentState.sources,
   [action.source] : {
@@ -59,7 +48,7 @@ const processData = (itemList, action, currentState, props, handlers) => {
       if (!handlers[handlerKey]) handlers[handlerKey] = () => {}
     })
 
-  // TODO: how efficient is this?
+  // TODO https://github.com/Liquid-Labs/catalyst-core-api/issues/7
   const items = Object.assign({}, currentState.items)
 
   itemList.forEach((item) => {
@@ -88,18 +77,14 @@ const processData = (itemList, action, currentState, props, handlers) => {
 }
 
 const processFetchData = (action, currentState) => {
-  let itemList
-  if (Array.isArray(action.data)) {
-    itemList =
-      action.data.map((item) => modelItem(item, routes.extractResource(action.source)))
-  }
-  else {
-    itemList = [modelItem(action.data, routes.extractResource(action.source))]
-    if (!itemList[0].isComplete()) {
-      settings.invokeErrorHandler(`Retrieved item is missing expected data: '${itemList[0]._missing.join("', '")}'.`)
-      return processData([], action, currentState, {},
-        { calculateNewSources : calculateFailedSources })
-    }
+  const itemList = Array.isArray(action.data)
+    ? action.data
+    : [ action.data ]
+  if (!itemList[0].isComplete()) {
+    // TODO https://github.com/Liquid-Labs/catalyst-core-api/issues/8
+    settings.invokeErrorHandler(`Retrieved item is missing expected data: '${itemList[0]._missing.join("', '")}'.`)
+    return processData([], action, currentState, {},
+      { calculateNewSources : () => calculateFailedSources(action, currentState) })
   }
 
   const newRefresh = currentState.refreshItemListsBefore + 1
@@ -119,10 +104,9 @@ const processFetchData = (action, currentState) => {
     onItemCompletion : (item, props) => {
       props.refreshItemListsBefore = newRefresh
     },
+    // TODO https://github.com/Liquid-Labs/catalyst-core-api/issues/10
     calculateNewSources : (props) => {
       const beforeMoment = moment(props.invalidateSourcesBefore, 'X')
-      // TODO: we can further optmiize source invalidation based on involved
-      // resource types
       const newSource = {
         [action.source] : {
           source       : action.source,
@@ -147,7 +131,9 @@ const processFetchData = (action, currentState) => {
 }
 
 const processUpdatedData = (action, currentState) => {
-  const itemList = [modelItem(action.data, routes.extractResource(action.source))]
+  const itemList = Array.isArray(action.data)
+    ? action.data
+    : [ action.data ]
 
   const props = {
     validatedRefs          : {},
@@ -207,7 +193,6 @@ const resourceReducer = (currentState = INITIAL_STATE, action) => {
   case resourceActions.FETCH_LIST_SUCCESS:
   case resourceActions.FETCH_ITEM_SUCCESS:
     return processFetchData(action, currentState)
-    // TODO: consider retaining any existing data on 'no connection failures', for offline mode?
   case resourceActions.FETCH_LIST_FAILURE:
   case resourceActions.FETCH_ITEM_FAILURE:
     return failApiCall(action, currentState)
@@ -230,6 +215,7 @@ const resourceReducer = (currentState = INITIAL_STATE, action) => {
   case resourceActions.UPDATE_ITEM_FAILURE:
   case resourceActions.DELETE_ITEM_FAILURE:
     return completeApiCall(action, currentState)
+  /* TODO https://github.com/Liquid-Labs/catalyst-core-api/issues/6
     // item event handlers
   case resourceActions.FETCH_EVENT_LIST_REQUEST:
     return {
@@ -269,7 +255,7 @@ const resourceReducer = (currentState = INITIAL_STATE, action) => {
       items : omit(currentState.items, action.data.pubId)
     }
   case resourceActions.ADD_EVENT_FAILURE:
-    return completeApiCall(action, currentState)
+    return completeApiCall(action, currentState)*/
   case resourceActions.UPDATE_LOCAL_ITEM: {
     const { item } = action
     return {

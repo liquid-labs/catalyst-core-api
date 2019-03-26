@@ -11,13 +11,20 @@ import (
 )
 
 func TestUsersClone(t *testing.T) {
-  orig := &User{entities.Entity{nulls.NewInt64(1), nulls.NewString(`abc`), nulls.NewInt64(2)}, nulls.NewBool(true)}
+  orig := &User{
+    entities.Entity{nulls.NewInt64(1),
+      nulls.NewString(`abc`),
+      nulls.NewInt64(2)},
+    nulls.NewString(`my-auth-id`),
+    nulls.NewBool(true),
+  }
   clone := orig.Clone()
   assert.Equal(t, orig, clone, "Clone does not match.")
 
   clone.Id = nulls.NewInt64(3)
   clone.PubId = nulls.NewString(`def`)
   clone.LastUpdated = nulls.NewInt64(4)
+  clone.AuthId = nulls.NewString(`another-auth-id`)
   clone.Active = nulls.NewBool(false)
 
   oReflection := reflect.ValueOf(orig).Elem()

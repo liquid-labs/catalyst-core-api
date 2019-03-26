@@ -10,14 +10,12 @@
  *   in custom data models.
  */
 import * as contextSettings from './core/contextSettings'
-import * as routes from './core/routes'
 import * as store from './core/store'
 export * from './core/coreSetup'
 export * from './core/resources'
 
 export * from './entities/model'
 export * from './locations/model'
+export * from './users/model'
 
-export * from './components/ItemFetcher'
-
-export { contextSettings, routes, store }
+export { contextSettings, store }
