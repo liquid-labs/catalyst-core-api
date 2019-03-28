@@ -113,7 +113,7 @@
     }
   ],
   "devDependencies": {
-    "@liquid-labs/catalyst-scripts": "^1.0.0-alpha.16",
+    "@liquid-labs/catalyst-scripts": "^1.0.0-alpha.17",
     "@liquid-labs/lock-and-key": "0.0.4",
     "@liquid-labs/react-waiter": "^1.0.0-prototype.10",
     "@liquid-labs/regex-repo": "latest",
