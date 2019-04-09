@@ -4,7 +4,7 @@ import (
   "database/sql"
   "log"
 
-  "github.com/Liquid-Labs/catalyst-core-api/go/entities"
+  "github.com/Liquid-Labs/catalyst-core-api/go/resources/entities"
   "github.com/Liquid-Labs/go-rest/rest"
 )
 

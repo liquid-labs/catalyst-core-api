@@ -5,7 +5,7 @@ package users
  */
 
 import (
-  "github.com/Liquid-Labs/catalyst-core-api/go/entities"
+  "github.com/Liquid-Labs/catalyst-core-api/go/resources/entities"
   "github.com/Liquid-Labs/go-nullable-mysql/nulls"
 )
 
