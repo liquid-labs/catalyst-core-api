@@ -12,13 +12,25 @@ import (
 type User struct {
   entities.Entity
   AuthId      nulls.String `json:"authId"`
+  LegalID     nulls.String `json:"legalID"`
+  LegalIDType nulls.String `json:"legalIDType"`
   Active      nulls.Bool `json:"active"`
 }
 
-func (u *User) Clone() *User {
-  return &User{Entity: *u.Entity.Clone(), AuthId: u.AuthId, Active: u.Active}
+func (u *User) SetLegalID(id string, idType string) {
+  u.LegalID = nulls.NewString(id)
+  u.LegalIDType = nulls.NewString(idType)
+}
+
+func (u *User) ClearLegalID() {
+  u.LegalID = nulls.NewNullString()
+  u.LegalIDType = nulls.NewNullString()
 }
 
 func (u *User) SetActive(val bool) {
   u.Active = nulls.NewBool(val)
+}
+
+func (u *User) Clone() *User {
+  return &User{*u.Entity.Clone(), u.AuthId, u.LegalID, u.LegalIDType, u.Active}
 }

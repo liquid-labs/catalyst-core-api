@@ -16,7 +16,7 @@ func CreateUserInTxn(user *User, txn *sql.Tx) (int64, rest.RestError){
     return -1, restErr
   }
 
-  _, err := txn.Stmt(createUserQuery).Exec(newId, user.AuthId, user.Active)
+  _, err := txn.Stmt(createUserQuery).Exec(newId, user.AuthId, user.LegalID, user.LegalIDType, user.Active)
   if err != nil {
     log.Print(err)
 		return -1, rest.ServerError("Failure creating user record.", err)
@@ -25,7 +25,7 @@ func CreateUserInTxn(user *User, txn *sql.Tx) (int64, rest.RestError){
   return newId, nil
 }
 
-const createUserStatement = `INSERT INTO users (id, auth_id, active) VALUES (?, ?, ?)`
+const createUserStatement = `INSERT INTO users (id, auth_id, legal_id, legal_id_type, active) VALUES (?,?,?,?,?)`
 var createUserQuery *sql.Stmt
 func SetupDB(DB *sql.DB) {
   var err error
