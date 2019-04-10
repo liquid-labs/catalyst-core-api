@@ -129,10 +129,8 @@
   "peerDependencies": {
     "@liquid-labs/regex-repo": "latest",
     "@liquid-labs/restful-paths": "^1.0.0-prototype.0",
-    "lodash.isequal": "^4.5.0",
     "lodash.omit": "^4.5.0",
     "lodash.reduce": "^4.6.0",
-    "lodash.upperfirst": "^4.3.1",
     "moment-timezone": "^0.5.23",
     "normalizr": "^3.3.0",
     "redux": "^4.0.1",
