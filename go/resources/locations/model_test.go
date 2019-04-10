@@ -4,7 +4,7 @@ import (
   "reflect"
   "testing"
 
-  . "github.com/Liquid-Labs/catalyst-core-api/go/locations"
+  . "github.com/Liquid-Labs/catalyst-core-api/go/resources/locations"
   "github.com/Liquid-Labs/go-nullable-mysql/nulls"
   "github.com/stretchr/testify/assert"
 )
