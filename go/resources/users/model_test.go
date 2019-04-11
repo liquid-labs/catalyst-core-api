@@ -4,8 +4,8 @@ import (
   "reflect"
   "testing"
 
-  . "github.com/Liquid-Labs/catalyst-core-api/go/users"
-  "github.com/Liquid-Labs/catalyst-core-api/go/entities"
+  . "github.com/Liquid-Labs/catalyst-core-api/go/resources/users"
+  "github.com/Liquid-Labs/catalyst-core-api/go/resources/entities"
   "github.com/Liquid-Labs/go-nullable-mysql/nulls"
   "github.com/stretchr/testify/assert"
 )
@@ -16,6 +16,8 @@ func TestUsersClone(t *testing.T) {
       nulls.NewString(`abc`),
       nulls.NewInt64(2)},
     nulls.NewString(`my-auth-id`),
+    nulls.NewString(`555-55-5555`),
+    nulls.NewString(`SSN`),
     nulls.NewBool(true),
   }
   clone := orig.Clone()
@@ -25,6 +27,8 @@ func TestUsersClone(t *testing.T) {
   clone.PubId = nulls.NewString(`def`)
   clone.LastUpdated = nulls.NewInt64(4)
   clone.AuthId = nulls.NewString(`another-auth-id`)
+  clone.LegalID = nulls.NewString(`56-565-5656`)
+  clone.LegalIDType = nulls.NewString(`EIN`)
   clone.Active = nulls.NewBool(false)
 
   oReflection := reflect.ValueOf(orig).Elem()
