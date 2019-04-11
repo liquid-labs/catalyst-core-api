@@ -113,7 +113,7 @@
     }
   ],
   "devDependencies": {
-    "@liquid-labs/catalyst-scripts": "^1.0.0-alpha.17",
+    "@liquid-labs/catalyst-scripts": "^1.0.0-alpha.19",
     "@liquid-labs/regex-repo": "latest",
     "@liquid-labs/restful-paths": "^1.0.0-prototype.2",
     "fetch-mock": "^7.3.1",
