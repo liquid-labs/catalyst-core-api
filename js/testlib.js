@@ -9,11 +9,11 @@ export const userId = '8BBF68AB-96D6-43EB-BDAE-36F55BC6EFD6'
 export const userUrl = `/users/${userId}/`
 export const ts = Date.now()
 export const userData = {
-  pubId : userId,
+  pubId       : userId,
   lastUpdated : ts -1000,
-  active : true,
-  authId : 'my-auth-id',
-  legalID : '555-55-5555',
+  active      : true,
+  authId      : 'my-auth-id',
+  legalID     : '555-55-5555',
   legalIDType : 'SSN'
 }
 export const userReqBody = {
