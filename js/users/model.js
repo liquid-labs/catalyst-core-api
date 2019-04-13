@@ -1,8 +1,8 @@
 import { Model } from '../core/resources/Model'
-import { entityPropModel } from '../entities/model'
+import { entityPropsModel } from '../entities/model'
 
 const userPropsModel = [
-  ...entityPropModel,
+  ...entityPropsModel,
   {propName : 'authId', writable : false},
   {propName : 'legalID', writable : true},
   {propName : 'legalIDType', writable : true},
