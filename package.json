@@ -1,6 +1,6 @@
 {
   "name": "@liquid-labs/catalyst-core-api",
-  "version": "1.0.0-prototype.8",
+  "version": "1.0.0-prototype.9",
   "description": "Core backend Catalyst components.",
   "directories": {
     "doc": "docs"
