@@ -19,7 +19,6 @@
   "bin": {
     "cloud-sql-proxy.sh": "./bin/cloud-sql-proxy.sh",
     "cloud-sql-service.sh": "./bin/cloud-sql-service.sh",
-    "cloud_sql_proxy": "./bin/cloud_sql_proxy",
     "go-dev-server.sh": "./bin/go-dev-server.sh"
   },
   "scripts": {
@@ -136,5 +135,7 @@
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@liquid-labs/cloud-sql-proxy": "^1.0.0-alpha.0"
+  }
 }
