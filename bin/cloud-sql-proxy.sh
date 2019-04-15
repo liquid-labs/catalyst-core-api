@@ -23,10 +23,11 @@ isRunning() {
 }
 
 startProxy() {
+  local CLOUDSQL_CREDS="$HOME/.catalyst/creds/${CLOUDSQL_SERVICE_ACCT}.json"
   # We were using the following to capture the pid, but see note on 'isRunning'
   # bash -c "cd '${BASE_DIR}'; ( npx --no-install cloud_sql_proxy -instances='${CLOUDSQL_CONNECTION_NAME}'=tcp:3306 -credential_file='${CLOUDSQL_CREDS}' & echo \$! >&3 ) 3> '${PID_FILE}' 2> '${SERV_LOG}' &"
   # Annoyingly, cloud_sql_proxy (at time of note) emits all logs to stderr.
-  bash -c "cd '${BASE_DIR}'; npx --no-install cloud_sql_proxy -instances='${CLOUDSQL_PROXY_CONNECTION_NAME}'=tcp:3306 -credential_file='${CLOUDSQL_CREDS}' 2> '${SERV_LOG}' &"
+  bash -c "cd '${BASE_DIR}'; npx --no-install cloud_sql_proxy -instances='${CLOUDSQL_PROXY_CONNECTION_NAME}'=tcp:3306 -credential_file='$CLOUDSQL_CREDS' 2> '${SERV_LOG}' &"
 }
 
 stopProxy() {
