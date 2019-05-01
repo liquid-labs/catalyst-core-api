@@ -16,11 +16,6 @@ const yourSetup = () => {
   resourcesSettings.setResources(resourceList)
 }`
 
-export const coreSetup = () => {
-  store.addReducer(RESOURCES_STATE_KEY, resourceReducer)
-  store.addMiddleware(thunk)
-}
-
 export const verifyCatalystSetup = () => {
   if (process.env.NODE_ENV !=='production') {
     const resources = resourcesSettings.getResources()
@@ -33,9 +28,23 @@ export const verifyCatalystSetup = () => {
   }
 }
 
-export const coreInit = () => {
+/**
+ * `coreInit` does the low-level Catalyst setup. Specifically, it initializes
+ * the redux store and finalizes resource configuration.
+ */
+export const coreInit = (resourceConfs, resourceURLs) => {
+  resourceConfs.forEach((resourceConf) =>
+    resourceConf.baseURL = resourceURLs[resourceConf.resourceName]
+  )
+  resourcesSettings.setResources(resourceConfs)
+
+  store.addReducer(RESOURCES_STATE_KEY, resourceReducer)
+  store.addMiddleware(thunk)
+
+  const reduxStore = store.init()
+
   verifyCatalystSetup()
   return {
-    reduxStore : store.init()
+    reduxStore
   }
 }
