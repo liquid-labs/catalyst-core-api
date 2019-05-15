@@ -7,6 +7,7 @@ import (
   "firebase.google.com/go/auth"
 
   "github.com/Liquid-Labs/catalyst-firewrap/go/fireauth"
+  "github.com/Liquid-Labs/catalyst-core-api/go/resources/entities"
   "github.com/Liquid-Labs/catalyst-core-api/go/restserv"
   "github.com/Liquid-Labs/go-nullable-mysql/nulls"
   "github.com/Liquid-Labs/go-rest/rest"
@@ -33,6 +34,7 @@ func CheckAndExtract(w http.ResponseWriter, r *http.Request, o interface {}, ite
   }
 }
 
+// deprecated
 func doGeneric(w http.ResponseWriter, r *http.Request, dbFunc interface{}, input interface{}, itemName string, actionDesc string) {
   results := reflect.ValueOf(dbFunc).Call([]reflect.Value{reflect.ValueOf(input), reflect.ValueOf(r.Context())})
   data := results[0].Interface()
@@ -45,18 +47,39 @@ func doGeneric(w http.ResponseWriter, r *http.Request, dbFunc interface{}, input
   }
 }
 
+// deprecated
 func DoCreate(w http.ResponseWriter, r *http.Request, createFunc interface{}, data interface{}, itemName string) {
   doGeneric(w, r, createFunc, data, itemName, `created`)
 }
 
+// deprecated
 func DoGetDetail(w http.ResponseWriter, r *http.Request, getFunc interface{}, id interface{}, itemName string) {
   doGeneric(w, r, getFunc, id, itemName, `retrieved`)
 }
 
+// deprecated
 func DoUpdate(w http.ResponseWriter, r *http.Request, updateFunc interface{}, data interface{}, pubID string, itemName string) {
-  if pubID != reflect.Indirect(reflect.ValueOf(data)).FieldByName(`PubId`).Interface().(nulls.String).String {
+  if pubID != `` && pubID != reflect.Indirect(reflect.ValueOf(data)).FieldByName(`PubId`).Interface().(nulls.String).String {
     rest.HandleError(w, rest.BadRequestError("The ID of the target resource and the data provided do not match.", nil))
     return
   }
   doGeneric(w, r, updateFunc, data, itemName, `updated`)
+}
+
+func ProcessGenericResults(w http.ResponseWriter, r *http.Request, data interface{}, err rest.RestError, actionDesc string) {
+  if err != nil {
+    rest.HandleError(w, err)
+    return
+  } else {
+    rest.StandardResponse(w, data, actionDesc, nil)
+  }
+}
+
+func CheckUpdateByPubID(w http.ResponseWriter, urlPubID string, entity entities.EntityIface) bool {
+  if urlPubID != entity.GetPubID().String {
+    rest.HandleError(w, rest.BadRequestError("The ID of the target resource and the data provided do not match.", nil))
+    return false
+  } else {
+    return true
+  }
 }
