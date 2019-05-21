@@ -16,7 +16,9 @@ class FetchBuilder {
   constructor(source) {
     this.source = source
     const { resourceName } = extractPathInfo(source)
-    const baseURL = settings.getResourcesMap()[resourceName].baseURL
+    const resourceConfig = settings.getResourcesMap()[resourceName]
+    if (!resourceConfig) throw new Error(`No resource config mapped for '${resourceName}'.`)
+    const baseURL = resourceConfig.baseURL
     this.url = baseURL + source
     this.method = 'GET' // default method if none specified
     this.isForced = false // by default we do not force the fetch
