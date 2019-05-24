@@ -108,4 +108,4 @@ export const getFreshSourceData = (source) => {
 // TODO: drop sepecial casing of events
 // Note that events should generally be fetched first and then retreived via
 // this method on success fetch (rather than going directly here).
-export const getItemEventList = (pubID) => getResourceState().events[pubID]
+export const getItemEventList = (pubId) => getResourceState().events[pubId]

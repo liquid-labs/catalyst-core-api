@@ -10,7 +10,7 @@ const ownerPubID = 'D096F0CA-41FA-44D1-925A-0087D202F099'
 export const userUrl = `/users/${userId}/`
 export const ts = Date.now()
 export const userData = {
-  pubID            : userId,
+  pubId            : userId,
   ownerPubID       : ownerPubID,
   publiclyReadable : false,
   lastUpdated      : ts -1000,

@@ -39,7 +39,7 @@ export class CommonResourceConf {
       itemName.replace('-', '_').toUpperCase());
 
     defineConst(this, 'itemSchema',
-      new schema.Entity('items', {}, { idAttribute : 'pubID' }))
+      new schema.Entity('items', {}, { idAttribute : 'pubId' }))
     defineConst(this, 'listSchema', new schema.Array(this.itemSchema))
 
     // Resources that can be created define the following

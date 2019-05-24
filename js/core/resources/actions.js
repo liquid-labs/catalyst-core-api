@@ -213,8 +213,8 @@ export const forceFetchSingleFromList = (source, authToken) =>
     .force()
     .build()
 
-export const fetchItem = (resourceName, pubID, authToken) =>
-  new FetchBuilder(`/${resourceName}/${pubID}/`)
+export const fetchItem = (resourceName, pubId, authToken) =>
+  new FetchBuilder(`/${resourceName}/${pubId}/`)
     .withAuthToken(authToken)
     .withRequestAction(fetchItemRequest)
     .withSuccessAction(fetchItemSuccess)
@@ -231,18 +231,18 @@ export const fetchItemBySource = (source, authToken) =>
     .withInFlightCheck()
     .build()
 
-export const completeItem = (resourceName, pubID, authToken) =>
-  new FetchBuilder(`/${resourceName}/${pubID}/`)
+export const completeItem = (resourceName, pubId, authToken) =>
+  new FetchBuilder(`/${resourceName}/${pubId}/`)
     .withAuthToken(authToken)
     .withRequestAction(fetchItemRequest)
     .withSuccessAction(fetchItemSuccess)
     .withFailureAction(fetchItemFailed)
     .withInFlightCheck()
-    .withPreFlightCheck(() => !cache.getFreshCompleteItem(pubID))
+    .withPreFlightCheck(() => !cache.getFreshCompleteItem(pubId))
     .build()
 
-export const forceFetchItem = (resourceName, pubID, authToken) =>
-  new FetchBuilder(`/${resourceName}/${pubID}/`)
+export const forceFetchItem = (resourceName, pubId, authToken) =>
+  new FetchBuilder(`/${resourceName}/${pubId}/`)
     .withAuthToken(authToken)
     .withRequestAction(fetchItemRequest)
     .withSuccessAction(fetchItemSuccess)
@@ -263,7 +263,7 @@ export const addItem = (item, authToken) =>
     .build()
 
 export const updateItem = (item, authToken) =>
-  new FetchBuilder(`/${item.resourceName}/${item.pubID}/`)
+  new FetchBuilder(`/${item.resourceName}/${item.pubId}/`)
     .withAuthToken(authToken)
     .forPut()
     .withJson(item)
@@ -275,8 +275,8 @@ export const updateItem = (item, authToken) =>
 // Somewhere in the API chain, it's rejecting with '"DELETE" requests
 // may not contain bodies'. While this seems totally bogus and is an
 // extra-spec constraint, no time to fight it.
-export const deleteItem = (resourceName, pubID, reason, authToken) =>
-  new FetchBuilder(`/${resourceName}/${pubID}/?reason=${encodeURIComponent(reason)}`)
+export const deleteItem = (resourceName, pubId, reason, authToken) =>
+  new FetchBuilder(`/${resourceName}/${pubId}/?reason=${encodeURIComponent(reason)}`)
     .withAuthToken(authToken)
     .forDelete()
     .withRequestAction(updateItemRequest)
@@ -285,8 +285,8 @@ export const deleteItem = (resourceName, pubID, reason, authToken) =>
     // .withJson({reason: reason})
     .build()
 /* TODO https://github.com/Liquid-Labs/catalyst-core-api/issues/6
-export const fetchItemEventList = (resourceName, pubID, authToken) =>
-  new FetchBuilder(`/${resourceName}/${pubID}/events/`)
+export const fetchItemEventList = (resourceName, pubId, authToken) =>
+  new FetchBuilder(`/${resourceName}/${pubId}/events/`)
     .withAuthToken(authToken)
     .withRequestAction(fetchItemEventListRequest)
     .withSuccessAction(fetchItemEventListSuccess)
@@ -297,7 +297,7 @@ export const fetchItemEventList = (resourceName, pubID, authToken) =>
     .build()
 
 export const addItemEvent = (resourceName, ev, authToken) =>
-  new FetchBuilder(`/${resourceName}/${ev.pubID}/events/`)
+  new FetchBuilder(`/${resourceName}/${ev.pubId}/events/`)
     .withAuthToken(authToken)
     .forPost()
     .withJson(ev)
