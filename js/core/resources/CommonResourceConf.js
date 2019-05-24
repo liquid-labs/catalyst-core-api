@@ -25,9 +25,9 @@ export class CommonResourceConf {
    * resource type which is included in a context call and may be referenced or
    * included in results, but is not itself directly accessed.
    */
-  constructor(itemName, apiConfig=undefined) {
+  constructor(itemName, apiConfig=undefined, options) {
     // Common data items that all resources have.
-    defineConst(this, 'resourceName', itemName + 's')
+    defineConst(this, 'resourceName', options?.resourceName || itemName + 's')
     defineConst(this, 'itemName', itemName)
 
     defineConst(this, 'resourceCamelName', camelCase(this.resourceName))
