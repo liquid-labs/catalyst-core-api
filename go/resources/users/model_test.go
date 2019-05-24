@@ -14,6 +14,9 @@ func TestUsersClone(t *testing.T) {
   orig := &User{
     entities.Entity{nulls.NewInt64(1),
       nulls.NewString(`abc`),
+      nulls.NewInt64(10),
+      nulls.NewString(`xyz`),
+      nulls.NewBool(false),
       nulls.NewInt64(2)},
     nulls.NewString(`my-auth-id`),
     nulls.NewString(`555-55-5555`),
@@ -23,10 +26,13 @@ func TestUsersClone(t *testing.T) {
   clone := orig.Clone()
   assert.Equal(t, orig, clone, "Clone does not match.")
 
-  clone.Id = nulls.NewInt64(3)
-  clone.PubId = nulls.NewString(`def`)
+  clone.ID = nulls.NewInt64(3)
+  clone.PubID = nulls.NewString(`def`)
+  clone.OwnerID = nulls.NewInt64(12)
+  clone.OwnerPubID = nulls.NewString(`pqr`)
+  clone.PubliclyReadable = nulls.NewBool(true)
   clone.LastUpdated = nulls.NewInt64(4)
-  clone.AuthId = nulls.NewString(`another-auth-id`)
+  clone.AuthID = nulls.NewString(`another-auth-id`)
   clone.LegalID = nulls.NewString(`56-565-5656`)
   clone.LegalIDType = nulls.NewString(`EIN`)
   clone.Active = nulls.NewBool(false)

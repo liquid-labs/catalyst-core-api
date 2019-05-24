@@ -46,8 +46,8 @@ func (addresses Addresses) CreateAddresses(entityId nulls.Int64, ctx context.Con
   return nil
 }
 
-func (addresses Addresses) Update(pubId string, ctx context.Context, txn *sql.Tx) (rest.RestError) {
-  if _, err := txn.Stmt(resetAddressesQuery).Exec(pubId); err != nil {
+func (addresses Addresses) Update(pubID string, ctx context.Context, txn *sql.Tx) (rest.RestError) {
+  if _, err := txn.Stmt(resetAddressesQuery).Exec(pubID); err != nil {
     return rest.ServerError("Could not reset existing address records.", err)
   }
 
@@ -60,7 +60,7 @@ func (addresses Addresses) Update(pubId string, ctx context.Context, txn *sql.Tx
         return rest.ServerError("Could not create new location record.", err)
       }
     }
-    _, err := txn.Stmt(insertAddressQuery).Exec(address.LocationId, i, address.Label, pubId)
+    _, err := txn.Stmt(insertAddressQuery).Exec(address.LocationId, i, address.Label, pubID)
     if err != nil {
       return rest.ServerError("Could not insert address records.", err)
     }

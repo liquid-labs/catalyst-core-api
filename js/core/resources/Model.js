@@ -56,7 +56,7 @@ class Model {
       configurable : false
     })
     if (!newTest) {
-      newTest = (props) => !props || !props.pubId
+      newTest = (props) => !props || !props.pubID
     }
     SubClass.isNew = newTest
   }
@@ -150,7 +150,7 @@ class Model {
             value = []
             if (propVal && propVal.length > 0) {
               props[propName].forEach((val) => value.push(new model(val, Object.assign({ skipFreeze : true }, opts))))
-              value.forEach((val) => this._references.push(val.pubId))
+              value.forEach((val) => this._references.push(val.pubID))
             }
           }
           else if (propVal === null || propVal === "") {
@@ -158,7 +158,7 @@ class Model {
           }
           else { // not an array, and not empty; i.e., a single property set
             value = new model(props[propName], Object.assign({ skipFreeze : true }, opts))
-            this._references.push(value.pubId)
+            this._references.push(value.pubID)
           }
         }
         else { // plain, un-modeled value(s)

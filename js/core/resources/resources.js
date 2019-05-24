@@ -88,8 +88,8 @@ const createOrUpdateItem = async(action, item, authToken) =>
 
 export const createItem = async(item, authToken) => createOrUpdateItem(actions.addItem, item, authToken)
 
-export const fetchItem = async(resourceName, pubId, authToken) =>
-  fetchItemBySource(`/${resourceName}/${pubId}/`, authToken)
+export const fetchItem = async(resourceName, pubID, authToken) =>
+  fetchItemBySource(`/${resourceName}/${pubID}/`, authToken)
 
 /**
  * 'fetchItemBySource' returns a result construct from a fresh cache or the

@@ -12,7 +12,7 @@ import reduce from 'lodash.reduce'
 
 export const INITIAL_STATE = {
   // general database
-  /* { [pubId]: <modeled item> } */
+  /* { [pubID]: <modeled item> } */
   items                  : {},
   /* { [source url]: {
   *    lastChecked: <moment>,
@@ -26,7 +26,7 @@ export const INITIAL_STATE = {
   * 'refList' === [] =~ "We got word from the server, an the results are empty."
   */
   sources                : {},
-  events                 : {}, // { [pubId] : [events] }; note, not normalized
+  events                 : {}, // { [pubID] : [events] }; note, not normalized
   // activity trackers
   inFlightSources        : {}, // { [source]: true }
   refreshItemListsBefore : 0
@@ -52,17 +52,17 @@ const processData = (itemList, action, currentState, props, handlers) => {
   const items = Object.assign({}, currentState.items)
 
   itemList.forEach((item) => {
-    const currItem = items[item.pubId]
+    const currItem = items[item.pubID]
     handlers.onStartItemProcess(currItem, item, items, props)
     if (!currItem || item.lastUpdated > currItem.lastUpdated) {
-      items[item.pubId] = item
+      items[item.pubID] = item
       handlers.onNewOrUpdatedItem(item, props)
     }
     // else the items are from the same data time, but maybe the new one is more
     // complete? Note, this is as much about retaining complete items as
     // updating incomplete items.
     else if (!currItem.isComplete() && item.isComplete()) {
-      items[item.pubId] = item
+      items[item.pubID] = item
       handlers.onItemCompletion(item, props)
     }
   })
@@ -111,7 +111,7 @@ const processFetchData = (action, currentState) => {
         [action.source] : {
           source       : action.source,
           lastChecked  : moment(action.receivedAt),
-          refList      : itemList.map((item) => item.pubId),
+          refList      : itemList.map((item) => item.pubID),
           searchParams : action.searchParams }
       }
       return props.invalidateSourcesBefore
@@ -143,7 +143,7 @@ const processUpdatedData = (action, currentState) => {
   const handlers = {
     onStartItemProcess : (currItem, item, items, props) => {
       // currItem is null when creating and item is null when deleting
-      const itemId = (item && item.pubId) || currItem.pubId
+      const itemId = (item && item.pubID) || currItem.pubID
       props.validatedRefs[itemId] = true; // necessary ;
       [currItem, item].forEach((i) => {
         if (i) {
@@ -160,7 +160,7 @@ const processUpdatedData = (action, currentState) => {
       [action.source] : {
         source       : action.source,
         lastChecked  : moment(action.receivedAt),
-        refList      : [action.data.pubId],
+        refList      : [action.data.pubID],
         searchParams : action.searchParams }
     })
   }
@@ -252,7 +252,7 @@ const resourceReducer = (currentState = INITIAL_STATE, action) => {
     // 'item' is the event object.
     return {
       ...currentState,
-      items : omit(currentState.items, action.data.pubId)
+      items : omit(currentState.items, action.data.pubID)
     }
   case resourceActions.ADD_EVENT_FAILURE:
     return completeApiCall(action, currentState)*/
@@ -262,7 +262,7 @@ const resourceReducer = (currentState = INITIAL_STATE, action) => {
       ...currentState,
       items : {
         ...currentState.items,
-        [item.pubId] : item
+        [item.pubID] : item
       },
       refreshItemListsBefore : currentState.refreshItemListsBefore + 1
     }

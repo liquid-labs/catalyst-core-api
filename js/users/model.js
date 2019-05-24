@@ -3,7 +3,7 @@ import { entityPropsModel } from '../entities/model'
 
 const userPropsModel = [
   ...entityPropsModel,
-  {propName : 'authId', writable : false},
+  {propName : 'authID', writable : false},
   {propName : 'legalID', writable : true},
   {propName : 'legalIDType', writable : true},
   {propName : 'active', writable : true}

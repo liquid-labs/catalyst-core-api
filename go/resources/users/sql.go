@@ -11,18 +11,18 @@ import (
 // Since this is a non-concrete type, we return the (newly created) intetrnal
 // ID rather than retrievin the Entity record.
 func CreateUserInTxn(user *User, txn *sql.Tx) (int64, rest.RestError){
-  newId, restErr := entities.CreateEntityInTxn(txn)
+  newID, restErr := entities.CreateEntityInTxn(&user.Entity, txn)
   if restErr != nil {
     return -1, restErr
   }
 
-  _, err := txn.Stmt(createUserQuery).Exec(newId, user.AuthId, user.LegalID, user.LegalIDType, user.Active)
+  _, err := txn.Stmt(createUserQuery).Exec(newID, user.AuthID, user.LegalID, user.LegalIDType, user.Active)
   if err != nil {
     log.Print(err)
 		return -1, rest.ServerError("Failure creating user record.", err)
 	}
 
-  return newId, nil
+  return newID, nil
 }
 
 const createUserStatement = `INSERT INTO users (id, auth_id, legal_id, legal_id_type, active) VALUES (?,?,?,?,?)`

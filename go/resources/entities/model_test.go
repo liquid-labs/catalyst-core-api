@@ -1,6 +1,7 @@
 package entities_test
 
 import (
+  "reflect"
   "testing"
 
   . "github.com/Liquid-Labs/catalyst-core-api/go/resources/entities"
@@ -9,16 +10,28 @@ import (
 )
 
 func TestEntitiesClone(t *testing.T) {
-  orig := &Entity{nulls.NewInt64(1), nulls.NewString(`abc`), nulls.NewInt64(2)}
+  orig := &Entity{nulls.NewInt64(1), nulls.NewString(`abc`), nulls.NewInt64(10),
+    nulls.NewString(`xyz`), nulls.NewBool(true), nulls.NewInt64(2)}
   clone := orig.Clone()
+
   assert.Equal(t, orig, clone, "Clone does not match.")
-  clone.Id = nulls.NewInt64(3)
-  clone.PubId = nulls.NewString(`def`)
+
+  clone.ID = nulls.NewInt64(3)
+  clone.PubID = nulls.NewString(`def`)
+  clone.OwnerID = nulls.NewInt64(11)
+  clone.OwnerPubID = nulls.NewString(`pqr`)
+  clone.PubliclyReadable = nulls.NewBool(false)
   clone.LastUpdated = nulls.NewInt64(4)
-  assert.Equal(t, int64(1), orig.Id.Int64, `Unexpected orig ID.`)
-  assert.Equal(t, `abc`, orig.PubId.String, `Unexpected orig PubID.`)
-  assert.Equal(t, int64(2), orig.LastUpdated.Int64, `Unexpected orig LastUpdated.`)
-  assert.Equal(t, int64(3), clone.Id.Int64, `Unexpected clone ID.`)
-  assert.Equal(t, `def`, clone.PubId.String, `Unexpected clone PubID.`)
-  assert.Equal(t, int64(4), clone.LastUpdated.Int64, `Unexpected clone LastUpdated.`)
+  // TODO: abstract this
+  oReflection := reflect.ValueOf(orig).Elem()
+  cReflection := reflect.ValueOf(clone).Elem()
+  for i := 0; i < oReflection.NumField(); i++ {
+    assert.NotEqualf(
+      t,
+      oReflection.Field(i).Interface(),
+      cReflection.Field(i).Interface(),
+      `Fields '%s' unexpectedly match.`,
+      oReflection.Type().Field(i),
+    )
+  }
 }

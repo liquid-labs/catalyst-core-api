@@ -7,10 +7,8 @@ import (
   "github.com/Liquid-Labs/go-rest/rest"
 )
 
-// Since this is a non-concrete type, we return the (newly created) intetrnal
-// ID rather than retrievin the Entity record.
-func CreateEntityInTxn(txn *sql.Tx) (int64, rest.RestError){
-  res, err := txn.Stmt(createEntityQuery).Exec()
+func CreateEntityInTxn(e *Entity, txn *sql.Tx) (int64, rest.RestError){
+  res, err := txn.Stmt(createEntityQuery).Exec(e.PubliclyReadable, e.OwnerPubID)
   if err != nil {
 		return -1, rest.ServerError("Failure creating entity.", err)
 	}
@@ -23,7 +21,7 @@ func CreateEntityInTxn(txn *sql.Tx) (int64, rest.RestError){
   return newId, nil
 }
 
-const createEntityStatement = `INSERT INTO entities VALUES ()`
+const createEntityStatement = `INSERT INTO entities (owner, publicly_readable) SELECT id, ? FROM entities e WHERE e.pub_id=?`
 var createEntityQuery *sql.Stmt
 func SetupDB(DB *sql.DB) {
   var err error

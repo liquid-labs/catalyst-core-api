@@ -3,11 +3,14 @@
 -- last confirmed 2018-07-13
 
 CREATE TABLE entities (
-  `id` int(10) NOT NULL auto_increment,
-  `pub_id` CHAR(36), -- see 'pub_id note'
-  `last_updated` INT(11),
+  `id`                INT NOT NULL AUTO_INCREMENT,
+  `pub_id`            CHAR(36), -- see 'pub_id note'
+  `owner`             INT, -- should only be null for Persons
+  `publicly_readable` TINYINT(1),
+  `last_updated`      INT,
   CONSTRAINT `entities_key` PRIMARY KEY ( `id` ),
-  CONSTRAINT `entities_pub_id_unique` UNIQUE (`pub_id`)
+  CONSTRAINT `entities_pub_id_unique` UNIQUE (`pub_id`),
+  CONSTRAINT `entities_owner_refs_entities` FOREIGN KEY `entities` ( `id` )
 );
 
 CREATE UNIQUE INDEX entities_pub_id_index USING HASH ON entities (pub_id);

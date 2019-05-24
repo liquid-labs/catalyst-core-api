@@ -1,17 +1,14 @@
 package users
 
-/**
- * Defines basic struct (Go and JSON) for Users.
- */
-
 import (
   "github.com/Liquid-Labs/catalyst-core-api/go/resources/entities"
   "github.com/Liquid-Labs/go-nullable-mysql/nulls"
 )
 
+// User is the model definition for Catalyst user resources.
 type User struct {
   entities.Entity
-  AuthId      nulls.String `json:"authId"`
+  AuthID      nulls.String `json:"authID"`
   LegalID     nulls.String `json:"legalID"`
   LegalIDType nulls.String `json:"legalIDType"`
   Active      nulls.Bool `json:"active"`
@@ -32,5 +29,5 @@ func (u *User) SetActive(val bool) {
 }
 
 func (u *User) Clone() *User {
-  return &User{*u.Entity.Clone(), u.AuthId, u.LegalID, u.LegalIDType, u.Active}
+  return &User{*u.Entity.Clone(), u.AuthID, u.LegalID, u.LegalIDType, u.Active}
 }
