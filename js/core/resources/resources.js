@@ -111,9 +111,9 @@ export const fetchItemBySource = async(source, authToken) => {
     }
   }
 
-  const { pubID, isUUID } = extractPathInfo(source)
-  if (pubID && isUUID) { // then it's a standard item ID and we'll check cache for
-    const item = cache.getFreshCompleteItem(pubID)
+  const { pubId, isUuid } = extractPathInfo(source)
+  if (pubId && isUuid) { // then it's a standard item ID and we'll check cache for
+    const item = cache.getFreshCompleteItem(pubId)
     // notice, no need to finalize this
     if (item) return { ...nullResult, data : item }
   }
