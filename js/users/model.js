@@ -3,9 +3,9 @@ import { entityPropsModel } from '../entities/model'
 
 const userPropsModel = [
   ...entityPropsModel,
-  {propName : 'authID', writable : false},
-  {propName : 'legalID', writable : true},
-  {propName : 'legalIDType', writable : true},
+  {propName : 'authId', writable : false},
+  {propName : 'legalId', writable : true},
+  {propName : 'legalIdType', writable : true},
   {propName : 'active', writable : true}
 ]
 
