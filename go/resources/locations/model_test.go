@@ -24,7 +24,7 @@ func TestLocationsClone(t *testing.T) {
   clone := orig.Clone()
   assert.Equal(t, orig, clone, "Clone does not match.")
 
-  clone.LocationId = nulls.NewInt64(2)
+  clone.LocationID = nulls.NewInt64(2)
   clone.Address1 = nulls.NewString(`z`)
   clone.Address2 = nulls.NewString(`y`)
   clone.City = nulls.NewString(`x`)

@@ -59,7 +59,7 @@ func DoGetDetail(w http.ResponseWriter, r *http.Request, getFunc interface{}, id
 
 // deprecated
 func DoUpdate(w http.ResponseWriter, r *http.Request, updateFunc interface{}, data interface{}, pubID string, itemName string) {
-  if pubID != `` && pubID != reflect.Indirect(reflect.ValueOf(data)).FieldByName(`PubId`).Interface().(nulls.String).String {
+  if pubID != `` && pubID != reflect.Indirect(reflect.ValueOf(data)).FieldByName(`PubID`).Interface().(nulls.String).String {
     rest.HandleError(w, rest.BadRequestError("The ID of the target resource and the data provided do not match.", nil))
     return
   }

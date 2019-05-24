@@ -12,13 +12,13 @@ func CreateEntityInTxn(e *Entity, txn *sql.Tx) (int64, rest.RestError){
   if err != nil {
 		return -1, rest.ServerError("Failure creating entity.", err)
 	}
-  newId,err := res.LastInsertId()
+  newID,err := res.LastInsertId()
   if err != nil {
     return -1, rest.ServerError("Problem retrieving newly created entity ID.", err)
-  } else if newId == 0 {
+  } else if newID == 0 {
     return -1, rest.ServerError("Unexpected value for new ID.", nil)
   }
-  return newId, nil
+  return newID, nil
 }
 
 const createEntityStatement = `INSERT INTO entities (owner, publicly_readable) SELECT id, ? FROM entities e WHERE e.pub_id=?`

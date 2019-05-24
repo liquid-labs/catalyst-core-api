@@ -12,9 +12,9 @@ type Entity struct {
   // Note, the ID is for internal use only and may or may not be set depending
   // in the source of the item (client or backend).
   ID               nulls.Int64  `json:"-"`
-  PubID            nulls.String `json:"pubID"`
+  PubID            nulls.String `json:"pubId"`
   OwnerID          nulls.Int64  `json:"-"`
-  OwnerPubID       nulls.String `json:"ownerPubID"`
+  OwnerPubID       nulls.String `json:"ownerPubId"`
   PubliclyReadable nulls.Bool   `json:"publiclyReadable"`
   LastUpdated      nulls.Int64  `json:"lastUpdated"`
 }

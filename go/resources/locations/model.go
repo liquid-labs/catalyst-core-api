@@ -13,7 +13,7 @@ import (
 )
 
 type Location struct {
-  LocationId nulls.Int64   `json:"locationId"`
+  LocationID nulls.Int64   `json:"locationId"`
   Address1   nulls.String  `json:"address1"`
   Address2   nulls.String  `json:"address2"`
   City       nulls.String  `json:"city"`
@@ -27,7 +27,7 @@ type Location struct {
 func (loc *Location) Clone() *Location {
   newChangeDesc := make([]string, len(loc.ChangeDesc))
   copy(newChangeDesc, loc.ChangeDesc)
-  return &Location{loc.LocationId, loc.Address1, loc.Address2, loc.City, loc.State, loc.Zip, loc.Lat, loc.Lng, newChangeDesc}
+  return &Location{loc.LocationID, loc.Address1, loc.Address2, loc.City, loc.State, loc.Zip, loc.Lat, loc.Lng, newChangeDesc}
 }
 
 func (loc *Location) addressComponents() ([]nulls.Nullable) {
@@ -126,12 +126,12 @@ func (loc *Location) IsLatLngEmpty() (bool) {
 
 type Address struct {
   Location
-  Idx      nulls.Int64   `json:"idx"`
+  IDX      nulls.Int64   `json:"idx"`
   Label    nulls.String  `json:"label"`
 }
 
 func (add *Address) Clone() *Address {
-  return &Address{*add.Location.Clone(), add.Idx, add.Label}
+  return &Address{*add.Location.Clone(), add.IDX, add.Label}
 }
 
 type Addresses []*Address
