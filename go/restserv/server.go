@@ -24,16 +24,21 @@ func GetEnvPurpose() string {
   }
 }
 
-type fireauthKey string
-const FireauthKey fireauthKey = fireauthKey("fireauth")
+type authTokenKey string
+const AuthTokenKey authTokenKey = authTokenKey(`authToken`)
 
-func addFireauthMw(next http.Handler) http.Handler {
+func setAuthorizationContext(next http.Handler) http.Handler {
   return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
     if fireauth, restErr := fireauth.GetClient(r); restErr != nil {
-      log.Print("Failed to get auth client.")
       rest.HandleError(w, restErr)
     } else {
-      next.ServeHTTP(w, r.WithContext(context.WithValue(r.Context(), FireauthKey, fireauth)))
+      authToken, restErr := fireauth.GetToken()
+      if restErr != nil {
+        rest.HandleError(w, restErr)
+        return nil, restErr
+      }
+
+      next.ServeHTTP(w, r.WithContext(context.WithValue(r.Context(), AuthTokenKey, authToken)))
     }
   })
 }
@@ -61,7 +66,7 @@ func Init() {
   firewrap.Setup()
 
   r := mux.NewRouter()
-  r.Use(addFireauthMw)
+  r.Use(setAuthorizationContext)
   apiR := r.PathPrefix("/api/").Subrouter()
   // r.Use(contextualMw)
   for _, initApi := range initApiFuncs {
