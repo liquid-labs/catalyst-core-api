@@ -1,3 +1,4 @@
+// TODO: is this depracated?
 package entities
 
 import (
