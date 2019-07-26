@@ -21,6 +21,8 @@ github.com/Liquid-Labs/go-nullable-mysql v1.0.2 h1:FbUqf0Y1ec3Kwr4NOXawYC/OtS3mU
 github.com/Liquid-Labs/go-nullable-mysql v1.0.2/go.mod h1:vpdFQvKE6cAnjDL+70ZYGJqjRc5YvGZ7fe7eX8AetfA=
 github.com/Liquid-Labs/go-rest v1.0.0-prototype.2 h1:u8bYPdJ5DEvL/xWnIFclI7f2r4zRa475UXC9b0Tqagk=
 github.com/Liquid-Labs/go-rest v1.0.0-prototype.2/go.mod h1:zWdbB8g29fPWLq4dqand77+oFHAPWiJYrRVatWWa8mg=
+github.com/Liquid-Labs/go-rest v1.0.0-prototype.4 h1:htv8xLxqlbPibDJL6gUKgALeRkayHlUh3xpBCKpb0Yc=
+github.com/Liquid-Labs/go-rest v1.0.0-prototype.4/go.mod h1:zWdbB8g29fPWLq4dqand77+oFHAPWiJYrRVatWWa8mg=
 github.com/anmitsu/go-shlex v0.0.0-20161002113705-648efa622239/go.mod h1:2FmKhYUyUczH0OGQWaF5ceTx0UBShxjsH6f8oGKYe2c=
 github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973/go.mod h1:Dwedo/Wpr24TaqPxmxbtue+5NUziq4I4S80YR8gNf3Q=
 github.com/bradfitz/go-smtpd v0.0.0-20170404230938-deb6d6237625/go.mod h1:HYsPBTaaSFSlLx/70C2HPIMNZpVV8+vt/A+FMnYP11g=

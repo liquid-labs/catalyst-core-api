@@ -1,7 +1,7 @@
 import * as settings from './core/resources/settings'
 import * as actions from './core/resources/actions'
 import * as store from './core/store'
-import { coreSetup, verifyCatalystSetup } from './core/coreSetup'
+import { coreInit, verifyCatalystSetup } from './core/coreSetup'
 import { CommonResourceConf } from './core/resources/CommonResourceConf'
 import { User } from './users/model'
 
@@ -32,7 +32,7 @@ export const setupResources = () => {
 
 export const setupStore = () => {
   setupResources()
-  coreSetup()
+  coreInit()
 }
 
 export const loadUserInCache = () => {
