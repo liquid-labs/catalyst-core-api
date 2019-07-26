@@ -2,7 +2,7 @@ module github.com/Liquid-Labs/catalyst-core-api
 
 require (
 	firebase.google.com/go v3.6.0+incompatible
-	github.com/Liquid-Labs/catalyst-firewrap v1.0.0-prototype.0
+	github.com/Liquid-Labs/catalyst-firewrap v0.0.0-20190726012853-a48cc8c06cc5
 	github.com/Liquid-Labs/go-nullable-mysql v1.0.2
 	github.com/Liquid-Labs/go-rest v1.0.0-prototype.4
 	github.com/google/uuid v1.1.0 // indirect
