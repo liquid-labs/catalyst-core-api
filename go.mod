@@ -12,3 +12,7 @@ require (
 	github.com/stretchr/testify v1.3.0
 	googlemaps.github.io/maps v0.0.0-20190206003505-be134e760d70
 )
+
+replace github.com/Liquid-Labs/catalyst-firewrap => ../catalyst-firewrap
+
+replace github.com/Liquid-Labs/go-rest => ../go-rest
