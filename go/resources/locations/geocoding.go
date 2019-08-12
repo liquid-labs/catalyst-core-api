@@ -1,11 +1,12 @@
 package locations
 
 import (
-  "context"
-  "errors"
-  "fmt"
+  // "context"
+  // "errors"
+  // "fmt"
 
-  "github.com/Liquid-Labs/go-nullable-mysql/nulls"
+  // "github.com/Liquid-Labs/lc-locations-model/go/locations"
+  // "github.com/Liquid-Labs/go-nullable-mysql/nulls"
 
   "googlemaps.github.io/maps"
 )
@@ -25,8 +26,8 @@ func checkType(component maps.AddressComponent, tests ...string) (bool) {
   }
   return true
 }
-
-func (loc *Location) checkFieldMatch(fieldName string, field *nulls.String, canonicalValue string) {
+/*
+func (loc *locations.Location) checkFieldMatch(fieldName string, field *nulls.String, canonicalValue string) {
   if (field.String != canonicalValue) {
     origValue := field.String
     field.String = canonicalValue
@@ -35,12 +36,13 @@ func (loc *Location) checkFieldMatch(fieldName string, field *nulls.String, cano
     loc.ChangeDesc = append(loc.ChangeDesc,
       fmt.Sprintf("Changed '%s' from '%s' to '%s'.", fieldName, origValue, canonicalValue))
   }
-}
+}*/
 
 /**
  * Given a complete set of "address componens" and incomplete "lat/lng"
- */ // TODO: return a RestError so we can distinguish between server error (getting the maps.Client) and unprocessible entity (invalid address)
-func (loc *Location) CompleteLocation(ctx context.Context) (bool, error) {
+ */ // TODO: return a Terror so we can distinguish between server error (getting the maps.Client) and unprocessible entity (invalid address)
+ /*
+func (loc *locations.Location) CompleteLocation(ctx context.Context) (bool, error) {
   if loc.IsComplete() { // nothing to do
     return false, nil
   } else if loc.IsAddressComplete() && loc.IsLatLngEmpty() {
@@ -97,7 +99,7 @@ func (loc *Location) CompleteLocation(ctx context.Context) (bool, error) {
   }
 }
 
-func (addresses Addresses) CompleteAddresses(ctx context.Context) (bool, error) {
+func (addresses location.Addresses) CompleteAddresses(ctx context.Context) (bool, error) {
   var someCompleted bool = false
   for _, add := range addresses {
     completed, err := add.CompleteLocation(ctx)
@@ -108,4 +110,4 @@ func (addresses Addresses) CompleteAddresses(ctx context.Context) (bool, error) 
   }
 
   return someCompleted, nil
-}
+}*/

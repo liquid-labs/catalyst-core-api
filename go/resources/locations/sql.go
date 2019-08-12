@@ -1,5 +1,5 @@
 package locations
-
+/*
 import(
   "context"
   "database/sql"
@@ -9,11 +9,13 @@ import(
 
   "github.com/Liquid-Labs/go-nullable-mysql/nulls"
   "github.com/Liquid-Labs/go-rest/rest"
-)
+  "github.com/Liquid-Labs/terror/go/terror"
+)*/
 
 /**
  * For valid inputs, returns a Location. Currently doesn't try to find, always creates.
  */
+ /*
 func (loc *Location) FindOrCreate(ctx context.Context, txn *sql.Tx) (error) {
   if !loc.IsComplete() {
     return errors.New("Only complete locations may be created. Perhaps you forget to call 'CompleteLocation'?")
@@ -33,7 +35,7 @@ func (loc *Location) FindOrCreate(ctx context.Context, txn *sql.Tx) (error) {
   return nil
 }
 
-func (addresses Addresses) CreateAddresses(entityID nulls.Int64, ctx context.Context, txn *sql.Tx) (rest.RestError) {
+func (addresses Addresses) CreateAddresses(entityID nulls.Int64, ctx context.Context, txn *sql.Tx) (terror.Terror) {
   for i, a := range addresses {
     if err := a.FindOrCreate(ctx, txn); err != nil {
       return rest.ServerError("Could not create loction record.", err)
@@ -46,7 +48,7 @@ func (addresses Addresses) CreateAddresses(entityID nulls.Int64, ctx context.Con
   return nil
 }
 
-func (addresses Addresses) Update(pubID string, ctx context.Context, txn *sql.Tx) (rest.RestError) {
+func (addresses Addresses) Update(pubID string, ctx context.Context, txn *sql.Tx) (terror.Terror) {
   if _, err := txn.Stmt(resetAddressesQuery).Exec(pubID); err != nil {
     return rest.ServerError("Could not reset existing address records.", err)
   }
@@ -94,4 +96,4 @@ func SetupDB(DB *sql.DB) {
   if resetAddressesQuery, err = DB.Prepare(resetAddressesStatement); err != nil {
     log.Fatalf("mysql: prepare clear addresses stmt:\n%v\n%s", err, resetAddressesStatement)
   }
-}
+}*/
