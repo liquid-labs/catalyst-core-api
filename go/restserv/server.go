@@ -24,27 +24,6 @@ func GetEnvPurpose() string {
   }
 }
 
-type authTokenKey string
-const AuthTokenKey authTokenKey = authTokenKey(`authToken`)
-
-// setAuthorizationContext retrieves the Firebase authorization token from the
-// incoming HTTP request, if present, and adds it the request context for use
-// by downstream handlers.
-func setAuthorizationContext(next http.Handler) http.Handler {
-  return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-    if fireauth, restErr := fireauth.GetClient(r); restErr != nil {
-      rest.HandleError(w, restErr)
-    } else {
-      authToken, restErr := fireauth.GetToken()
-      if restErr != nil {
-        rest.HandleError(w, restErr)
-      }
-
-      next.ServeHTTP(w, r.WithContext(context.WithValue(r.Context(), AuthTokenKey, authToken)))
-    }
-  })
-}
-
 type InitAPI func(r *mux.Router)
 var initApiFuncs = make([]InitAPI, 0, 8)
 
