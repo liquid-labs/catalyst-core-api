@@ -17,8 +17,6 @@
     ".catalyst"
   ],
   "bin": {
-    "cloud-sql-proxy.sh": "./bin/cloud-sql-proxy.sh",
-    "cloud-sql-service.sh": "./bin/cloud-sql-service.sh",
     "go-dev-server.sh": "./bin/go-dev-server.sh"
   },
   "scripts": {
