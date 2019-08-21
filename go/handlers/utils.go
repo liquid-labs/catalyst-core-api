@@ -2,18 +2,19 @@ package handlers
 
 import (
   "net/http"
-  "reflect"
+  // "reflect"
 
-  "firebase.google.com/go/auth"
+  // "firebase.google.com/go/auth"
 
   // "github.com/Liquid-Labs/catalyst-firewrap/go/fireauth"
   "github.com/Liquid-Labs/lc-entities-model/go/entities"
-  "github.com/Liquid-Labs/catalyst-core-api/go/restserv"
-  "github.com/Liquid-Labs/go-nullable-mysql/nulls"
+  // "github.com/Liquid-Labs/lc-authentication-api/go/auth"
+  // "github.com/Liquid-Labs/catalyst-core-api/go/restserv"
+  // "github.com/Liquid-Labs/go-nullable-mysql/nulls"
   "github.com/Liquid-Labs/go-rest/rest"
   "github.com/Liquid-Labs/terror/go/terror"
 )
-
+/*
 func BasicAuthCheck(w http.ResponseWriter, r *http.Request) (*auth.Token, terror.Terror) {
   authToken := r.Context().Value(restserv.AuthTokenKey).(*auth.Token)
   if authToken != nil {
@@ -34,8 +35,9 @@ func CheckAndExtract(w http.ResponseWriter, r *http.Request, o interface {}, ite
     return authToken, nil
   }
 }
-
+*/
 // deprecated
+/*
 func doGeneric(w http.ResponseWriter, r *http.Request, dbFunc interface{}, input interface{}, itemName string, actionDesc string) {
   results := reflect.ValueOf(dbFunc).Call([]reflect.Value{reflect.ValueOf(input), reflect.ValueOf(r.Context())})
   data := results[0].Interface()
@@ -75,10 +77,10 @@ func ProcessGenericResults(w http.ResponseWriter, r *http.Request, data interfac
     rest.StandardResponse(w, data, actionDesc, nil)
   }
 }
-
-func CheckUpdateByPubID(w http.ResponseWriter, urlPubID entities.PublicID, entity entities.Entity) bool {
-  if urlPubID != entity.GetPubID() {
-    rest.HandleError(w, terror.BadRequestError("The ID of the target resource and the data provided do not match.", nil))
+*/
+func CheckUpdateByPubID(w http.ResponseWriter, urlID entities.EID, entity entities.Entity) bool {
+  if urlID != entity.GetID() {
+    rest.HandleError(w, terror.BadRequestError("The ID of the target resource and the data provided do not match."))
     return false
   } else {
     return true
