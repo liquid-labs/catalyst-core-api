@@ -6,15 +6,18 @@ import { CommonResourceConf } from './core/resources/CommonResourceConf'
 import { User } from './users/model'
 
 export const userId = '8BBF68AB-96D6-43EB-BDAE-36F55BC6EFD6'
+const ownerPubId = 'D096F0CA-41FA-44D1-925A-0087D202F099'
 export const userUrl = `/users/${userId}/`
 export const ts = Date.now()
 export const userData = {
-  pubId       : userId,
-  lastUpdated : ts -1000,
-  active      : true,
-  authId      : 'my-auth-id',
-  legalID     : '555-55-5555',
-  legalIDType : 'SSN'
+  pubId            : userId,
+  ownerPubId       : ownerPubId,
+  publiclyReadable : false,
+  lastUpdated      : ts -1000,
+  active           : true,
+  authId           : 'my-auth-id',
+  legalId          : '555-55-5555',
+  legalIdType      : 'SSN'
 }
 export const userReqBody = {
   data    : userData,
@@ -23,16 +26,16 @@ export const userReqBody = {
 
 export const userErrorMessage = 'Server error.'
 
+const usersResourceConf = new CommonResourceConf('user', { model : User })
+usersResourceConf.baseURL = '/api'
+
 export const setupResources = () => {
-  const usersResourceConf = new CommonResourceConf('user', { model : User })
-  usersResourceConf.baseURL = '/api'
   settings.setResources([usersResourceConf])
   verifyCatalystSetup()
 }
 
 export const setupStore = () => {
-  setupResources()
-  coreInit()
+  coreInit([usersResourceConf], { 'users' : '/api' })
 }
 
 export const loadUserInCache = () => {

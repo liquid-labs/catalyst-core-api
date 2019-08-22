@@ -1,7 +1,7 @@
 package restserv
 
 import (
-  "context"
+  // "context"
   "fmt"
   "log"
   "net/http"
@@ -10,9 +10,11 @@ import (
 
   "github.com/gorilla/mux"
   "github.com/gorilla/handlers"
-  "github.com/Liquid-Labs/catalyst-firewrap/go/firewrap"
-  "github.com/Liquid-Labs/catalyst-firewrap/go/fireauth"
-  "github.com/Liquid-Labs/go-rest/rest"
+
+  "github.com/Liquid-Labs/lc-authentication-api/go/auth"
+  // "github.com/Liquid-Labs/catalyst-firewrap/go/firewrap"
+  // "github.com/Liquid-Labs/catalyst-firewrap/go/fireauth"
+  // "github.com/Liquid-Labs/go-rest/rest"
 )
 
 var envPurpose = os.Getenv(`NODE_ENV`)
@@ -22,20 +24,6 @@ func GetEnvPurpose() string {
   } else {
     return envPurpose
   }
-}
-
-type fireauthKey string
-const FireauthKey fireauthKey = fireauthKey("fireauth")
-
-func addFireauthMw(next http.Handler) http.Handler {
-  return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-    if fireauth, restErr := fireauth.GetClient(r); restErr != nil {
-      log.Print("Failed to get auth client.")
-      rest.HandleError(w, restErr)
-    } else {
-      next.ServeHTTP(w, r.WithContext(context.WithValue(r.Context(), FireauthKey, fireauth)))
-    }
-  })
 }
 
 type InitAPI func(r *mux.Router)
@@ -58,10 +46,10 @@ func contextualMw(next http.Handler) http.Handler {
 }*/
 
 func Init() {
-  firewrap.Setup()
+  // firewrap.Setup()
 
   r := mux.NewRouter()
-  r.Use(addFireauthMw)
+  r.Use(auth.SetAuthorizationContext)
   apiR := r.PathPrefix("/api/").Subrouter()
   // r.Use(contextualMw)
   for _, initApi := range initApiFuncs {

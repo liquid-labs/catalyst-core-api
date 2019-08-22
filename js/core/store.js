@@ -1,13 +1,13 @@
 /**
  * store provides an API for configuring and initializing the redux store for
- * a Catalyst apllication. It should be combined with 'coreSetup' to configures
+ * a Catalyst apllication. It should be combined with 'coreInit' to configures
  * core resources.
  *
  * Usage:
  *
- *      import { store, coreSetup } from '@liquid-labs/catalyst-core-api'
+ *      import { store, coreInit } from '@liquid-labs/catalyst-core-api'
  *     ...
- *     coreSetup()
+ *     coreInit()
  *     store.addReducer('appState', appReducer) // optional
  *     store.addMiddleware(middlewareA, middlewareB) // optional
  *     store.init()

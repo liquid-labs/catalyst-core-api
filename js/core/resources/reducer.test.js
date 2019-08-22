@@ -6,6 +6,8 @@ import { userData, userId, userUrl, setupResources, ts } from '../../testlib'
 
 const callAllowance = 500
 
+window.alert = console.log
+
 describe('resource reducer', () => {
   beforeAll(() => {
     setupResources()

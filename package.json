@@ -17,8 +17,6 @@
     ".catalyst"
   ],
   "bin": {
-    "cloud-sql-proxy.sh": "./bin/cloud-sql-proxy.sh",
-    "cloud-sql-service.sh": "./bin/cloud-sql-service.sh",
     "go-dev-server.sh": "./bin/go-dev-server.sh"
   },
   "scripts": {
@@ -45,6 +43,27 @@
   "homepage": "https://github.com/Liquid-Labs/catalyst-core-api#readme",
   "catalyst": {
     "version": "0.0.0",
+    "provides": [
+      {
+        "name": "go-dev-server",
+        "interface-classes": [
+          "rest"
+        ],
+        "platform-types": [
+          "local"
+        ],
+        "purposes": [
+          "dev",
+          "test"
+        ],
+        "ctrl-scripts": [
+          "go-dev-server.sh"
+        ],
+        "params-req": [],
+        "params-opt": [],
+        "config-const": {}
+      }
+    ],
     "rollupConfig": {
       "commonjsConfig": {
         "namedExports": {
@@ -59,67 +78,15 @@
       "testEnvironment": "jsdom"
     }
   },
-  "_catServices": [
-    {
-      "name": "cloud-sql-remote",
-      "interface-classes": [
-        "sql",
-        "sql-mysql"
-      ],
-      "platform-types": [
-        "local",
-        "gcp"
-      ],
-      "purposes": [
-        "dev",
-        "pre-production"
-      ],
-      "ctrl-scripts": [
-        "cloud-sql-proxy.sh",
-        "cloud-sql-service.sh"
-      ],
-      "params-req": [
-        "GCP_PROJECT_ID",
-        "CLOUDSQL_INSTANCE_NAME",
-        "CLOUDSQL_CONNECTION_PROT",
-        "CLOUDSQL_CONNECTION_NAME",
-        "CLOUDSQL_PROXY_CONNECTION_NAME",
-        "CLOUDSQL_SERVICE_ACCT",
-        "CLOUDSQL_DB",
-        "FIREBASE_CREDS_FILE"
-      ],
-      "params-opt": [],
-      "config-const": {}
-    },
-    {
-      "name": "go-dev-server",
-      "interface-classes": [
-        "rest"
-      ],
-      "platform-types": [
-        "local"
-      ],
-      "purposes": [
-        "dev",
-        "test"
-      ],
-      "ctrl-scripts": [
-        "go-dev-server.sh"
-      ],
-      "params-req": [],
-      "params-opt": [],
-      "config-const": {}
-    }
-  ],
   "devDependencies": {
-    "@liquid-labs/catalyst-scripts": "^1.0.0-alpha.22",
+    "@liquid-labs/catalyst-scripts": "^1.0.0-alpha.24",
     "@liquid-labs/regex-repo": "^1.0.0-alpha.3",
-    "@liquid-labs/restful-paths": "^1.0.0-prototype.2",
+    "@liquid-labs/restful-paths": "^1.0.0-prototype.4",
     "fetch-mock": "^7.3.1",
     "lodash.omit": "^4.5.0",
     "lodash.reduce": "^4.6.0",
     "moment-timezone": "^0.5.23",
-    "node-fetch": "^2.3.0",
+    "node-fetch": "^2.6.0",
     "normalizr": "^3.3.0",
     "redux": "^4.0.1",
     "redux-mock-store": "^1.5.3",
